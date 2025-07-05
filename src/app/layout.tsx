@@ -24,6 +24,9 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased">
+        <div className="bg-primary text-primary-foreground text-center py-2 text-sm font-medium">
+          <p>Bank of America deposit products: FDIC-Insured - Backed by the full faith and credit of the U.S. Government</p>
+        </div>
         <div className="flex flex-col min-h-screen">
           <Header />
           <main className="flex-grow">
