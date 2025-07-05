@@ -1,3 +1,4 @@
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -81,7 +82,7 @@ function TransactionsTable({ transactions }: { transactions: (typeof transaction
                         </TableCell>
                         <TableCell className="hidden md:table-cell text-muted-foreground">{t.account}</TableCell>
                         <TableCell className="text-right font-mono">
-                            <span className={t.amount > 0 ? 'text-green-600' : 'text-foreground'}>
+                            <span className={t.amount > 0 ? 'text-primary' : 'text-foreground'}>
                                 {t.amount < 0 ? '-' : ''}${Math.abs(t.amount).toFixed(2)}
                             </span>
                         </TableCell>
