@@ -93,7 +93,7 @@ export default function Home() {
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="user-id">User ID</Label>
-                    <Input id="user-id" placeholder="Enter your User ID" />
+                    <Input id="user-id" placeholder="Enter your User ID" className="text-black" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="password">Password</Label>
@@ -102,7 +102,7 @@ export default function Home() {
                         id="password" 
                         type={showPassword ? 'text' : 'password'} 
                         placeholder="Enter your password"
-                        className="pr-10"
+                        className="pr-10 text-black"
                       />
                       <button
                         type="button"
