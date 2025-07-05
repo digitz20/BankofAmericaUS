@@ -1,5 +1,6 @@
 "use client";
 
+import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,12 +8,11 @@ import { Search, Lock, Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import React from 'react';
 
 const topBarLeftLinks = [
   { name: 'Personal', href: '/' },
   { name: 'Small Business', href: '/small-business' },
-  { name: 'Wealth Management', href: '#' },
+  { name: 'Wealth Management', href: '/wealth-management' },
   { name: 'Businesses & Institutions', href: '#' },
 ];
 
@@ -43,6 +43,13 @@ const businessMainNavLinks = [
     { name: 'Industries', href: '#' },
 ];
 
+const wealthMainNavLinks = [
+    { name: 'Investing', href: '#' },
+    { name: 'Retirement', href: '#' },
+    { name: 'Planning', href: '#' },
+    { name: 'Private Bank', href: '#' },
+];
+
 const Logo = () => (
     <Link href="/" className="flex items-center gap-2" aria-label="Legacy National Home">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" className="h-10 w-10 text-primary">
@@ -59,7 +66,22 @@ export function Header() {
     const [open, setOpen] = React.useState(false);
 
     const isBusinessPage = pathname.startsWith('/small-business');
-    const mainNavLinks = isBusinessPage ? businessMainNavLinks : personalMainNavLinks;
+    const isWealthPage = pathname.startsWith('/wealth-management');
+    
+    const getMainNavLinks = () => {
+        if (isBusinessPage) return businessMainNavLinks;
+        if (isWealthPage) return wealthMainNavLinks;
+        return personalMainNavLinks;
+    }
+    
+    const getActiveTopBar = () => {
+        if (isBusinessPage) return 'Small Business';
+        if (isWealthPage) return 'Wealth Management';
+        return 'Personal';
+    }
+
+    const mainNavLinks = getMainNavLinks();
+    const activeTopBar = getActiveTopBar();
 
     return (
         <header className="bg-card border-b sticky top-0 z-50">
@@ -69,7 +91,7 @@ export function Header() {
                         {topBarLeftLinks.map(link => (
                             <Link key={link.name} href={link.href} className={cn(
                                 "font-medium hover:text-primary transition-colors",
-                                (link.name === 'Small Business' && isBusinessPage) || (link.name === 'Personal' && !isBusinessPage) ? "text-primary" : "text-muted-foreground"
+                                activeTopBar === link.name ? "text-primary" : "text-muted-foreground"
                             )}>
                                 {link.name}
                             </Link>
