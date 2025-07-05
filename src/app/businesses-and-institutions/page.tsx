@@ -9,19 +9,19 @@ const solutions = [
     {
         title: "CashPro®",
         description: "Manage working capital from anywhere",
-        image: "https://placehold.co/400x300.png",
+        image: "https://business.bofa.com/content/dam/flagship/home/icons/cashpro_icon.svg",
         imageHint: "business dashboard"
     },
     {
         title: "BofA Mercury®",
         description: "Insights and tools to help optimize your trading strategies",
-        image: "https://placehold.co/400x300.png",
+        image: "https://business.bofa.com/content/dam/flagship/home/icons/bofa-mercury_icon.svg",
         imageHint: "trading chart"
     },
     {
         title: "Global Digital Disbursements",
         description: "Fast, secure mobile B2C payments",
-        image: "https://placehold.co/400x300.png",
+        image: "https://business.bofa.com/content/dam/flagship/home/icons/global-digital-disbursements_icon.svg",
         imageHint: "mobile payment"
     }
 ];
@@ -60,7 +60,7 @@ export default function BusinessesAndInstitutionsPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {/* AI Dictionary */}
                         <Card className="lg:col-span-2 overflow-hidden">
-                             <Image src="https://placehold.co/800x400.png" data-ai-hint="ai innovation" alt="AI innovation" width={800} height={400} className="w-full h-64 object-cover" />
+                             <Image src="https://business.bofa.com/content/dam/flagship/home/inst.jpg" data-ai-hint="ai innovation" alt="AI innovation" width={800} height={400} className="w-full h-64 object-cover" />
                              <CardContent className="p-6">
                                 <p className="text-sm text-muted-foreground">JULY 2025</p>
                                 <h3 className="font-headline text-2xl font-bold mt-2">AI dictionary, part 2: The next generation</h3>

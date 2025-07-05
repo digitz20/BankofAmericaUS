@@ -27,6 +27,12 @@ const nextConfig: NextConfig = {
         hostname: 'www2.bac-assets.com',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'business.bofa.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
