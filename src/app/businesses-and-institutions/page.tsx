@@ -43,7 +43,7 @@ export default function BusinessesAndInstitutionsPage() {
                     </div>
                     <div className="flex justify-center">
                         <Image
-                            src="https://placehold.co/600x400.png"
+                            src="https://business.bofa.com/content/dam/flagship/global-research/featured-analysts/smi_BV_hp_masthead_finalcutsBV_Desktop_1440x380.jpg"
                             data-ai-hint="analyst team headshots"
                             alt="Team of analysts"
                             width={600}
@@ -74,11 +74,11 @@ export default function BusinessesAndInstitutionsPage() {
                                 <h3 className="font-headline text-2xl font-bold">Proud supporter of every goal</h3>
                                 <p className="mt-2 text-primary-foreground/80">Teaming up to support achievements in the game of soccer, and across our community.</p>
                             </div>
-                            <Image src="https://placehold.co/400x300.png" data-ai-hint="soccer goal" alt="Soccer goal" width={400} height={300} className="rounded-md mt-4" />
+                            <Image src="https://business.bofa.com/content/dam/flagship/gbgmr/fifa-bank/Biz.BofA_SiteTile_640x360.jpg" data-ai-hint="soccer goal" alt="Soccer goal" width={400} height={300} className="rounded-md mt-4" />
                         </Card>
                          {/* Equity Markets */}
                         <Card className="overflow-hidden">
-                             <Image src="https://placehold.co/400x300.png" data-ai-hint="equity market chart" alt="Equity market chart" width={400} height={300} className="w-full h-48 object-cover" />
+                             <Image src="https://business.bofa.com/content/dam/flagship/article/what-matters-in-equity-markets/Tully-Bowman-headshot-TI-640x360.jpg" data-ai-hint="equity market chart" alt="Equity market chart" width={400} height={300} className="w-full h-48 object-cover" />
                              <CardContent className="p-6">
                                 <p className="text-sm text-primary font-semibold">BOFA GLOBAL MARKETS</p>
                                 <h3 className="font-headline text-xl font-bold mt-2">Seeing beyond the narratives in equity markets</h3>
@@ -88,7 +88,7 @@ export default function BusinessesAndInstitutionsPage() {
                         </Card>
                          {/* Global Payments */}
                          <Card className="overflow-hidden">
-                             <Image src="https://placehold.co/400x300.png" data-ai-hint="global payments" alt="Global payments network" width={400} height={300} className="w-full h-48 object-cover" />
+                             <Image src="https://business.bofa.com/content/dam/flagship/global-transaction-services/transaction-services-treasury-management-solutions/GPSInsights-tile-640x360.jpg" data-ai-hint="global payments" alt="Global payments network" width={400} height={300} className="w-full h-48 object-cover" />
                              <CardContent className="p-6">
                                 <h3 className="font-headline text-xl font-bold">Global payment insights to drive your business forward</h3>
                                 <p className="mt-2 text-muted-foreground text-sm">Expertise, resources and perspectives for treasury and payments professionals, designed to help make business easier.</p>
@@ -96,7 +96,7 @@ export default function BusinessesAndInstitutionsPage() {
                         </Card>
                          {/* Must Read Research */}
                          <Card className="overflow-hidden">
-                             <Image src="https://placehold.co/400x300.png" data-ai-hint="research document" alt="Research document" width={400} height={300} className="w-full h-48 object-cover" />
+                             <Image src="https://business.bofa.com/content/dam/flagship/global-research/market-strategies-insights/weekly-market-recap-report/Candace-Browning-tile-640x360.jpg" data-ai-hint="research document" alt="Research document" width={400} height={300} className="w-full h-48 object-cover" />
                              <CardContent className="p-6">
                                 <p className="text-sm text-primary font-semibold">BOFA GLOBAL RESEARCH</p>
                                 <h3 className="font-headline text-xl font-bold mt-2">Must Read Research</h3>

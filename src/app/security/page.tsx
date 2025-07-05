@@ -4,16 +4,28 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertTriangle, ShieldCheck, UserCheck, Lock, Bell, Settings, FileText } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function SecurityPage() {
   return (
     <div className="bg-background">
       {/* Hero Section */}
-      <section className="bg-primary text-primary-foreground py-20">
-        <div className="container mx-auto px-4 text-center">
+      <section className="relative text-white py-20 text-center overflow-hidden">
+        <div className="absolute inset-0">
+          <Image
+            src="https://www2.bac-assets.com/security-center/spa-assets/images/assets-images-site-security-center-carousel-engagement-area-banner-desktop-CSX3847edbf.webp"
+            alt="Security background"
+            data-ai-hint="security background"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-primary/70" />
+        </div>
+        <div className="container mx-auto px-4 relative z-10">
           <ShieldCheck className="h-16 w-16 mx-auto" />
           <h1 className="font-headline text-4xl md:text-5xl font-bold mt-4">Security Center</h1>
-          <p className="mt-4 text-lg max-w-3xl mx-auto text-primary-foreground/80">
+          <p className="mt-4 text-lg max-w-3xl mx-auto">
             Learn how we help protect you and how you can help protect yourself.
           </p>
         </div>
