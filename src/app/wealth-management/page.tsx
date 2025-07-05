@@ -2,6 +2,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Award, Briefcase, Building } from 'lucide-react';
+import Image from 'next/image';
 import React from 'react';
 
 const investmentApproaches = [
@@ -37,10 +38,21 @@ const investmentApproaches = [
 export default function WealthManagementPage() {
     return (
         <div className="bg-background">
-            <section className="bg-muted py-20 md:py-28">
-                <div className="container mx-auto px-4 text-center">
-                    <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary">Investment solutions designed for you</h1>
-                    <p className="mt-4 text-lg max-w-3xl mx-auto text-muted-foreground">
+            <section className="relative py-24 md:py-32 text-center text-white overflow-hidden">
+                <div className="absolute inset-0">
+                    <Image
+                        src="https://i.pinimg.com/736x/90/79/65/907965aa8943c9be1ded3a4a1f6f9b27.jpg"
+                        alt="Wealth management concept"
+                        data-ai-hint="wealth management abstract"
+                        fill
+                        className="object-cover"
+                        priority
+                    />
+                    <div className="absolute inset-0 bg-primary/70" />
+                </div>
+                <div className="container mx-auto px-4 relative z-10">
+                    <h1 className="font-headline text-4xl md:text-5xl font-bold">Investment solutions designed for you</h1>
+                    <p className="mt-4 text-lg max-w-3xl mx-auto">
                         With Legacy National banking and Merrill investing, find the investment approach that fits your needs to help you manage your wealth.
                     </p>
                 </div>
