@@ -1,157 +1,159 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import {
-    Info, UserCog, MapPin, Car, LogIn, PiggyBank, Wallet, Building2, CreditCard,
-    HeartHandshake, ScrollText, Globe, TrendingUp, ShieldCheck, Stethoscope,
-    Shield, Smartphone, Home, FileSignature, MonitorSmartphone, Gavel, Lock,
-    Briefcase, GraduationCap, ArrowRight
+    ShieldCheck, CreditCard, UserCog, MonitorSmartphone, DollarSign, Settings2,
+    Search, Calendar, MapPin, MessageSquare, ArrowRight
 } from 'lucide-react';
 import Link from 'next/link';
 
-const contactTopics = [
-    { title: "About Legacy National", icon: Info },
-    { title: "Account changes", icon: UserCog },
-    { title: "ATMs", icon: MapPin },
-    { title: "Auto loans", icon: Car },
-    { title: "Login Issues", icon: LogIn },
-    { title: "CD & IRAs", icon: PiggyBank },
-    { title: "Checking & savings", icon: Wallet },
-    { title: "Corporate & institutional banking", icon: Building2 },
-    { title: "Credit cards", icon: CreditCard },
-    { title: "Elder financial care", icon: HeartHandshake },
-    { title: "Estate services", icon: ScrollText },
-    { title: "International travel", icon: Globe },
-    { title: "Investment & wealth management", icon: TrendingUp },
-    { title: "Medallion Signature Guarantee", icon: ShieldCheck },
-    { title: "Medical & professional practice loans", icon: Stethoscope },
-    { title: "Military banking", icon: Shield },
-    { title: "Mobile Banking", icon: Smartphone },
-    { title: "Mortgage & home equity", icon: Home },
-    { title: "Notary services", icon: FileSignature },
-    { title: "Online Banking & Bill Pay", icon: MonitorSmartphone },
-    { title: "Power of attorney", icon: Gavel },
-    { title: "Privacy & security", icon: Lock },
-    { title: "Small business banking", icon: Briefcase },
-    { title: "Student banking", icon: GraduationCap },
+const trendingTopics = [
+    "Routing number",
+    "Bill Pay",
+    "Make a payment",
+    "Dispute charge",
+    "Erica® virtual assistant"
 ];
 
-const quickLinks = [
-    "Dispute an ATM/Debit Card Transaction",
-    "Dispute a Credit Card Transaction",
-    "Manage/Cancel Funds Transfers",
-    "Manage/Cancel Recurring Bill Pay",
-    "Credit Line Increase",
-    "Balance Transfer",
-    "Zelle – a safe and easy way to send money fast",
-    "Password Reset",
-    "Update Contact Information",
+const helpTopics = [
+    {
+        title: "Security & Privacy",
+        icon: ShieldCheck,
+        links: ["Alerts setup", "Dispute charge", "Fingerprint (Touch ID)", "Forgot ID/password", "Security center"]
+    },
+    {
+        title: "Card Management",
+        icon: CreditCard,
+        links: ["Activate card", "BankAmeriDeals®", "Credit card PIN", "Lock/unlock debit card", "Redeem rewards", "Replace card"]
+    },
+    {
+        title: "Account Management",
+        icon: UserCog,
+        links: ["Account balance", "Account number", "Reorder checks", "Routing number", "Statements and documents", "Update contact info"]
+    },
+    {
+        title: "Digital Services",
+        icon: MonitorSmartphone,
+        links: ["How-to Guide for Digital Banking", "Digital wallet - pay using your phone", "Enroll in online/mobile banking", "Erica® virtual assistant", "Mobile and online banking features", "Paperless statements"]
+    },
+    {
+        title: "Payments & Transfers",
+        icon: DollarSign,
+        links: ["Bill Pay", "Direct deposit", "Mobile check deposit", "Transfer money", "Wire transfers", "Zelle®"]
+    },
+    {
+        title: "Tools",
+        icon: Settings2,
+        links: ["Accessibility help", "Bank of America Life Plan®", "Exchange foreign currency", "FICO® score", "Goals tool", "Life services", "Spending and budgeting"]
+    },
 ];
 
-const SocialIcon = ({ d, label }: { d: string, label: string }) => (
-    <div className="flex items-center gap-4">
-        <div className="bg-primary text-primary-foreground p-3 rounded-full">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
-                <path d={d}></path>
-            </svg>
-        </div>
-        <p className="flex-1 text-sm text-muted-foreground">{label}</p>
-    </div>
-);
+const connectLinks = [
+    { title: "Schedule an appointment", icon: Calendar, href: "#" },
+    { title: "Find a location", icon: MapPin, href: "#" },
+    { title: "Contact us", icon: MessageSquare, href: "#" },
+]
 
 export default function HelpPage() {
     return (
         <div className="bg-background">
-            <section className="bg-muted py-20">
+            {/* Hero Section */}
+            <section className="bg-muted/30 py-20">
                 <div className="container mx-auto px-4 text-center">
-                    <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary">Customer Service</h1>
-                    <p className="mt-4 text-lg max-w-3xl mx-auto text-muted-foreground">We're here to help. Quickly access our convenient digital solutions.</p>
-                </div>
-            </section>
-
-            <section className="py-16 md:py-24">
-                <div className="container mx-auto px-4">
-                    <div className="grid lg:grid-cols-3 gap-12">
-                        <div className="lg:col-span-2">
-                            <h2 className="font-headline text-3xl font-bold mb-8">Contact us</h2>
-                            <p className="mb-6 text-muted-foreground">For the best ways to contact us about specific issues, please select a topic.</p>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {contactTopics.map((topic) => {
-                                    const Icon = topic.icon;
-                                    return (
-                                        <Button key={topic.title} variant="outline" className="justify-start h-auto py-3 text-left">
-                                            <Icon className="mr-3 h-5 w-5 text-primary" />
-                                            <span className="flex-1">{topic.title}</span>
-                                        </Button>
-                                    );
-                                })}
-                            </div>
-                        </div>
-
-                        <div className="space-y-8">
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle className="font-headline">Quick Access</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <ul className="space-y-3">
-                                        {quickLinks.map(link => (
-                                            <li key={link}>
-                                                <Link href="#" className="text-sm text-primary hover:underline flex justify-between items-center">
-                                                    {link} <ArrowRight className="h-4 w-4" />
-                                                </Link>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </CardContent>
-                            </Card>
-
-                             <Card>
-                                <CardHeader>
-                                    <CardTitle className="font-headline">Find us</CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-4">
-                                     <div>
-                                        <h3 className="font-semibold">Find ATMs & financial centers</h3>
-                                        <p className="text-sm text-muted-foreground mt-1">Use our financial center locator to find a convenient location or ATM near you.</p>
-                                    </div>
-                                    <div>
-                                        <h3 className="font-semibold">Schedule an appointment</h3>
-                                        <p className="text-sm text-muted-foreground mt-1">Make an appointment to open an account or discuss your financial concerns at your convenience.</p>
-                                    </div>
-                                    <Button className="w-full">Find a Location</Button>
-                                </CardContent>
-                            </Card>
-
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle className="font-headline">Connect on Social</CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-4">
-                                     <p className="text-xs text-muted-foreground">
-                                        Privately message us. Please remember: Don't include account numbers or Social Security numbers for security reasons.
-                                    </p>
-                                    <SocialIcon 
-                                        label="Message us on Facebook"
-                                        d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-1.5c-1 0-1.5.5-1.5 1.5V12h3l-.5 3h-2.5v6.8c4.56-.93 8-4.96 8-9.8z"
-                                    />
-                                     <SocialIcon 
-                                        label="Direct message @LNB_Help on X"
-                                        d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1 2.25h3.437l4.722 6.442L18.244 2.25zM17.06 19.75h1.546L6.86 4.25H5.216l11.844 15.5z"
-                                    />
-                                    <div className="text-xs text-muted-foreground pt-2 border-t">
-                                        <p className="font-semibold">Our representatives are available:</p>
-                                        <p>Mon-Fri, 8 a.m. to 9 p.m. ET</p>
-                                        <p>Sat, 9 a.m. to 6 p.m. ET</p>
-                                        <p>Sun, 8 a.m. to 5 p.m. ET</p>
-                                    </div>
-                                </CardContent>
-                            </Card>
-
-                        </div>
+                    <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary">How can we help?</h1>
+                    <div className="relative max-w-2xl mx-auto mt-8">
+                        <Input
+                            placeholder="Search for a topic, keyword or phrase"
+                            className="h-12 text-lg pl-12"
+                        />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-6 w-6 text-muted-foreground" />
+                    </div>
+                    <div className="flex flex-wrap justify-center items-center gap-4 mt-6">
+                        <span className="text-sm font-semibold">Trending Topics:</span>
+                        {trendingTopics.map(topic => (
+                             <Button key={topic} variant="link" className="text-sm px-1 text-primary">
+                                {topic}
+                            </Button>
+                        ))}
                     </div>
                 </div>
             </section>
+            
+            {/* Topics Grid */}
+            <section className="py-16 md:py-24">
+                <div className="container mx-auto px-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {helpTopics.map((topic) => {
+                            const Icon = topic.icon;
+                            return (
+                                <Card key={topic.title}>
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-3">
+                                            <Icon className="h-6 w-6 text-primary" />
+                                            <span className="font-headline">{topic.title}</span>
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <ul className="space-y-3">
+                                            {topic.links.map(link => (
+                                                <li key={link}>
+                                                    <Link href="#" className="text-sm text-primary hover:underline flex justify-between items-center">
+                                                        <span>{link}</span>
+                                                        <ArrowRight className="h-4 w-4" />
+                                                    </Link>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </CardContent>
+                                </Card>
+                            );
+                        })}
+                    </div>
+                </div>
+            </section>
+            
+            {/* Connect Section */}
+            <section className="py-16 bg-muted">
+                <div className="container mx-auto px-4">
+                    <h2 className="font-headline text-3xl font-bold text-center mb-12">Connect with us</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                        {connectLinks.map((link) => {
+                            const Icon = link.icon;
+                            return (
+                                <Card key={link.title} className="text-center p-6 hover:shadow-lg transition-shadow">
+                                     <div className="mx-auto bg-primary text-primary-foreground h-16 w-16 rounded-full flex items-center justify-center mb-4">
+                                        <Icon className="h-8 w-8" />
+                                    </div>
+                                    <h3 className="font-headline text-xl font-semibold mb-2">{link.title}</h3>
+                                    <Button asChild><Link href={link.href}>Go</Link></Button>
+                                </Card>
+                            )
+                        })}
+                    </div>
+                </div>
+            </section>
+
+            {/* Client Care Commitment */}
+            <section className="py-20">
+                <div className="container mx-auto px-4 max-w-4xl text-center">
+                    <h2 className="font-headline text-3xl font-bold">Our Client Care Commitment</h2>
+                    <p className="mt-6 text-muted-foreground">We know you work hard to make life better for yourself and the people you care about most. We believe in providing solutions to help you do this throughout your life. Because we value your relationship with us, our promise to you is to always listen to you, provide advice when you need it, and strive to exceed your expectations. Every one of us at Bank of America believes in this promise and strives to deliver on it each day. And it's the reason we will always approach your needs with a question centered squarely on you.</p>
+                    <p className="font-headline text-xl font-bold mt-8 text-primary">What would you like the power to do?®</p>
+                </div>
+            </section>
+
+             <section className="py-12 bg-muted/30">
+                <div className="container mx-auto px-4 text-xs text-muted-foreground">
+                    <h3 className="font-bold text-sm mb-2 text-foreground">Important Disclosures and Information</h3>
+                    <p className="mb-4">
+                        Some accounts, services and fees vary from state to state. Please review the Business Schedule of Fees for your state, also available at your local financial center.
+                    </p>
+                    <p className="mb-4">
+                        Credit and collateral are subjected to approval. Terms and conditions apply. This is not a commitment to lend. Programs, rates, terms, and conditions are subject to change without notice.
+                    </p>
+                </div>
+            </section>
         </div>
-    )
+    );
 }
