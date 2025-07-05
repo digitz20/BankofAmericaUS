@@ -20,7 +20,7 @@ const creditCardOffers = [
     },
     {
         name: "Unlimited Cash Rewards",
-        image: "https://placehold.co/300x180.png",
+        image: "https://www2.bac-assets.com/homepage/spa-assets/images/assets-images-site-hp-assets-mastheads-consumer-cards-en-4-card-card_mh_un_newoffer4960977_e.webp",
         imageHint: "money cash",
         annualFee: "No annual fee.",
         bonus: "$200",
@@ -30,7 +30,7 @@ const creditCardOffers = [
     },
     {
         name: "Travel Rewards",
-        image: "https://placehold.co/300x180.png",
+        image: "https://www2.bac-assets.com/homepage/spa-assets/images/assets-images-site-hp-assets-mastheads-consumer-cards-en-4-card-5779014_Travel_3.webp",
         imageHint: "credit card travel",
         annualFee: "No annual fee.",
         bonus: "25,000",
@@ -40,7 +40,7 @@ const creditCardOffers = [
     },
     {
         name: "BankAmericard®",
-        image: "https://placehold.co/300x180.png",
+        image: "https://www2.bac-assets.com/homepage/spa-assets/images/assets-images-site-hp-assets-mastheads-consumer-cards-en-4-card-5779014_Nonrewards_4.webp",
         imageHint: "secure credit card",
         annualFee: "No annual fee.",
         bonus: "0%",
@@ -100,7 +100,9 @@ export default function Home() {
                       <Label htmlFor="save-id" className="text-sm font-normal">Save User ID</Label>
                     </div>
                   </div>
-                  <Button className="w-full">Log In</Button>
+                  <Button className="w-full" asChild>
+                    <Link href="/dashboard">Log In</Link>
+                  </Button>
                   <div className="text-sm text-center space-x-2 text-accent-foreground/80">
                     <Link href="#" className="text-accent-foreground hover:underline">Forgot ID/Password?</Link>
                     <span>|</span>
