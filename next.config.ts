@@ -1,3 +1,4 @@
+
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
@@ -31,6 +32,18 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'business.bofa.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'about.bankofamerica.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'd1io3yog0oux5.cloudfront.net',
         port: '',
         pathname: '/**',
       }
