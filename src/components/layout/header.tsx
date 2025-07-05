@@ -59,18 +59,26 @@ const institutionsMainNavLinks = [
 ];
 
 
-const Logo = () => (
-    <Link href="/" className="flex items-center gap-2" aria-label="Bank of America Home">
-        <Image
-            src="https://i.pinimg.com/736x/2f/9b/19/2f9b195ba9069a509b41552b763f8c8c.jpg"
-            alt="Bank of America Logo"
-            width={82}
-            height={32}
-            className="h-8 w-auto"
-        />
-        <span className="font-headline text-2xl font-bold text-primary hidden sm:inline-block">BANK OF AMERICA</span>
-    </Link>
-);
+const Logo = () => {
+    const [isMounted, setIsMounted] = React.useState(false);
+
+    React.useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    return (
+        <Link href="/" className="flex items-center gap-2" aria-label="Bank of America Home">
+            <Image
+                src="https://i.pinimg.com/736x/2f/9b/19/2f9b195ba9069a509b41552b763f8c8c.jpg"
+                alt="Bank of America Logo"
+                width={82}
+                height={32}
+                className="h-8 w-auto"
+            />
+            {isMounted && <span className="font-headline text-2xl font-bold text-primary hidden sm:inline-block">BANK OF AMERICA</span>}
+        </Link>
+    );
+};
 
 export function Header() {
     const pathname = usePathname();
