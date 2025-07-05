@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -18,7 +19,7 @@ const topBarLeftLinks = [
 
 const topBarRightLinks = [
     { name: 'Security', href: '/security' },
-    { name: 'About Us', href: '#' },
+    { name: 'About Us', href: '/about' },
     { name: 'En español', href: '#' },
     { name: 'Contact us', href: '/help' },
     { name: 'Help', href: '/help' },
