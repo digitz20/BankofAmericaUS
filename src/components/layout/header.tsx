@@ -10,8 +10,8 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import React from 'react';
 
 const topBarLeftLinks = [
-  { name: 'Personal', href: '#', selected: true },
-  { name: 'Small Business', href: '#' },
+  { name: 'Personal', href: '/' },
+  { name: 'Small Business', href: '/small-business' },
   { name: 'Wealth Management', href: '#' },
   { name: 'Businesses & Institutions', href: '#' },
 ];
@@ -24,7 +24,7 @@ const topBarRightLinks = [
     { name: 'Help', href: '/help' },
 ];
 
-const mainNavLinks = [
+const personalMainNavLinks = [
   { name: 'Checking', href: '/accounts' },
   { name: 'Savings & CDs', href: '/accounts' },
   { name: 'Credit Cards', href: '/accounts' },
@@ -32,6 +32,15 @@ const mainNavLinks = [
   { name: 'Auto Loans', href: '#' },
   { name: 'Investing', href: '#' },
   { name: 'Better Money Habits®', href: '#' },
+];
+
+const businessMainNavLinks = [
+    { name: 'Checking & Savings', href: '#' },
+    { name: 'Credit Cards', href: '#' },
+    { name: 'Loans & Lines of Credit', href: '#' },
+    { name: 'Merchant Services', href: '#' },
+    { name: 'Business Services', href: '#' },
+    { name: 'Industries', href: '#' },
 ];
 
 const Logo = () => (
@@ -49,6 +58,9 @@ export function Header() {
     const pathname = usePathname();
     const [open, setOpen] = React.useState(false);
 
+    const isBusinessPage = pathname.startsWith('/small-business');
+    const mainNavLinks = isBusinessPage ? businessMainNavLinks : personalMainNavLinks;
+
     return (
         <header className="bg-card border-b sticky top-0 z-50">
              <div className="hidden md:block bg-muted/20 border-b">
@@ -57,7 +69,7 @@ export function Header() {
                         {topBarLeftLinks.map(link => (
                             <Link key={link.name} href={link.href} className={cn(
                                 "font-medium hover:text-primary transition-colors",
-                                link.selected ? "text-primary" : "text-muted-foreground"
+                                (link.name === 'Small Business' && isBusinessPage) || (link.name === 'Personal' && !isBusinessPage) ? "text-primary" : "text-muted-foreground"
                             )}>
                                 {link.name}
                             </Link>
@@ -65,7 +77,7 @@ export function Header() {
                     </div>
                     <div className="flex items-center gap-x-6">
                          {topBarRightLinks.map(link => (
-                            <Link key={link.name} href={link.href} className="font-medium text-muted-foreground hover:text-primary transition-colors">
+                            <Link key={link.name} href={link.href} className={cn("font-medium text-muted-foreground hover:text-primary transition-colors", { 'text-primary': pathname === link.href })}>
                                 {link.name}
                             </Link>
                         ))}
