@@ -68,7 +68,7 @@ const Logo = () => (
             height={32}
             className="h-8 w-auto"
         />
-        <span className="font-headline text-2xl font-bold text-primary hidden sm:inline-block">Bank of America</span>
+        <span className="font-headline text-2xl font-bold text-accent hidden sm:inline-block">Bank of America</span>
     </Link>
 );
 
