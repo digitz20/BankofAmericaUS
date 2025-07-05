@@ -82,8 +82,19 @@ export default function Home() {
   return (
     <div className="bg-background">
       {/* Hero / Login Section */}
-      <section className="bg-muted/30">
-        <div className="container mx-auto px-4 py-12">
+      <section className="relative text-white">
+        <div className="absolute inset-0">
+          <Image
+            src="https://www2.bac-assets.com/homepage/spa-assets/images/assets-images-site-hp-assets-super-highlights-enterprise-en-special-olympics-ent_shl_bmh_champs_5963738_722_gc.webp"
+            alt="Special Olympics athletes celebrating"
+            data-ai-hint="special olympics celebration"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-primary/70" />
+        </div>
+        <div className="container mx-auto px-4 py-12 relative z-10">
           <div className="grid md:grid-cols-3 gap-8 items-center">
             <div className="md:col-span-1">
               <Card className="shadow-lg bg-accent text-accent-foreground">
@@ -98,9 +109,9 @@ export default function Home() {
                   <div className="space-y-2">
                     <Label htmlFor="password">Password</Label>
                     <div className="relative">
-                      <Input 
-                        id="password" 
-                        type={showPassword ? 'text' : 'password'} 
+                      <Input
+                        id="password"
+                        type={showPassword ? 'text' : 'password'}
                         placeholder="Enter your password"
                         className="pr-10 text-black"
                       />
@@ -135,9 +146,9 @@ export default function Home() {
                 </CardContent>
               </Card>
             </div>
-            <div className="md:col-span-2 flex flex-col justify-center items-center text-center bg-card p-8 rounded-lg border">
-              <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">New checking customers. $300 cash offer.</h2>
-              <p className="mt-4 text-lg text-muted-foreground max-w-md">Open a new eligible checking account and make qualifying direct deposits.</p>
+            <div className="md:col-span-2 flex flex-col justify-center items-center text-center">
+              <h2 className="font-headline text-3xl md:text-4xl font-bold text-white">New checking customers. $300 cash offer.</h2>
+              <p className="mt-4 text-lg text-white/90 max-w-md">Open a new eligible checking account and make qualifying direct deposits.</p>
               <Button size="lg" className="mt-6 bg-accent hover:bg-accent/90">See offer details</Button>
             </div>
           </div>
