@@ -29,7 +29,7 @@ const prompt = ai.definePrompt({
   name: 'smartAssistAnswersPrompt',
   input: {schema: SmartAssistAnswersInputSchema},
   output: {schema: SmartAssistAnswersOutputSchema},
-  prompt: `You are a virtual assistant for Legacy National Bank. Your goal is to answer user questions about Legacy National's services and policies.
+  prompt: `You are a virtual assistant for Bank of America. Your goal is to answer user questions about Bank of America's services and policies.
 
 Question: {{{question}}}
 

@@ -37,7 +37,7 @@ const insights = [
     },
     {
         icon: Building,
-        title: "Legacy National Institute",
+        title: "Bank of America Institute",
         description: "Uncovering powerful insights that move business and society forward.",
     },
     {

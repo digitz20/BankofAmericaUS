@@ -6,8 +6,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { SmartAssist } from '@/components/smart-assist';
 
 export const metadata: Metadata = {
-  title: 'Legacy National (MVP)',
-  description: 'A replica of the Bank of America website for Legacy National Bank',
+  title: 'Bank of America',
+  description: 'Bank of America - Banking, Credit Cards, Home Loans & Auto Loans',
 };
 
 export default function RootLayout({

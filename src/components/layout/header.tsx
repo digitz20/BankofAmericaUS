@@ -60,13 +60,12 @@ const institutionsMainNavLinks = [
 
 
 const Logo = () => (
-    <Link href="/" className="flex items-center gap-2" aria-label="Legacy National Home">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" className="h-10 w-10 text-primary">
-            <rect width="100" height="100" rx="20" fill="currentColor"/>
-            <path d="M 30 70 L 30 30 L 50 30 C 65 30 65 45 50 45 L 30 45" stroke="#F5F5F5" strokeWidth="10" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M 50 45 L 70 70" stroke="#F5F5F5" strokeWidth="10" fill="none" strokeLinecap="round"/>
+    <Link href="/" className="flex items-center gap-2" aria-label="Bank of America Home">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 58 24" className="h-8 w-auto" role="img" aria-hidden="true">
+            <path fill="#0060F0" d="M23.492 4.93L29.365 0H58v4.93H34.508L28.635 11.63H2.204V4.93h21.288z"/>
+            <path fill="#E31837" d="M28.635 12.37L22.724 19.07H0V24h29.365l5.873-4.93H58v-6.7H28.635z"/>
         </svg>
-        <span className="font-headline text-2xl font-bold text-primary hidden sm:inline-block">Legacy National</span>
+        <span className="font-headline text-2xl font-bold text-primary hidden sm:inline-block">Bank of America</span>
     </Link>
 );
 
@@ -149,9 +148,9 @@ export function Header() {
                                     </Button>
                                 </SheetTrigger>
                                 <SheetContent>
-                                    <SheetHeader className="sr-only">
-                                        <SheetTitle>Menu</SheetTitle>
-                                        <SheetDescription>Main navigation menu</SheetDescription>
+                                    <SheetHeader>
+                                        <SheetTitle className="sr-only">Menu</SheetTitle>
+                                        <SheetDescription className="sr-only">Main navigation menu</SheetDescription>
                                     </SheetHeader>
                                     <div className="flex flex-col space-y-6 mt-8">
                                     <div className="px-4">

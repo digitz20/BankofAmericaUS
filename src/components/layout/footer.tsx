@@ -59,7 +59,7 @@ export function Footer() {
           ))}
         </div>
         <div className="border-t border-primary-foreground/20 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-primary-foreground/60">
-          <p>&copy; {new Date().getFullYear()} Legacy National Corporation. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Bank of America Corporation. All rights reserved.</p>
           <div className="flex gap-4 mt-4 md:mt-0">
             <span>Member FDIC</span>
             <span>Equal Housing Lender</span>
