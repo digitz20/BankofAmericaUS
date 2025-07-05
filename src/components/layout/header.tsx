@@ -88,18 +88,18 @@ export function Header() {
     const isWealthPage = pathname.startsWith('/wealth-management');
     const isInstitutionsPage = pathname.startsWith('/businesses-and-institutions');
     
-    const getMainNavLinks = () => {
-        if (isBusinessPage) return businessMainNavLinks;
-        if (isWealthPage) return wealthMainNavLinks;
-        if (isInstitutionsPage) return institutionsMainNavLinks;
-        return personalMainNavLinks;
-    }
-    
     const getActiveTopBar = () => {
         if (isBusinessPage) return 'Small Business';
         if (isWealthPage) return 'Wealth Management';
         if (isInstitutionsPage) return 'Businesses & Institutions';
         return 'Personal';
+    }
+    
+    const getMainNavLinks = () => {
+        if (isBusinessPage) return businessMainNavLinks;
+        if (isWealthPage) return wealthMainNavLinks;
+        if (isInstitutionsPage) return institutionsMainNavLinks;
+        return personalMainNavLinks;
     }
 
     const mainNavLinks = getMainNavLinks();
@@ -113,7 +113,7 @@ export function Header() {
                         {topBarLeftLinks.map(link => (
                             <Link key={link.name} href={link.href} className={cn(
                                 "font-medium hover:text-primary transition-colors",
-                                activeTopBar === link.name ? "text-primary" : "text-muted-foreground"
+                                activeTopBar === link.name ? "text-primary underline underline-offset-4" : "text-muted-foreground"
                             )}>
                                 {link.name}
                             </Link>
@@ -121,7 +121,7 @@ export function Header() {
                     </div>
                     <div className="flex items-center gap-x-6">
                          {topBarRightLinks.map(link => (
-                            <Link key={link.name} href={link.href} className={cn("font-medium text-muted-foreground hover:text-primary transition-colors", { 'text-primary': pathname === link.href })}>
+                            <Link key={link.name} href={link.href} className={cn("font-medium text-muted-foreground hover:text-primary transition-colors", { 'text-primary underline underline-offset-4': link.href !== '#' && pathname.startsWith(link.href) })}>
                                 {link.name}
                             </Link>
                         ))}
@@ -136,7 +136,7 @@ export function Header() {
                         {mainNavLinks.map(link => (
                             <Link key={link.name} href={link.href} className={cn(
                                 "font-headline text-base font-medium hover:text-primary transition-colors",
-                                pathname === link.href ? "text-primary" : "text-foreground"
+                                pathname === link.href ? "text-primary underline underline-offset-4" : "text-foreground"
                             )}>
                                 {link.name}
                             </Link>
@@ -170,7 +170,7 @@ export function Header() {
                                      {mainNavLinks.map(link => (
                                         <Link key={link.name} href={link.href} onClick={() => setOpen(false)} className={cn(
                                             "font-headline text-2xl px-4 py-2 rounded-md font-medium hover:bg-muted hover:text-primary transition-colors",
-                                            pathname === link.href ? "bg-muted text-primary" : "text-foreground"
+                                            pathname === link.href ? "bg-muted text-primary underline underline-offset-4" : "text-foreground"
                                         )}>
                                             {link.name}
                                         </Link>
