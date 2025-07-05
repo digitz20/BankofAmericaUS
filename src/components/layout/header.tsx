@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -8,7 +7,8 @@ import { Input } from '@/components/ui/input';
 import { Search, Lock, Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
-import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import Image from 'next/image';
 
 const topBarLeftLinks = [
   { name: 'Personal', href: '/' },
@@ -61,10 +61,13 @@ const institutionsMainNavLinks = [
 
 const Logo = () => (
     <Link href="/" className="flex items-center gap-2" aria-label="Bank of America Home">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 58 24" className="h-8 w-auto" role="img" aria-hidden="true">
-            <path fill="#0060F0" d="M23.492 4.93L29.365 0H58v4.93H34.508L28.635 11.63H2.204V4.93h21.288z"/>
-            <path fill="#E31837" d="M28.635 12.37L22.724 19.07H0V24h29.365l5.873-4.93H58v-6.7H28.635z"/>
-        </svg>
+        <Image
+            src="https://i.pinimg.com/736x/2f/9b/19/2f9b195ba9069a509b41552b763f8c8c.jpg"
+            alt="Bank of America Logo"
+            width={82}
+            height={32}
+            className="h-8 w-auto"
+        />
         <span className="font-headline text-2xl font-bold text-primary hidden sm:inline-block">Bank of America</span>
     </Link>
 );
