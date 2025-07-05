@@ -10,7 +10,7 @@ import Link from 'next/link';
 const creditCardOffers = [
     {
         name: "Customized Cash Rewards",
-        image: "https://placehold.co/300x180.png",
+        image: "https://www2.bac-assets.com/homepage/spa-assets/images/assets-images-site-hp-assets-mastheads-consumer-cards-en-4-card-card_mh_cash_newoffer_4960977_e.webp",
         imageHint: "credit card",
         annualFee: "No annual fee.",
         bonus: "$200",

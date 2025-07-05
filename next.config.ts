@@ -21,6 +21,12 @@ const nextConfig: NextConfig = {
         hostname: 'i.pinimg.com',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www2.bac-assets.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
