@@ -77,7 +77,7 @@ const financialArticles = [
 ];
 
 export default function Home() {
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(true);
 
   return (
     <div className="bg-background">
@@ -111,9 +111,9 @@ export default function Home() {
                         aria-label={showPassword ? "Hide password" : "Show password"}
                       >
                         {showPassword ? (
-                          <Eye className="h-5 w-5" />
-                        ) : (
                           <EyeOff className="h-5 w-5" />
+                        ) : (
+                          <Eye className="h-5 w-5" />
                         )}
                       </button>
                     </div>
