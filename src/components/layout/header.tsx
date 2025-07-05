@@ -13,7 +13,7 @@ const topBarLeftLinks = [
   { name: 'Personal', href: '/' },
   { name: 'Small Business', href: '/small-business' },
   { name: 'Wealth Management', href: '/wealth-management' },
-  { name: 'Businesses & Institutions', href: '#' },
+  { name: 'Businesses & Institutions', href: '/businesses-and-institutions' },
 ];
 
 const topBarRightLinks = [
@@ -50,6 +50,14 @@ const wealthMainNavLinks = [
     { name: 'Private Bank', href: '#' },
 ];
 
+const institutionsMainNavLinks = [
+    { name: 'Who we serve', href: '#' },
+    { name: 'Solutions', href: '#' },
+    { name: 'Research & insights', href: '#' },
+    { name: 'Global presence', href: '#' },
+];
+
+
 const Logo = () => (
     <Link href="/" className="flex items-center gap-2" aria-label="Legacy National Home">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" className="h-10 w-10 text-primary">
@@ -67,16 +75,19 @@ export function Header() {
 
     const isBusinessPage = pathname.startsWith('/small-business');
     const isWealthPage = pathname.startsWith('/wealth-management');
+    const isInstitutionsPage = pathname.startsWith('/businesses-and-institutions');
     
     const getMainNavLinks = () => {
         if (isBusinessPage) return businessMainNavLinks;
         if (isWealthPage) return wealthMainNavLinks;
+        if (isInstitutionsPage) return institutionsMainNavLinks;
         return personalMainNavLinks;
     }
     
     const getActiveTopBar = () => {
         if (isBusinessPage) return 'Small Business';
         if (isWealthPage) return 'Wealth Management';
+        if (isInstitutionsPage) return 'Businesses & Institutions';
         return 'Personal';
     }
 
