@@ -1,133 +1,184 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, CheckCircle, CreditCard, ShieldCheck, TrendingUp, Users } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import Image from 'next/image';
 import Link from 'next/link';
+
+const creditCardOffers = [
+    {
+        name: "Customized Cash Rewards",
+        image: "https://placehold.co/300x180.png",
+        imageHint: "credit card",
+        annualFee: "No annual fee.",
+        bonus: "$200",
+        bonusType: "online bonus offer",
+        feature: "New! 6% choice category cash back offer",
+        featureDetail: "6% cash back in the category of your choice"
+    },
+    {
+        name: "Unlimited Cash Rewards",
+        image: "https://placehold.co/300x180.png",
+        imageHint: "money cash",
+        annualFee: "No annual fee.",
+        bonus: "$200",
+        bonusType: "online bonus offer",
+        feature: "New! 2% unlimited cash back offer",
+        featureDetail: "Unlimited 2% cash back on all purchases"
+    },
+    {
+        name: "Travel Rewards",
+        image: "https://placehold.co/300x180.png",
+        imageHint: "credit card travel",
+        annualFee: "No annual fee.",
+        bonus: "25,000",
+        bonusType: "online bonus points offer",
+        feature: "Unlimited 1.5 points for every $1 spent",
+        featureDetail: "Unlimited 1.5 points for every $1 spent on all purchases"
+    },
+    {
+        name: "BankAmericard®",
+        image: "https://placehold.co/300x180.png",
+        imageHint: "secure credit card",
+        annualFee: "No annual fee.",
+        bonus: "0%",
+        bonusType: "intro APR offer",
+        feature: "Intro APR offer for 18 billing cycles",
+        featureDetail: "Intro APR offer for 18 billing cycles"
+    }
+];
+
+const financialArticles = [
+    { 
+        title: "Simple ways to save money for the future", 
+        image: "https://placehold.co/600x400.png", 
+        imageHint: "piggy bank saving"
+    },
+    { 
+        title: "Help me decide: Should I pay down debt, save or invest?", 
+        image: "https://placehold.co/600x400.png", 
+        imageHint: "investment chart"
+    },
+    { 
+        title: "What is a certificate of deposit (CD) and how does it work?", 
+        image: "https://placehold.co/600x400.png", 
+        imageHint: "bank document"
+    },
+    { 
+        title: "How to get out of credit card debt faster", 
+        image: "https://placehold.co/600x400.png", 
+        imageHint: "credit card scissors"
+    },
+];
 
 export default function Home() {
   return (
     <div className="bg-background">
-      {/* Hero Section */}
-      <section className="relative bg-primary text-primary-foreground py-20 md:py-32">
-        <div className="absolute inset-0">
-            <Image 
-                src="https://placehold.co/1600x800.png" 
-                alt="Abstract background"
-                data-ai-hint="abstract geometric"
-                fill
-                style={{ objectFit: 'cover' }}
-                className="opacity-10"
-                priority
-            />
-        </div>
-        <div className="container mx-auto px-4 relative">
-          <div className="max-w-3xl">
-            <h1 className="font-headline text-4xl md:text-6xl font-bold">Banking that's built for you.</h1>
-            <p className="mt-4 text-lg md:text-xl text-primary-foreground/80">Open an account online today and experience the Legacy National difference. Powerful tools, personalized insights, and security you can trust.</p>
-            <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                <Button asChild size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground">
-                  <Link href="/accounts">Open an Account</Link>
-                </Button>
-                <Button asChild size="lg" variant="outline" className="border-primary-foreground/50 text-primary-foreground hover:bg-primary-foreground/10">
-                  <Link href="#products">Explore Products</Link>
-                </Button>
+      {/* Hero / Login Section */}
+      <section className="bg-muted/30">
+        <div className="container mx-auto px-4 py-12">
+          <div className="grid md:grid-cols-3 gap-8 items-center">
+            <div className="md:col-span-1">
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle className="font-headline text-xl">Log In</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="user-id">User ID</Label>
+                    <Input id="user-id" placeholder="Enter your User ID" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Password</Label>
+                    <Input id="password" type="password" placeholder="Enter your password" />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox id="save-id" />
+                      <Label htmlFor="save-id" className="text-sm font-normal">Save User ID</Label>
+                    </div>
+                  </div>
+                  <Button className="w-full">Log In</Button>
+                  <div className="text-sm text-center space-x-2 text-muted-foreground">
+                    <Link href="#" className="text-primary hover:underline">Forgot ID/Password?</Link>
+                    <span>|</span>
+                    <Link href="#" className="text-primary hover:underline">Enroll</Link>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Products Section */}
-      <section id="products" className="py-16 md:py-24">
-        <div className="container mx-auto px-4">
-          <div className="text-center max-w-2xl mx-auto">
-            <h2 className="font-headline text-3xl md:text-4xl font-bold">Find the right financial solutions</h2>
-            <p className="mt-4 text-lg text-muted-foreground">From everyday banking to long-term investing, we have you covered.</p>
-          </div>
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card>
-              <CardHeader>
-                <CardTitle className="font-headline flex items-center gap-2"><Users /> Checking Accounts</CardTitle>
-                <CardDescription>Accounts for your daily needs with features like mobile deposit and Zelle®.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button asChild variant="link" className="p-0 h-auto text-primary">
-                  <Link href="#">Learn More <ArrowRight className="ml-2 h-4 w-4" /></Link>
-                </Button>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="font-headline flex items-center gap-2"><TrendingUp /> Savings & CDs</CardTitle>
-                <CardDescription>Grow your money with our competitive rates and flexible savings options.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button asChild variant="link" className="p-0 h-auto text-primary">
-                  <Link href="#">Explore Savings <ArrowRight className="ml-2 h-4 w-4" /></Link>
-                </Button>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="font-headline flex items-center gap-2"><CreditCard /> Credit Cards</CardTitle>
-                <CardDescription>Find the perfect card with rewards, cash back, or low interest rates.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button asChild variant="link" className="p-0 h-auto text-primary">
-                  <Link href="#">Compare Cards <ArrowRight className="ml-2 h-4 w-4" /></Link>
-                </Button>
-              </CardContent>
-            </Card>
+            <div className="md:col-span-2 flex flex-col justify-center items-center text-center bg-card p-8 rounded-lg border">
+              <h2 className="font-headline text-3xl md:text-4xl font-bold text-primary">New checking customers. $300 cash offer.</h2>
+              <p className="mt-4 text-lg text-muted-foreground max-w-md">Open a new eligible checking account and make qualifying direct deposits.</p>
+              <Button size="lg" className="mt-6 bg-accent hover:bg-accent/90">See offer details</Button>
+            </div>
           </div>
         </div>
       </section>
       
-      {/* Offers Section */}
-      <section id="offers" className="bg-muted py-16 md:py-24">
+      {/* Credit Card Offers */}
+      <section className="py-16 md:py-24">
         <div className="container mx-auto px-4">
-            <div className="grid md:grid-cols-2 gap-8 items-center">
-                <div>
-                     <h2 className="font-headline text-3xl md:text-4xl font-bold">Personalized offers for you</h2>
-                     <p className="mt-4 text-lg text-muted-foreground">As a valued customer, you have access to exclusive offers. Sign in to see what's available for you.</p>
-                     <ul className="mt-6 space-y-3">
-                        <li className="flex items-center gap-2"><CheckCircle className="h-5 w-5 text-accent" /> Special rates on loans and mortgages.</li>
-                        <li className="flex items-center gap-2"><CheckCircle className="h-5 w-5 text-accent" /> Bonus rewards on new credit cards.</li>
-                        <li className="flex items-center gap-2"><CheckCircle className="h-5 w-5 text-accent" /> Personalized investment advice.</li>
-                     </ul>
-                     <Button asChild size="lg" className="mt-8">
-                        <Link href="#">Sign In to View Offers</Link>
-                     </Button>
-                </div>
-                <div className="flex justify-center">
-                    <Image src="https://placehold.co/500x400.png" alt="Personalized Offers" data-ai-hint="financial planning" width={500} height={400} className="rounded-lg shadow-xl"/>
-                </div>
-            </div>
+          <h2 className="font-headline text-3xl md:text-4xl font-bold text-center mb-12">Choose the card that works for you</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {creditCardOffers.map((card, index) => (
+              <Card key={index} className="flex flex-col">
+                <CardHeader>
+                  <CardTitle className="font-headline text-xl">{card.name}</CardTitle>
+                  <CardDescription>{card.annualFee}</CardDescription>
+                </CardHeader>
+                <CardContent className="flex-grow flex flex-col justify-between">
+                    <div>
+                        <Image src={card.image} alt={card.name} data-ai-hint={card.imageHint} width={300} height={180} className="rounded-md mb-4"/>
+                        <p className="text-3xl font-bold font-headline text-primary">{card.bonus}</p>
+                        <p className="text-sm text-muted-foreground">{card.bonusType}</p>
+                        <p className="mt-4 font-semibold">{card.feature}</p>
+                        <p className="text-sm text-muted-foreground">{card.featureDetail}</p>
+                    </div>
+                  <Button className="mt-6 w-full">Apply Now</Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Security Section */}
-      <section className="py-16 md:py-24">
+      {/* Financial Goals */}
+      <section className="py-16 md:py-24 bg-muted">
+        <div className="container mx-auto px-4 text-center">
+            <h2 className="font-headline text-3xl md:text-4xl font-bold">Your financial goals matter</h2>
+            <p className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">We can help you achieve them through Better Money Habits® financial education and programs that make communities stronger.</p>
+        </div>
+        <div className="container mx-auto px-4 mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {financialArticles.map((article, index) => (
+                <Card key={index} className="overflow-hidden">
+                    <Image src={article.image} alt={article.title} data-ai-hint={article.imageHint} width={600} height={400} className="w-full h-48 object-cover"/>
+                    <CardContent className="p-4">
+                         <Link href="#" className="font-semibold text-primary hover:underline">{article.title}</Link>
+                    </CardContent>
+                </Card>
+            ))}
+        </div>
+         <div className="text-center mt-12">
+            <Button variant="outline">Explore more topics</Button>
+         </div>
+      </section>
+
+      {/* News & Info */}
+       <section className="py-16 md:py-24">
         <div className="container mx-auto px-4">
-            <div className="text-center max-w-2xl mx-auto">
-                <ShieldCheck className="h-12 w-12 mx-auto text-primary" />
-                <h2 className="font-headline text-3xl md:text-4xl font-bold mt-4">Your security is our priority</h2>
-                <p className="mt-4 text-lg text-muted-foreground">We're committed to keeping your accounts and personal information safe.</p>
+          <div className="bg-card border rounded-lg p-8 grid md:grid-cols-2 gap-8 items-center">
+            <div>
+              <h3 className="font-headline text-2xl font-bold">Your news and information</h3>
+              <h4 className="font-headline text-xl mt-4">Level up your account security</h4>
+              <p className="mt-2 text-muted-foreground">Watch your security meter rise as you take action against fraud. See it in the Security Center in Mobile and Online Banking.</p>
+               <Button className="mt-4">See your security</Button>
             </div>
-            <div className="mt-12 max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="bg-card p-6 rounded-lg border">
-                    <h3 className="font-headline text-xl font-semibold">Fraud Protection</h3>
-                    <p className="mt-2 text-muted-foreground">We monitor your accounts for suspicious activity and offer a $0 Liability Guarantee for unauthorized transactions.</p>
-                    <Button asChild variant="link" className="p-0 h-auto mt-4 text-primary">
-                        <Link href="/security">Learn about fraud protection <ArrowRight className="ml-2 h-4 w-4" /></Link>
-                    </Button>
-                </div>
-                 <div className="bg-card p-6 rounded-lg border">
-                    <h3 className="font-headline text-xl font-semibold">Secure Sign-In</h3>
-                    <p className="mt-2 text-muted-foreground">Our advanced security features, including biometrics and two-factor authentication, help protect your account.</p>
-                     <Button asChild variant="link" className="p-0 h-auto mt-4 text-primary">
-                        <Link href="/security">How we protect you <ArrowRight className="ml-2 h-4 w-4" /></Link>
-                    </Button>
-                </div>
+            <div className="flex justify-center">
+                <Image src="https://placehold.co/400x300.png" data-ai-hint="security shield" alt="Security meter" width={400} height={300} className="rounded-lg" />
             </div>
+          </div>
         </div>
       </section>
     </div>

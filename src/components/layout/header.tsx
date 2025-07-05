@@ -9,11 +9,29 @@ import { usePathname } from 'next/navigation';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import React from 'react';
 
+const topBarLeftLinks = [
+  { name: 'Personal', href: '#', selected: true },
+  { name: 'Small Business', href: '#' },
+  { name: 'Wealth Management', href: '#' },
+  { name: 'Businesses & Institutions', href: '#' },
+];
+
+const topBarRightLinks = [
+    { name: 'Security', href: '/security' },
+    { name: 'About Us', href: '#' },
+    { name: 'En español', href: '#' },
+    { name: 'Contact us', href: '/help' },
+    { name: 'Help', href: '/help' },
+];
+
 const mainNavLinks = [
-  { name: 'Accounts', href: '/accounts' },
-  { name: 'Security', href: '/security' },
-  { name: 'Help & Support', href: '/help' },
-  { name: 'Offers', href: '/#offers' },
+  { name: 'Checking', href: '/accounts' },
+  { name: 'Savings & CDs', href: '/accounts' },
+  { name: 'Credit Cards', href: '/accounts' },
+  { name: 'Home Loans', href: '#' },
+  { name: 'Auto Loans', href: '#' },
+  { name: 'Investing', href: '#' },
+  { name: 'Better Money Habits®', href: '#' },
 ];
 
 const Logo = () => (
@@ -33,13 +51,35 @@ export function Header() {
 
     return (
         <header className="bg-card border-b sticky top-0 z-50">
+             <div className="hidden md:block bg-muted/20 border-b">
+                <div className="container mx-auto px-4 flex justify-between items-center text-xs h-8">
+                    <div className="flex items-center gap-x-6">
+                        {topBarLeftLinks.map(link => (
+                            <Link key={link.name} href={link.href} className={cn(
+                                "font-medium hover:text-primary transition-colors",
+                                link.selected ? "text-primary" : "text-muted-foreground"
+                            )}>
+                                {link.name}
+                            </Link>
+                        ))}
+                    </div>
+                    <div className="flex items-center gap-x-6">
+                         {topBarRightLinks.map(link => (
+                            <Link key={link.name} href={link.href} className="font-medium text-muted-foreground hover:text-primary transition-colors">
+                                {link.name}
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
             <div className="container mx-auto px-4">
                 <div className="flex justify-between items-center h-20">
                     <Logo />
-                    <nav className="hidden lg:flex items-center gap-x-8">
+                    <nav className="hidden lg:flex items-center gap-x-6">
                         {mainNavLinks.map(link => (
                             <Link key={link.name} href={link.href} className={cn(
-                                "font-headline text-lg font-medium hover:text-primary transition-colors",
+                                "font-headline text-base font-medium hover:text-primary transition-colors",
                                 pathname === link.href ? "text-primary" : "text-foreground"
                             )}>
                                 {link.name}
@@ -48,12 +88,12 @@ export function Header() {
                     </nav>
                     <div className="flex items-center gap-2">
                         <div className="relative hidden md:block">
-                            <Input placeholder="Search" className="h-10 pr-10 w-40" />
+                            <Input placeholder="Search" className="h-10 pr-10 w-32" />
                             <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                         </div>
                         <Button>
                             <Lock className="mr-2 h-4 w-4" />
-                            Sign In
+                            Log In
                         </Button>
                         <div className="lg:hidden">
                             <Sheet open={open} onOpenChange={setOpen}>
