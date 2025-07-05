@@ -52,10 +52,21 @@ export default function SmallBusinessPage() {
     return (
         <div className="bg-background">
             {/* Hero Section */}
-            <section className="bg-muted/30 py-16 md:py-24">
-                <div className="container mx-auto px-4 text-center">
-                    <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary">Business solutions that make every move matter</h1>
-                    <p className="mt-4 text-lg max-w-3xl mx-auto text-muted-foreground">
+            <section className="relative py-24 md:py-32 text-center text-white overflow-hidden">
+                 <div className="absolute inset-0">
+                    <Image
+                        src="https://www2.bac-assets.com/homepage/spa-assets/images/assets-images-site-homepage-masthead-container-module-Default-Masthead-1024x412-CSX5a9e17fd.jpg"
+                        alt="Business professionals in an office setting"
+                        data-ai-hint="business office"
+                        fill
+                        className="object-cover"
+                        priority
+                    />
+                    <div className="absolute inset-0 bg-primary/70" />
+                </div>
+                <div className="container mx-auto px-4 relative z-10">
+                    <h1 className="font-headline text-4xl md:text-5xl font-bold">Business solutions that make every move matter</h1>
+                    <p className="mt-4 text-lg max-w-3xl mx-auto">
                         No matter the size or complexity of your business, we offer digital tools, insights and expertise that keep you ahead.
                     </p>
                 </div>

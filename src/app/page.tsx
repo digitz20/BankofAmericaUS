@@ -53,22 +53,22 @@ const creditCardOffers = [
 const financialArticles = [
     { 
         title: "Simple ways to save money for the future", 
-        image: "https://placehold.co/600x400.png", 
+        image: "https://www2.bac-assets.com/homepage/spa-assets/images/assets-images-site-homepage-bmh-module-default-education-ent_edu_bac_7701865_319_en_gc_01-CSXf4193a32.jpg", 
         imageHint: "piggy bank saving"
     },
     { 
         title: "Help me decide: Should I pay down debt, save or invest?", 
-        image: "https://placehold.co/600x400.png", 
+        image: "https://www2.bac-assets.com/homepage/spa-assets/images/assets-images-site-homepage-bmh-module-default-education-ent_edu_bac_6624682_319_en_gc_01-CSX1ac635d5.jpg", 
         imageHint: "investment chart"
     },
     { 
         title: "What is a certificate of deposit (CD) and how does it work?", 
-        image: "https://placehold.co/600x400.png", 
+        image: "https://www2.bac-assets.com/homepage/spa-assets/images/assets-images-site-homepage-bmh-module-default-education-ent_edu_bac_7701865_319_en_gc_03-CSXeecbea35.jpg", 
         imageHint: "bank document"
     },
     { 
         title: "How to get out of credit card debt faster", 
-        image: "https://placehold.co/600x400.png", 
+        image: "https://www2.bac-assets.com/homepage/spa-assets/images/assets-images-site-homepage-bmh-module-default-education-ent_edu_bac_7701865_319_en_gc_04-CSXf53daf.jpg", 
         imageHint: "credit card scissors"
     },
 ];
@@ -179,7 +179,7 @@ export default function Home() {
                <Button className="mt-4">See your security</Button>
             </div>
             <div className="flex justify-center">
-                <Image src="https://placehold.co/400x300.png" data-ai-hint="security shield" alt="Security meter" width={400} height={300} className="rounded-lg" />
+                <Image src="https://www2.bac-assets.com/homepage/spa-assets/images/assets-images-site-homepage-news-life-services-yni_sec_phone_4657392_e-CSX8c7d2691.webp" data-ai-hint="security shield" alt="Security meter" width={400} height={300} className="rounded-lg" />
             </div>
           </div>
         </div>
