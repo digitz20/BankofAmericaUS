@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Search, Lock, Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 
 const topBarLeftLinks = [
   { name: 'Personal', href: '/' },
@@ -149,6 +149,10 @@ export function Header() {
                                     </Button>
                                 </SheetTrigger>
                                 <SheetContent>
+                                    <SheetHeader className="sr-only">
+                                        <SheetTitle>Menu</SheetTitle>
+                                        <SheetDescription>Main navigation menu</SheetDescription>
+                                    </SheetHeader>
                                     <div className="flex flex-col space-y-6 mt-8">
                                     <div className="px-4">
                                         <Logo />
