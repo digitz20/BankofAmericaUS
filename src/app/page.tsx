@@ -1,3 +1,4 @@
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -80,7 +81,7 @@ export default function Home() {
         <div className="container mx-auto px-4 py-12">
           <div className="grid md:grid-cols-3 gap-8 items-center">
             <div className="md:col-span-1">
-              <Card className="shadow-lg">
+              <Card className="shadow-lg bg-accent text-accent-foreground">
                 <CardHeader>
                   <CardTitle className="font-headline text-xl">Log In</CardTitle>
                 </CardHeader>
@@ -100,10 +101,10 @@ export default function Home() {
                     </div>
                   </div>
                   <Button className="w-full">Log In</Button>
-                  <div className="text-sm text-center space-x-2 text-muted-foreground">
-                    <Link href="#" className="text-primary hover:underline">Forgot ID/Password?</Link>
+                  <div className="text-sm text-center space-x-2 text-accent-foreground/80">
+                    <Link href="#" className="text-accent-foreground hover:underline">Forgot ID/Password?</Link>
                     <span>|</span>
-                    <Link href="#" className="text-primary hover:underline">Enroll</Link>
+                    <Link href="#" className="text-accent-foreground hover:underline">Enroll</Link>
                   </div>
                 </CardContent>
               </Card>
