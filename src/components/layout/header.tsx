@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Search, Lock, Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from '@/components/ui/sheet';
 import Image from 'next/image';
 
 const topBarLeftLinks = [
