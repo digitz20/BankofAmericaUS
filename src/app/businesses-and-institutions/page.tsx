@@ -37,8 +37,8 @@ export default function BusinessesAndInstitutionsPage() {
                         <p className="mt-4 text-lg max-w-xl mx-auto md:mx-0 text-muted-foreground">
                             Dive into recent thinking from some of our top-ranked BofA Global Research team and read about current market trends in health care, retail, software and much more.
                         </p>
-                        <Button size="lg" className="mt-8">
-                            Start exploring <ArrowRight className="ml-2 h-5 w-5" />
+                        <Button size="lg" className="mt-8" asChild>
+                            <Link href="/businesses-and-institutions">Start exploring <ArrowRight className="ml-2 h-5 w-5" /></Link>
                         </Button>
                     </div>
                     <div className="flex justify-center">
@@ -65,7 +65,7 @@ export default function BusinessesAndInstitutionsPage() {
                                 <p className="text-sm text-muted-foreground">JULY 2025</p>
                                 <h3 className="font-headline text-2xl font-bold mt-2">AI dictionary, part 2: The next generation</h3>
                                 <p className="mt-2 text-muted-foreground">Innovation is accelerating and the future of AI might be closer than we think. Here, we look at what’s ahead.</p>
-                                <Button variant="link" className="px-0 mt-4">Read more (2 min read) <ArrowRight className="ml-2 h-4 w-4" /></Button>
+                                <Button variant="link" className="px-0 mt-4" asChild><Link href="/businesses-and-institutions">Read more (2 min read) <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
                              </CardContent>
                         </Card>
                         {/* Proud Supporter */}
@@ -83,7 +83,7 @@ export default function BusinessesAndInstitutionsPage() {
                                 <p className="text-sm text-primary font-semibold">BOFA GLOBAL MARKETS</p>
                                 <h3 className="font-headline text-xl font-bold mt-2">Seeing beyond the narratives in equity markets</h3>
                                 <p className="mt-2 text-muted-foreground text-sm">With macro narratives influencing equity valuations, discover how can you tell what really matters and what’s noise.</p>
-                                <Button variant="link" className="px-0 mt-2">Watch Video (1:32) <ArrowRight className="ml-2 h-4 w-4" /></Button>
+                                <Button variant="link" className="px-0 mt-2" asChild><Link href="/businesses-and-institutions">Watch Video (1:32) <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
                              </CardContent>
                         </Card>
                          {/* Global Payments */}
@@ -112,7 +112,7 @@ export default function BusinessesAndInstitutionsPage() {
                 <div className="container mx-auto px-4 text-center">
                     <h2 className="font-headline text-3xl font-bold">What should the world expect from a bank?</h2>
                     <p className="mt-4 text-lg max-w-3xl mx-auto text-muted-foreground">Economies fluctuate but values don’t. Find the tools and insights you need to succeed. Our only ambition is to help you fulfill yours.</p>
-                    <Button variant="outline" size="lg" className="mt-6">Learn more about our story</Button>
+                    <Button variant="outline" size="lg" className="mt-6" asChild><Link href="/about">Learn more about our story</Link></Button>
                 </div>
             </section>
 
@@ -130,7 +130,7 @@ export default function BusinessesAndInstitutionsPage() {
                                 </CardHeader>
                                 <CardContent>
                                     <p className="text-muted-foreground">{solution.description}</p>
-                                    <Button variant="link" className="mt-4">Learn more</Button>
+                                    <Button variant="link" className="mt-4" asChild><Link href="/businesses-and-institutions">Learn more</Link></Button>
                                 </CardContent>
                             </Card>
                         ))}

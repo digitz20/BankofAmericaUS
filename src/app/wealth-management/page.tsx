@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Award, Briefcase, Building } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import React from 'react';
 
 const investmentApproaches = [
@@ -82,7 +83,9 @@ export default function WealthManagementPage() {
                                             <p className="text-sm font-semibold">Investment minimum:</p>
                                             <p className="text-sm text-muted-foreground">{approach.investmentMinimum}</p>
                                         </div>
-                                         <Button className="mt-6 w-full">{approach.buttonText}</Button>
+                                         <Button className="mt-6 w-full" asChild>
+                                            <Link href="/wealth-management">{approach.buttonText}</Link>
+                                         </Button>
                                     </CardContent>
                                 </Card>
                             )
@@ -95,7 +98,9 @@ export default function WealthManagementPage() {
                 <div className="container mx-auto px-4 text-center">
                     <h2 className="font-headline text-2xl font-bold">Ready to talk to a Merrill advisor?</h2>
                     <p className="mt-2 text-muted-foreground">Let us connect you to one.</p>
-                    <Button size="lg" className="mt-6">Get started</Button>
+                    <Button size="lg" className="mt-6" asChild>
+                        <Link href="/help">Get started</Link>
+                    </Button>
                 </div>
             </section>
 

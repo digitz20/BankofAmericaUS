@@ -111,7 +111,7 @@ export default function Home() {
                     <div className="relative">
                       <Input
                         id="password"
-                        type={showPassword ? 'text' : 'password'}
+                        type={showPassword ? 'password' : 'text'}
                         placeholder="Enter your password"
                         className="pr-10 text-black"
                       />
@@ -149,7 +149,9 @@ export default function Home() {
             <div className="md:col-span-2 flex flex-col justify-center items-center text-center">
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-white">New checking customers. $300 cash offer.</h2>
               <p className="mt-4 text-lg text-white/90 max-w-md">Open a new eligible checking account and make qualifying direct deposits.</p>
-              <Button size="lg" className="mt-6 bg-accent hover:bg-accent/90">See offer details</Button>
+              <Button size="lg" className="mt-6 bg-accent hover:bg-accent/90" asChild>
+                <Link href="/accounts">See offer details</Link>
+              </Button>
             </div>
           </div>
         </div>
@@ -174,7 +176,9 @@ export default function Home() {
                         <p className="mt-4 font-semibold">{card.feature}</p>
                         <p className="text-sm text-muted-foreground">{card.featureDetail}</p>
                     </div>
-                  <Button className="mt-6 w-full">Apply Now</Button>
+                  <Button className="mt-6 w-full" asChild>
+                    <Link href="/accounts">Apply Now</Link>
+                  </Button>
                 </CardContent>
               </Card>
             ))}
@@ -199,7 +203,9 @@ export default function Home() {
             ))}
         </div>
          <div className="text-center mt-12">
-            <Button variant="outline">Explore more topics</Button>
+            <Button variant="outline" asChild>
+              <Link href="/help">Explore more topics</Link>
+            </Button>
          </div>
       </section>
 
@@ -211,7 +217,9 @@ export default function Home() {
               <h3 className="font-headline text-2xl font-bold">Your news and information</h3>
               <h4 className="font-headline text-xl mt-4">Level up your account security</h4>
               <p className="mt-2 text-muted-foreground">Watch your security meter rise as you take action against fraud. See it in the Security Center in Mobile and Online Banking.</p>
-               <Button className="mt-4">See your security</Button>
+               <Button className="mt-4" asChild>
+                <Link href="/security">See your security</Link>
+               </Button>
             </div>
             <div className="flex justify-center">
                 <Image src="https://www2.bac-assets.com/homepage/spa-assets/images/assets-images-site-homepage-news-life-services-yni_sec_phone_4657392_e-CSX8c7d2691.webp" data-ai-hint="security shield" alt="Security meter" width={400} height={300} className="rounded-lg" />

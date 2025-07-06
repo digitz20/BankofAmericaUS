@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { PlusCircle, CreditCard, Landmark, DollarSign } from 'lucide-react';
+import Link from 'next/link';
 
 const accounts = [
   { id: '...7890', name: 'Advantage Checking', balance: 5230.50, icon: Landmark },
@@ -23,9 +24,11 @@ export default function DashboardPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="font-headline text-3xl md:text-4xl font-bold">Welcome Back!</h1>
-        <Button>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Open Account
+        <Button asChild>
+          <Link href="/accounts">
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Open Account
+          </Link>
         </Button>
       </div>
 

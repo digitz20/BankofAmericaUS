@@ -86,7 +86,7 @@ export default function AboutUsPage() {
                              <CardContent className="p-6">
                                 <h3 className="font-headline text-2xl font-bold mt-2">Pursuing and enabling the dreams of entrepreneurs</h3>
                                 <p className="mt-2 text-muted-foreground">Entrepreneurs enhance the character of cities and towns across our country. Dr. Josh Sanabria started his own veterinary hospital in Dallas, Texas – and we've supported his endeavors from day one.</p>
-                                <Button variant="link" className="px-0 mt-4">Learn more</Button>
+                                <Button variant="link" className="px-0 mt-4" asChild><Link href="/about">Learn more</Link></Button>
                              </CardContent>
                         </Card>
                     </div>

@@ -111,7 +111,9 @@ export default function SmallBusinessPage() {
                         })}
                     </div>
                      <div className="text-center mt-12">
-                        <Button>Get help finding the right solutions</Button>
+                        <Button asChild>
+                          <Link href="/help">Get help finding the right solutions</Link>
+                        </Button>
                     </div>
                 </div>
             </section>
@@ -130,7 +132,9 @@ export default function SmallBusinessPage() {
                                     </div>
                                     <h3 className="font-headline text-xl font-semibold mb-2">{item.title}</h3>
                                     <p className="text-muted-foreground text-sm">{item.description}</p>
-                                    <Button variant="link" className="mt-2">Learn more</Button>
+                                    <Button variant="link" className="mt-2" asChild>
+                                      <Link href="/small-business">Learn more</Link>
+                                    </Button>
                                 </Card>
                             )
                         })}

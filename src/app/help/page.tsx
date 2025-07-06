@@ -91,17 +91,17 @@ export default function HelpPage() {
                         <Card className="flex flex-col items-center justify-center p-6 text-center">
                            <Calendar className="h-10 w-10 text-primary mb-4"/>
                            <h3 className="font-headline text-xl font-bold mb-2">Schedule an appointment</h3>
-                           <Button>Schedule now</Button>
+                           <Button asChild><Link href="/help">Schedule now</Link></Button>
                         </Card>
                          <Card className="flex flex-col items-center justify-center p-6 text-center">
                            <MapPin className="h-10 w-10 text-primary mb-4"/>
                            <h3 className="font-headline text-xl font-bold mb-2">Find a location</h3>
-                           <Button>Find a location</Button>
+                           <Button asChild><Link href="/help">Find a location</Link></Button>
                         </Card>
                          <Card className="flex flex-col items-center justify-center p-6 text-center">
                            <Phone className="h-10 w-10 text-primary mb-4"/>
                            <h3 className="font-headline text-xl font-bold mb-2">Contact us</h3>
-                           <Button>Get contact info</Button>
+                           <Button asChild><Link href="/help">Get contact info</Link></Button>
                         </Card>
                      </div>
                 </section>

@@ -50,7 +50,9 @@ export default function SecurityPage() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <p className="text-sm text-muted-foreground">Think you have experienced fraud?</p>
-                <Button className="w-full">Report Now</Button>
+                <Button className="w-full" asChild>
+                  <Link href="/help">Report Now</Link>
+                </Button>
                 <Button variant="link" className="px-0 text-sm h-auto py-0 text-left leading-snug">Resources for Parents, Caregivers, and Businesses</Button>
               </CardContent>
             </Card>
@@ -61,7 +63,9 @@ export default function SecurityPage() {
               </CardHeader>
               <CardContent className="space-y-3">
                  <p className="text-sm text-muted-foreground">Help protect your money. Pause, verify, help prevent scams.</p>
-                <Button variant="outline" className="w-full">Check out our Fraud Checklist</Button>
+                <Button variant="outline" className="w-full" asChild>
+                  <Link href="/security">Check out our Fraud Checklist</Link>
+                </Button>
                 <Button variant="link" className="px-0 text-sm">Help prevent Identity theft</Button>
               </CardContent>
             </Card>
@@ -81,7 +85,9 @@ export default function SecurityPage() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <p className="text-sm text-muted-foreground">Log in to manage your security settings.</p>
-                <Button className="w-full">Log in and manage your security</Button>
+                <Button className="w-full" asChild>
+                  <Link href="/dashboard">Log in and manage your security</Link>
+                </Button>
                  <Button variant="link" className="px-0 text-sm">Learn more about managing your security</Button>
               </CardContent>
             </Card>
@@ -92,7 +98,9 @@ export default function SecurityPage() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <p className="text-sm text-muted-foreground">You control how we market to you and share your information.</p>
-                <Button className="w-full">Set your privacy choices now</Button>
+                <Button className="w-full" asChild>
+                  <Link href="/security">Set your privacy choices now</Link>
+                </Button>
                 <Button variant="link" className="px-0 text-sm">Opt back in to promotional emails</Button>
               </CardContent>
             </Card>
@@ -103,7 +111,9 @@ export default function SecurityPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">Know when irregular card activity or changes take place on your account.</p>
-                <Button className="w-full mt-3">Log in and manage your alerts</Button>
+                <Button className="w-full mt-3" asChild>
+                  <Link href="/dashboard">Log in and manage your alerts</Link>
+                </Button>
               </CardContent>
             </Card>
           </aside>
@@ -127,8 +137,8 @@ export default function SecurityPage() {
                     The term "Bank of America" or "we", "us" or "our" in this Notice refers to banking and non-banking U.S. affiliates or subsidiaries of Bank of America Corporation that link to or reference this Notice.
                 </p>
                 <div className="flex flex-wrap gap-4">
-                    <Button variant="outline"><FileText className="mr-2" /> Download English (PDF)</Button>
-                    <Button variant="outline"><FileText className="mr-2" /> Download Spanish (PDF)</Button>
+                    <Button variant="outline" asChild><Link href="/security"><FileText className="mr-2" /> Download English (PDF)</Link></Button>
+                    <Button variant="outline" asChild><Link href="/security"><FileText className="mr-2" /> Download Spanish (PDF)</Link></Button>
                 </div>
 
                 <Accordion type="single" collapsible className="w-full">

@@ -147,9 +147,11 @@ export function Header() {
                             <Input placeholder="Search" className="h-10 pr-10 w-32" />
                             <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                         </div>
-                        <Button>
+                        <Button asChild>
+                          <Link href="/dashboard">
                             <Lock className="mr-2 h-4 w-4" />
                             Log In
+                          </Link>
                         </Button>
                         <div className="lg:hidden">
                             <Sheet open={open} onOpenChange={setOpen}>
