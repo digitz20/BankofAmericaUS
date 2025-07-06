@@ -2,6 +2,14 @@
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'https://bankofamerica-srp3.onrender.com/api/:path*',
+      },
+    ];
+  },
   /* config options here */
   typescript: {
     ignoreBuildErrors: true,
