@@ -68,8 +68,8 @@ export default function DashboardPage() {
           
           const apiData = await response.json();
           
-          // The actual data might be nested under a 'data' property. Let's check for that.
-          const dashboardPayload = apiData.data || apiData;
+          // The dashboard data is nested under a 'dashboard' property.
+          const dashboardPayload = apiData.dashboard;
 
           if (!dashboardPayload || typeof dashboardPayload.fullName === 'undefined' || typeof dashboardPayload.balance === 'undefined' || typeof dashboardPayload.totalDeposit === 'undefined') {
             throw new Error("Dashboard data from the server is in an unexpected format.");
