@@ -59,7 +59,7 @@ const Logo = () => {
 
     return (
         <Link href="/" className="flex items-center gap-2" aria-label="Bank of America Home">
-            {isMounted && <span className="font-headline text-2xl font-bold text-primary inline-block">BANK OF AMERICA</span>}
+            {isMounted && <span className="font-headline text-2xl font-bold text-primary inline-block tracking-wider">BANK OF AMERICA</span>}
             <Image
                 src="https://i.pinimg.com/736x/2f/9b/19/2f9b195ba9069a509b41552b763f8c8c.jpg"
                 alt="Bank of America Logo"
