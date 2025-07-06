@@ -110,20 +110,12 @@ export default function Home() {
       });
 
       if (response.ok) {
-        const data = await response.json();
-        const returnedUserId = data?.user?.id || data?.id || data?.userID || data?.userId;
-        
-        if (returnedUserId) {
-            localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('userId', returnedUserId);
-            router.push('/dashboard');
-        } else {
-            toast({
-                variant: "destructive",
-                title: "Login Error",
-                description: "Received an invalid response from the server. Could not get user ID.",
-            });
-        }
+        // The API call was successful, so we are "logged in".
+        // Per the user's request, we will use the user ID from the login form
+        // to fetch the dashboard data, rather than relying on the API response.
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('userId', userId);
+        router.push('/dashboard');
       } else {
         const errorData = await response.json().catch(() => ({ message: "Invalid User ID or Password. Please try again." }));
         toast({
