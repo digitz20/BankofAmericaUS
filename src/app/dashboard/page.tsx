@@ -1,11 +1,10 @@
+
 'use client';
 
 import { useAuth } from '@/hooks/use-auth';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { PlusCircle, Landmark, DollarSign, Loader2, AlertCircle } from 'lucide-react';
-import Link from 'next/link';
+import { Landmark, DollarSign, Loader2, AlertCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -135,12 +134,6 @@ export default function DashboardPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="font-headline text-3xl md:text-4xl font-bold">Welcome Back, {dashboardData.fullName}!</h1>
-        <Button asChild>
-          <Link href="/accounts">
-            <PlusCircle className="mr-2 h-4 w-4" />
-            Open Account
-          </Link>
-        </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
