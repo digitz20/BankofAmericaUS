@@ -106,7 +106,7 @@ export default function Home() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userID: userId, password: password }),
+        body: JSON.stringify({ userId: userId, password: password }),
       });
 
       if (response.ok) {
