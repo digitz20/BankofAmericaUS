@@ -66,10 +66,21 @@ export default function DashboardPage() {
 
           if (response.ok) {
             const data = await response.json();
-            setDashboardData(data);
+            const dashboardInfo = data.data || data; // Handle potentially nested data
+            if (!dashboardInfo.accounts || !dashboardInfo.transactions) {
+                throw new Error('Dashboard data from the server is in an unexpected format.');
+            }
+            setDashboardData(dashboardInfo);
           } else {
-             const errorData = await response.json().catch(() => ({ message: "Failed to fetch dashboard data." }));
-            throw new Error(errorData.message || 'Failed to load dashboard data.');
+             let errorMessage = "Failed to fetch dashboard data.";
+             try {
+                const errorData = await response.json();
+                errorMessage = errorData.message || errorMessage;
+             } catch (e) {
+                // The error response wasn't valid JSON.
+                console.error("Could not parse error response:", e);
+             }
+            throw new Error(errorMessage);
           }
         } catch (err: any) {
           setError(err.message);
@@ -104,7 +115,7 @@ export default function DashboardPage() {
         <div className="container mx-auto px-4 py-8">
             <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
-                <AlertTitle>Error</AlertTitle>
+                <AlertTitle>Error Loading Dashboard</AlertTitle>
                 <AlertDescription>{error}</AlertDescription>
             </Alert>
         </div>
