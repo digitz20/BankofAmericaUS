@@ -4,13 +4,33 @@
 import { useAuth } from '@/hooks/use-auth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Landmark, DollarSign, Loader2, AlertCircle, RefreshCw, Eye, EyeOff, LogOut } from 'lucide-react';
+import { Landmark, DollarSign, Loader2, AlertCircle, RefreshCw, Eye, EyeOff, LogOut, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { format, subDays } from 'date-fns';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 
 type Transaction = {
   id: string;
@@ -27,6 +47,12 @@ type DashboardApiResponse = {
     deposits: Transaction[] | null;
 };
 
+const transactionFormSchema = z.object({
+  amount: z.coerce.number().positive({ message: "Please enter a positive amount." }),
+  bankName: z.string().min(2, { message: "Bank name must be at least 2 characters." }),
+  accountNumber: z.string().min(5, { message: "Account number seems too short." }),
+});
+
 export default function DashboardPage() {
   const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const [dashboardData, setDashboardData] = useState<DashboardApiResponse | null>(null);
@@ -36,6 +62,32 @@ export default function DashboardPage() {
   const [balancesVisible, setBalancesVisible] = useState(true);
   const router = useRouter();
   const { toast } = useToast();
+  const [isTransactionDialogOpen, setIsTransactionDialogOpen] = useState(false);
+  const [transactionType, setTransactionType] = useState<'Withdraw' | 'Transfer' | null>(null);
+
+  const form = useForm<z.infer<typeof transactionFormSchema>>({
+    resolver: zodResolver(transactionFormSchema),
+    defaultValues: {
+      amount: undefined,
+      bankName: '',
+      accountNumber: '',
+    },
+  });
+
+  function openTransactionDialog(type: 'Withdraw' | 'Transfer') {
+    setTransactionType(type);
+    setIsTransactionDialogOpen(true);
+    form.reset();
+  }
+
+  function onTransactionSubmit(values: z.infer<typeof transactionFormSchema>) {
+    setIsTransactionDialogOpen(false);
+    toast({
+        variant: "destructive",
+        title: "Action Not Available",
+        description: "sorry your account cannot perform this action now you have to wait for five working days before you can perform a transaction",
+    });
+  }
 
   const handleLogout = async () => {
     try {
@@ -106,14 +158,14 @@ export default function DashboardPage() {
       const today = new Date();
       const dummyTransactions = {
           transactionHistory: [
-            { id: 'txn_2', date: format(subDays(today, 7), 'yyyy-MM-dd'), description: 'Starbucks Coffee', amount: -5.75 },
-            { id: 'txn_3', date: format(subDays(today, 9), 'yyyy-MM-dd'), description: 'Shell Gas Station', amount: -55.20 },
-            { id: 'txn_4', date: format(subDays(today, 12), 'yyyy-MM-dd'), description: 'Amazon Purchase', amount: -112.50 },
             { id: 'txn_1', date: format(subDays(today, 15), 'yyyy-MM-dd'), description: 'Netflix Subscription', amount: -15.99 },
+            { id: 'txn_2', date: format(subDays(today, 12), 'yyyy-MM-dd'), description: 'Amazon Purchase', amount: -112.50 },
+            { id: 'txn_3', date: format(subDays(today, 9), 'yyyy-MM-dd'), description: 'Shell Gas Station', amount: -55.20 },
+            { id: 'txn_4', date: format(subDays(today, 7), 'yyyy-MM-dd'), description: 'Starbucks Coffee', amount: -5.75 },
           ],
           deposits: [
-            { id: 'dep_1', date: format(subDays(today, 8), 'yyyy-MM-dd'), description: 'Paycheck Deposit', amount: 2200.00 },
-            { id: 'dep_2', date: format(subDays(today, 21), 'yyyy-MM-dd'), description: 'Mobile Check Deposit', amount: 300.00 },
+            { id: 'dep_1', date: format(subDays(today, 21), 'yyyy-MM-dd'), description: 'Mobile Check Deposit', amount: 300.00 },
+            { id: 'dep_2', date: format(subDays(today, 8), 'yyyy-MM-dd'), description: 'Paycheck Deposit', amount: 2200.00 },
           ]
       };
 
@@ -188,6 +240,15 @@ export default function DashboardPage() {
             <LogOut className="mr-2 h-4 w-4" />
             Log Out
         </Button>
+      </div>
+
+      <div className="flex items-center gap-4 mb-8">
+          <Button onClick={() => openTransactionDialog('Transfer')}>
+              <ArrowUpRight className="mr-2 h-4 w-4" /> Transfer
+          </Button>
+          <Button variant="outline" onClick={() => openTransactionDialog('Withdraw')}>
+              <ArrowDownLeft className="mr-2 h-4 w-4" /> Withdraw
+          </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -267,6 +328,66 @@ export default function DashboardPage() {
         </Table>
         </CardContent>
       </Card>
+      
+      <Dialog open={isTransactionDialogOpen} onOpenChange={setIsTransactionDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>{transactionType}</DialogTitle>
+            <DialogDescription>
+                Please enter the transaction details below.
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...form}>
+              <form onSubmit={form.handleSubmit(onTransactionSubmit)} className="space-y-4 py-4">
+                  <FormField
+                      control={form.control}
+                      name="amount"
+                      render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>Amount</FormLabel>
+                              <FormControl>
+                                  <Input type="number" placeholder="0.00" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                          </FormItem>
+                      )}
+                  />
+                  <FormField
+                      control={form.control}
+                      name="bankName"
+                      render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>Bank Name</FormLabel>
+                              <FormControl>
+                                  <Input placeholder="Recipient's bank name" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                          </FormItem>
+                      )}
+                  />
+                  <FormField
+                      control={form.control}
+                      name="accountNumber"
+                      render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>Recipient Account Number</FormLabel>
+                              <FormControl>
+                                  <Input placeholder="Recipient's account number" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                          </FormItem>
+                      )}
+                  />
+                  <DialogFooter>
+                      <Button type="submit" disabled={form.formState.isSubmitting}>
+                        {form.formState.isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                        {transactionType}
+                      </Button>
+                  </DialogFooter>
+              </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
