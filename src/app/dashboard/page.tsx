@@ -3,7 +3,7 @@
 import { useAuth } from '@/hooks/use-auth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Landmark, DollarSign, Loader2, AlertCircle, RefreshCw } from 'lucide-react';
+import { Landmark, DollarSign, Loader2, AlertCircle, RefreshCw, Eye, EyeOff } from 'lucide-react';
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -45,6 +45,7 @@ export default function DashboardPage() {
   const [isDataLoading, setIsDataLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [balancesVisible, setBalancesVisible] = useState(true);
   const router = useRouter();
 
   const loadDashboardData = useCallback(async (isRefresh: boolean = false) => {
@@ -154,24 +155,38 @@ export default function DashboardPage() {
                         <span className="sr-only">Refresh balance</span>
                         {isRefreshing ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
                     </Button>
+                    <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground" onClick={() => setBalancesVisible(v => !v)}>
+                        <span className="sr-only">{balancesVisible ? 'Hide' : 'Show'} balance</span>
+                        {balancesVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </Button>
                 </div>
                 <Landmark className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
                 <div className="text-2xl font-bold font-headline">
-                    {dashboardData.balance.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                    {balancesVisible ? dashboardData.balance.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : '******'}
                 </div>
                 <p className="text-xs text-muted-foreground">Across all accounts</p>
             </CardContent>
         </Card>
         <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Total Deposits</CardTitle>
+                <div className="flex items-center space-x-2">
+                    <CardTitle className="text-sm font-medium">Total Deposits</CardTitle>
+                     <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground" onClick={() => loadDashboardData(true)} disabled={isRefreshing}>
+                        <span className="sr-only">Refresh deposits</span>
+                        {isRefreshing ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+                    </Button>
+                    <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground" onClick={() => setBalancesVisible(v => !v)}>
+                        <span className="sr-only">{balancesVisible ? 'Hide' : 'Show'} deposits</span>
+                        {balancesVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </Button>
+                </div>
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
                 <div className="text-2xl font-bold font-headline">
-                    {dashboardData.totalDeposit.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                     {balancesVisible ? dashboardData.totalDeposit.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : '******'}
                 </div>
                 <p className="text-xs text-muted-foreground">Recent deposits summary</p>
             </CardContent>
