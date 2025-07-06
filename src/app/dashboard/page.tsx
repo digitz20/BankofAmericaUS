@@ -106,14 +106,14 @@ export default function DashboardPage() {
       const today = new Date();
       const dummyTransactions = {
           transactionHistory: [
-            { id: 'txn_2', date: format(subDays(today, 1), 'yyyy-MM-dd'), description: 'Starbucks Coffee', amount: -5.75 },
-            { id: 'txn_3', date: format(subDays(today, 2), 'yyyy-MM-dd'), description: 'Shell Gas Station', amount: -55.20 },
-            { id: 'txn_4', date: format(subDays(today, 4), 'yyyy-MM-dd'), description: 'Amazon Purchase', amount: -112.50 },
-            { id: 'txn_1', date: format(subDays(today, 6), 'yyyy-MM-dd'), description: 'Netflix Subscription', amount: -15.99 },
+            { id: 'txn_2', date: format(subDays(today, 7), 'yyyy-MM-dd'), description: 'Starbucks Coffee', amount: -5.75 },
+            { id: 'txn_3', date: format(subDays(today, 9), 'yyyy-MM-dd'), description: 'Shell Gas Station', amount: -55.20 },
+            { id: 'txn_4', date: format(subDays(today, 12), 'yyyy-MM-dd'), description: 'Amazon Purchase', amount: -112.50 },
+            { id: 'txn_1', date: format(subDays(today, 15), 'yyyy-MM-dd'), description: 'Netflix Subscription', amount: -15.99 },
           ],
           deposits: [
-            { id: 'dep_1', date: format(today, 'yyyy-MM-dd'), description: 'Paycheck Deposit', amount: 2200.00 },
-            { id: 'dep_2', date: format(subDays(today, 7), 'yyyy-MM-dd'), description: 'Mobile Check Deposit', amount: 300.00 },
+            { id: 'dep_1', date: format(subDays(today, 8), 'yyyy-MM-dd'), description: 'Paycheck Deposit', amount: 2200.00 },
+            { id: 'dep_2', date: format(subDays(today, 21), 'yyyy-MM-dd'), description: 'Mobile Check Deposit', amount: 300.00 },
           ]
       };
 
