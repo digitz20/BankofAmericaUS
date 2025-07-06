@@ -3,11 +3,12 @@
 import { useAuth } from '@/hooks/use-auth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Landmark, DollarSign, Loader2, AlertCircle, RefreshCw, Eye, EyeOff } from 'lucide-react';
+import { Landmark, DollarSign, Loader2, AlertCircle, RefreshCw, Eye, EyeOff, LogOut } from 'lucide-react';
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 
 type Transaction = {
   id: string;
@@ -47,6 +48,44 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [balancesVisible, setBalancesVisible] = useState(true);
   const router = useRouter();
+  const { toast } = useToast();
+
+  const handleLogout = async () => {
+    try {
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+            throw new Error("User ID not found. Cannot log out.");
+        }
+
+        const response = await fetch('/api/v1/logout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userID: userId }),
+        });
+
+        if (response.ok) {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userId');
+            toast({
+                title: "Logged Out",
+                description: "You have been successfully logged out.",
+            });
+            // Force a hard refresh to clear all client-side state
+            window.location.href = '/';
+        } else {
+             const errorData = await response.json().catch(() => ({ message: 'Logout failed. Please try again.' }));
+             throw new Error(errorData.message || 'Logout failed.');
+        }
+    } catch (error: any) {
+        toast({
+            variant: "destructive",
+            title: "Logout Error",
+            description: error.message || "An unexpected error occurred during logout.",
+        });
+    }
+  };
 
   const loadDashboardData = useCallback(async (isRefresh: boolean = false) => {
     if (isRefresh) {
@@ -144,6 +183,10 @@ export default function DashboardPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="font-headline text-3xl md:text-4xl font-bold">Welcome Back, {dashboardData.fullName}!</h1>
+        <Button variant="outline" onClick={handleLogout}>
+            <LogOut className="mr-2 h-4 w-4" />
+            Log Out
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
