@@ -190,7 +190,7 @@ export function Header() {
                             <Input placeholder="Search" className="h-10 pr-10 w-32" />
                             <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                         </div>
-                        {isAuthenticated && (
+                        {isAuthenticated && pathname === '/dashboard' && (
                             <Button variant="outline" size="icon" onClick={handleLogout} className="hidden md:inline-flex" aria-label="Log Out">
                                 <LogOut className="h-5 w-5" />
                             </Button>
@@ -219,7 +219,7 @@ export function Header() {
                                             {link.name}
                                         </Link>
                                     ))}
-                                    {isAuthenticated && (
+                                    {isAuthenticated && pathname === '/dashboard' && (
                                         <div className="px-4 mt-6 pt-6 border-t">
                                             <Button variant="outline" className="w-full" onClick={handleLogout}>
                                                 <LogOut className="mr-2" />
