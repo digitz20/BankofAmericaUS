@@ -27,6 +27,24 @@ type DashboardApiResponse = {
     deposits: Transaction[] | null;
 };
 
+// Dummy data for development
+const dummyDashboardData: DashboardApiResponse = {
+    fullName: 'Jessica Smith',
+    balance: 10567.89,
+    totalDeposit: 2500.00,
+    transactionHistory: [
+      { id: 'txn_1', date: '2024-07-28', description: 'Netflix Subscription', amount: -15.99 },
+      { id: 'txn_2', date: '2024-07-27', description: 'Starbucks Coffee', amount: -5.75 },
+      { id: 'txn_3', date: '2024-07-26', description: 'Shell Gas Station', amount: -55.20 },
+      { id: 'txn_4', date: '2024-07-24', description: 'Amazon Purchase', amount: -112.50 },
+    ],
+    deposits: [
+      { id: 'dep_1', date: '2024-07-25', description: 'Paycheck Deposit', amount: 2200.00 },
+      { id: 'dep_2', date: '2024-07-15', description: 'Mobile Check Deposit', amount: 300.00 },
+    ]
+};
+
+
 export default function DashboardPage() {
   const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const [dashboardData, setDashboardData] = useState<DashboardApiResponse | null>(null);
@@ -37,39 +55,13 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      const fetchDashboardData = async () => {
+      const loadDashboardData = async () => {
         setIsDataLoading(true);
         setError(null);
         try {
-          const userId = localStorage.getItem('userId');
-          if (!userId) {
-            throw new Error('User ID not found. Please log in again.');
-          }
-          const response = await fetch(`/api/v1/getDashboard/${userId}`);
-
-          if (response.ok) {
-            const data = await response.json();
-            const dashboardInfo = data.data || data;
-            if (
-                dashboardInfo.fullName === undefined ||
-                dashboardInfo.balance === undefined ||
-                dashboardInfo.totalDeposit === undefined ||
-                dashboardInfo.transactionHistory === undefined ||
-                dashboardInfo.deposits === undefined
-            ) {
-                throw new Error('Dashboard data from the server is in an unexpected format.');
-            }
-            setDashboardData(dashboardInfo);
-          } else {
-             let errorMessage = "Failed to fetch dashboard data.";
-             try {
-                const errorData = await response.json();
-                errorMessage = errorData.message || errorMessage;
-             } catch (e) {
-                console.error("Could not parse error response:", e);
-             }
-            throw new Error(errorMessage);
-          }
+          // Using dummy data instead of fetching from the API
+          await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
+          setDashboardData(dummyDashboardData);
         } catch (err: any) {
           setError(err.message);
           toast({
@@ -82,7 +74,7 @@ export default function DashboardPage() {
         }
       };
 
-      fetchDashboardData();
+      loadDashboardData();
     }
   }, [isAuthenticated, toast]);
 
