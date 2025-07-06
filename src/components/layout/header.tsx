@@ -80,8 +80,17 @@ export function Header() {
 
     const handleLogout = async () => {
         try {
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+                throw new Error("User ID not found. Cannot log out.");
+            }
+
             const response = await fetch('/api/v1/logout', {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ userID: userId }),
             });
 
             if (response.ok) {
