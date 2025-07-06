@@ -11,6 +11,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAuthStatus } from '@/hooks/use-auth-status';
 
 const creditCardOffers = [
     {
@@ -85,6 +86,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
+  const { isAuthenticated } = useAuthStatus();
 
   const handleLogin = async () => {
     if (!userId || !password) {
@@ -130,6 +132,8 @@ export default function Home() {
       setIsLoading(false);
     }
   };
+  
+  const protectedLink = (path: string) => isAuthenticated ? path : '/';
 
   return (
     <div className="bg-background">
@@ -214,7 +218,7 @@ export default function Home() {
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-white">New checking customers. $300 cash offer.</h2>
               <p className="mt-4 text-lg text-white/90 max-w-md">Open a new eligible checking account and make qualifying direct deposits.</p>
               <Button size="lg" className="mt-6 bg-accent hover:bg-accent/90" asChild>
-                <Link href="/accounts">See offer details</Link>
+                <Link href={protectedLink("/accounts")}>See offer details</Link>
               </Button>
             </div>
           </div>
@@ -241,7 +245,7 @@ export default function Home() {
                         <p className="text-sm text-muted-foreground">{card.featureDetail}</p>
                     </div>
                   <Button className="mt-6 w-full" asChild>
-                    <Link href="/accounts">Apply Now</Link>
+                    <Link href={protectedLink("/accounts")}>Apply Now</Link>
                   </Button>
                 </CardContent>
               </Card>

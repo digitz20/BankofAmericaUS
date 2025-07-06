@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from '@/components/ui/sheet';
 import Image from 'next/image';
+import { useAuthStatus } from '@/hooks/use-auth-status';
 
 const topBarLeftLinks = [
   { name: 'Personal', href: '/' },
@@ -23,16 +24,6 @@ const topBarRightLinks = [
     { name: 'En español', href: '#' },
     { name: 'Contact us', href: '/help' },
     { name: 'Help', href: '/help' },
-];
-
-const personalMainNavLinks = [
-  { name: 'Checking', href: '/accounts' },
-  { name: 'Savings & CDs', href: '/accounts' },
-  { name: 'Credit Cards', href: '/accounts' },
-  { name: 'Home Loans', href: '/accounts' },
-  { name: 'Auto Loans', href: '/accounts' },
-  { name: 'Investing', href: '/wealth-management' },
-  { name: 'Better Money Habits®', href: '/help' },
 ];
 
 const businessMainNavLinks = [
@@ -83,6 +74,7 @@ const Logo = () => {
 export function Header() {
     const pathname = usePathname();
     const [open, setOpen] = React.useState(false);
+    const { isAuthenticated } = useAuthStatus();
 
     const isBusinessPage = pathname.startsWith('/small-business');
     const isWealthPage = pathname.startsWith('/wealth-management');
@@ -96,6 +88,18 @@ export function Header() {
     }
     
     const getMainNavLinks = () => {
+        const protectedLink = (path: string) => isAuthenticated ? path : '/';
+
+        const personalMainNavLinks = [
+          { name: 'Checking', href: protectedLink('/accounts') },
+          { name: 'Savings & CDs', href: protectedLink('/accounts') },
+          { name: 'Credit Cards', href: protectedLink('/accounts') },
+          { name: 'Home Loans', href: protectedLink('/accounts') },
+          { name: 'Auto Loans', href: protectedLink('/accounts') },
+          { name: 'Investing', href: '/wealth-management' },
+          { name: 'Better Money Habits®', href: '/help' },
+        ];
+
         if (isBusinessPage) return businessMainNavLinks;
         if (isWealthPage) return wealthMainNavLinks;
         if (isInstitutionsPage) return institutionsMainNavLinks;
