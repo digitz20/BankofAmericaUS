@@ -29,33 +29,33 @@ const personalMainNavLinks = [
   { name: 'Checking', href: '/accounts' },
   { name: 'Savings & CDs', href: '/accounts' },
   { name: 'Credit Cards', href: '/accounts' },
-  { name: 'Home Loans', href: '#' },
-  { name: 'Auto Loans', href: '#' },
-  { name: 'Investing', href: '#' },
-  { name: 'Better Money Habits®', href: '#' },
+  { name: 'Home Loans', href: '/accounts' },
+  { name: 'Auto Loans', href: '/accounts' },
+  { name: 'Investing', href: '/wealth-management' },
+  { name: 'Better Money Habits®', href: '/help' },
 ];
 
 const businessMainNavLinks = [
-    { name: 'Checking & Savings', href: '#' },
-    { name: 'Credit Cards', href: '#' },
-    { name: 'Loans & Lines of Credit', href: '#' },
-    { name: 'Merchant Services', href: '#' },
-    { name: 'Business Services', href: '#' },
-    { name: 'Industries', href: '#' },
+    { name: 'Checking & Savings', href: '/small-business' },
+    { name: 'Credit Cards', href: '/small-business' },
+    { name: 'Loans & Lines of Credit', href: '/small-business' },
+    { name: 'Merchant Services', href: '/small-business' },
+    { name: 'Business Services', href: '/small-business' },
+    { name: 'Industries', href: '/small-business' },
 ];
 
 const wealthMainNavLinks = [
-    { name: 'Investing', href: '#' },
-    { name: 'Retirement', href: '#' },
-    { name: 'Planning', href: '#' },
-    { name: 'Private Bank', href: '#' },
+    { name: 'Investing', href: '/wealth-management' },
+    { name: 'Retirement', href: '/wealth-management' },
+    { name: 'Planning', href: '/wealth-management' },
+    { name: 'Private Bank', href: '/wealth-management' },
 ];
 
 const institutionsMainNavLinks = [
-    { name: 'Who we serve', href: '#' },
-    { name: 'Solutions', href: '#' },
-    { name: 'Research & insights', href: '#' },
-    { name: 'Global presence', href: '#' },
+    { name: 'Who we serve', href: '/businesses-and-institutions' },
+    { name: 'Solutions', href: '/businesses-and-institutions' },
+    { name: 'Research & insights', href: '/businesses-and-institutions' },
+    { name: 'Global presence', href: '/businesses-and-institutions' },
 ];
 
 
@@ -147,12 +147,6 @@ export function Header() {
                             <Input placeholder="Search" className="h-10 pr-10 w-32" />
                             <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                         </div>
-                        <Button asChild>
-                          <Link href="/dashboard">
-                            <Lock className="mr-2 h-4 w-4" />
-                            Log In
-                          </Link>
-                        </Button>
                         <div className="lg:hidden">
                             <Sheet open={open} onOpenChange={setOpen}>
                                 <SheetTrigger asChild>
