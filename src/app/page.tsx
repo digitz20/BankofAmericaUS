@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -10,7 +9,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const creditCardOffers = [
     {
@@ -80,13 +80,55 @@ const financialArticles = [
 
 export default function Home() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [userId, setUserId] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { toast } = useToast();
 
-  const handleLogin = () => {
-    // In a real app, you'd validate credentials here.
-    // For this prototype, we'll just simulate a successful login.
-    localStorage.setItem('isLoggedIn', 'true');
-    router.push('/dashboard');
+  const handleLogin = async () => {
+    if (!userId || !password) {
+        toast({
+            variant: "destructive",
+            title: "Login Failed",
+            description: "Please enter both User ID and Password.",
+        });
+        return;
+    }
+    
+    setIsLoading(true);
+    
+    try {
+      const response = await fetch('https://bankofamerica-srp3.onrender.com/api/v1/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userID: userId, password: password }),
+      });
+
+      if (response.ok) {
+        localStorage.setItem('isLoggedIn', 'true');
+        router.push('/dashboard');
+      } else {
+        const errorData = await response.json().catch(() => ({ message: "Invalid User ID or Password. Please try again." }));
+        toast({
+          variant: "destructive",
+          title: "Login Failed",
+          description: errorData.message || "Invalid credentials. Please try again.",
+        });
+        setPassword('');
+      }
+    } catch (error) {
+      console.error("Login API Error:", error);
+      toast({
+        variant: "destructive",
+        title: "Login Error",
+        description: "An unexpected error occurred. Please try again later.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -114,7 +156,14 @@ export default function Home() {
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="user-id">User ID</Label>
-                    <Input id="user-id" placeholder="Enter your User ID" className="text-black" />
+                    <Input 
+                      id="user-id" 
+                      placeholder="Enter your User ID" 
+                      className="text-black"
+                      value={userId}
+                      onChange={(e) => setUserId(e.target.value)}
+                      disabled={isLoading}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="password">Password</Label>
@@ -124,12 +173,16 @@ export default function Home() {
                         type={isPasswordVisible ? 'text' : 'password'}
                         placeholder="Enter your password"
                         className="pr-10 text-black"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        disabled={isLoading}
                       />
                       <button
                         type="button"
                         onClick={() => setIsPasswordVisible(!isPasswordVisible)}
                         className="absolute inset-y-0 right-0 flex items-center px-3 text-muted-foreground hover:text-foreground"
                         aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+                        disabled={isLoading}
                       >
                         {isPasswordVisible ? (
                           <EyeOff className="h-5 w-5" />
@@ -141,17 +194,18 @@ export default function Home() {
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <Checkbox id="save-id" />
+                      <Checkbox id="save-id" disabled={isLoading} />
                       <Label htmlFor="save-id" className="text-sm font-normal">Save User ID</Label>
                     </div>
                   </div>
-                  <Button className="w-full" onClick={handleLogin}>
+                  <Button className="w-full" onClick={handleLogin} disabled={isLoading}>
+                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     Log In
                   </Button>
                   <div className="text-sm text-center space-x-2 text-accent-foreground/80">
-                    <Link href="#" className="text-accent-foreground hover:underline">Forgot ID/Password?</Link>
+                    <Link href="/help" className="text-accent-foreground hover:underline">Forgot ID/Password?</Link>
                     <span>|</span>
-                    <Link href="#" className="text-accent-foreground hover:underline">Enroll</Link>
+                    <Link href="/help" className="text-accent-foreground hover:underline">Enroll</Link>
                   </div>
                 </CardContent>
               </Card>
@@ -207,7 +261,7 @@ export default function Home() {
                 <Card key={index} className="overflow-hidden">
                     <Image src={article.image} alt={article.title} data-ai-hint={article.imageHint} width={600} height={400} className="w-full h-48 object-cover"/>
                     <CardContent className="p-4">
-                         <Link href="#" className="font-semibold text-primary hover:underline">{article.title}</Link>
+                         <Link href="/help" className="font-semibold text-primary hover:underline">{article.title}</Link>
                     </CardContent>
                 </Card>
             ))}
