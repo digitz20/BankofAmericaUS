@@ -1,13 +1,13 @@
-
 'use client';
 
 import { useAuth } from '@/hooks/use-auth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Landmark, DollarSign, Loader2, AlertCircle } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Landmark, DollarSign, Loader2, AlertCircle, RefreshCw } from 'lucide-react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 
 type Transaction = {
   id: string;
@@ -43,59 +43,65 @@ export default function DashboardPage() {
   const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const [dashboardData, setDashboardData] = useState<DashboardApiResponse | null>(null);
   const [isDataLoading, setIsDataLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
+  const loadDashboardData = useCallback(async (isRefresh: boolean = false) => {
+    if (isRefresh) {
+      setIsRefreshing(true);
+    } else {
+      setIsDataLoading(true);
+    }
+    setError(null);
+
+    try {
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        router.replace('/');
+        return;
+      }
+
+      const response = await fetch(`/api/v1/getDashboard/${userId}`);
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `An error occurred: ${response.statusText}`);
+      }
+      
+      const apiData = await response.json();
+      const dashboardPayload = apiData.dashboard;
+
+      if (!dashboardPayload || typeof dashboardPayload.fullName === 'undefined' || typeof dashboardPayload.balance === 'undefined' || typeof dashboardPayload.totalDeposit === 'undefined') {
+        throw new Error("Dashboard data from the server is in an unexpected format.");
+      }
+
+      setDashboardData({
+        fullName: dashboardPayload.fullName,
+        balance: dashboardPayload.balance,
+        totalDeposit: dashboardPayload.totalDeposit,
+        transactionHistory: dummyTransactions.transactionHistory,
+        deposits: dummyTransactions.deposits,
+      });
+
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      if (isRefresh) {
+        setIsRefreshing(false);
+      } else {
+        setIsDataLoading(false);
+      }
+    }
+  }, [router]);
+
   useEffect(() => {
     if (isAuthenticated) {
-      const loadDashboardData = async () => {
-        setIsDataLoading(true);
-        setError(null);
-        try {
-          const userId = localStorage.getItem('userId');
-          if (!userId) {
-            // This should ideally not happen if useAuth is working, but as a safeguard:
-            router.replace('/');
-            return;
-          }
-
-          const response = await fetch(`/api/v1/getDashboard/${userId}`);
-          
-          if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.message || `An error occurred: ${response.statusText}`);
-          }
-          
-          const apiData = await response.json();
-          
-          // The dashboard data is nested under a 'dashboard' property.
-          const dashboardPayload = apiData.dashboard;
-
-          if (!dashboardPayload || typeof dashboardPayload.fullName === 'undefined' || typeof dashboardPayload.balance === 'undefined' || typeof dashboardPayload.totalDeposit === 'undefined') {
-            throw new Error("Dashboard data from the server is in an unexpected format.");
-          }
-
-          setDashboardData({
-            fullName: dashboardPayload.fullName,
-            balance: dashboardPayload.balance,
-            totalDeposit: dashboardPayload.totalDeposit,
-            // Use dummy data for transactions
-            transactionHistory: dummyTransactions.transactionHistory,
-            deposits: dummyTransactions.deposits,
-          });
-
-        } catch (err: any) {
-          setError(err.message);
-        } finally {
-          setIsDataLoading(false);
-        }
-      };
-
-      loadDashboardData();
+      loadDashboardData(false);
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, loadDashboardData]);
 
-  if (isAuthLoading || (isAuthenticated && isDataLoading)) {
+  if (isAuthLoading || isDataLoading) {
     return (
       <div className="flex flex-grow items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />
@@ -142,7 +148,13 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-sm font-medium">Current Balance</CardTitle>
+                <div className="flex items-center space-x-2">
+                    <CardTitle className="text-sm font-medium">Current Balance</CardTitle>
+                    <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground" onClick={() => loadDashboardData(true)} disabled={isRefreshing}>
+                        <span className="sr-only">Refresh balance</span>
+                        {isRefreshing ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+                    </Button>
+                </div>
                 <Landmark className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
