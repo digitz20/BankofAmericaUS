@@ -66,7 +66,7 @@ const Logo = () => {
                 height={32}
                 className="h-8 w-auto"
             />
-            {isMounted && <span className="font-headline text-2xl font-bold text-primary hidden sm:inline-block">BANK OF AMERICA</span>}
+            {isMounted && <span className="font-headline text-2xl font-bold text-primary inline-block">BANK OF AMERICA</span>}
         </Link>
     );
 };
