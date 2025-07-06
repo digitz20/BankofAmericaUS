@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useAuth } from '@/hooks/use-auth';
@@ -9,7 +8,6 @@ import { PlusCircle, Landmark, DollarSign, Loader2, AlertCircle } from 'lucide-r
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 type Transaction = {
@@ -27,11 +25,8 @@ type DashboardApiResponse = {
     deposits: Transaction[] | null;
 };
 
-// Dummy data for development
-const dummyDashboardData: DashboardApiResponse = {
-    fullName: 'Jessica Smith',
-    balance: 10567.89,
-    totalDeposit: 2500.00,
+// Dummy data for transactions and deposits
+const dummyTransactions = {
     transactionHistory: [
       { id: 'txn_1', date: '2024-07-28', description: 'Netflix Subscription', amount: -15.99 },
       { id: 'txn_2', date: '2024-07-27', description: 'Starbucks Coffee', amount: -5.75 },
@@ -50,7 +45,6 @@ export default function DashboardPage() {
   const [dashboardData, setDashboardData] = useState<DashboardApiResponse | null>(null);
   const [isDataLoading, setIsDataLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { toast } = useToast();
   const router = useRouter();
 
   useEffect(() => {
@@ -59,16 +53,37 @@ export default function DashboardPage() {
         setIsDataLoading(true);
         setError(null);
         try {
-          // Using dummy data instead of fetching from the API
-          await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
-          setDashboardData(dummyDashboardData);
+          const userId = localStorage.getItem('userId');
+          if (!userId) {
+            // This should ideally not happen if useAuth is working, but as a safeguard:
+            router.replace('/');
+            return;
+          }
+
+          const response = await fetch(`/api/v1/getDashboard/${userId}`);
+          
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || `An error occurred: ${response.statusText}`);
+          }
+          
+          const apiData = await response.json();
+          
+          if (!apiData || typeof apiData.fullName === 'undefined' || typeof apiData.balance === 'undefined' || typeof apiData.totalDeposit === 'undefined') {
+            throw new Error("Dashboard data from the server is in an unexpected format.");
+          }
+
+          setDashboardData({
+            fullName: apiData.fullName,
+            balance: apiData.balance,
+            totalDeposit: apiData.totalDeposit,
+            // Use dummy data for transactions
+            transactionHistory: dummyTransactions.transactionHistory,
+            deposits: dummyTransactions.deposits,
+          });
+
         } catch (err: any) {
           setError(err.message);
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: err.message || "Could not load dashboard information.",
-          });
         } finally {
           setIsDataLoading(false);
         }
@@ -76,7 +91,7 @@ export default function DashboardPage() {
 
       loadDashboardData();
     }
-  }, [isAuthenticated, toast]);
+  }, [isAuthenticated, router]);
 
   if (isAuthLoading || (isAuthenticated && isDataLoading)) {
     return (
