@@ -83,7 +83,6 @@ export default function DashboardPage() {
   function onTransactionSubmit(values: z.infer<typeof transactionFormSchema>) {
     setIsTransactionDialogOpen(false);
     toast({
-        variant: "destructive",
         title: "Action Not Available",
         description: "sorry your account cannot perform this action now you have to wait for five working days before you can perform a transaction",
     });
