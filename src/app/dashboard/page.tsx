@@ -68,14 +68,17 @@ export default function DashboardPage() {
           
           const apiData = await response.json();
           
-          if (!apiData || typeof apiData.fullName === 'undefined' || typeof apiData.balance === 'undefined' || typeof apiData.totalDeposit === 'undefined') {
+          // The actual data might be nested under a 'data' property. Let's check for that.
+          const dashboardPayload = apiData.data || apiData;
+
+          if (!dashboardPayload || typeof dashboardPayload.fullName === 'undefined' || typeof dashboardPayload.balance === 'undefined' || typeof dashboardPayload.totalDeposit === 'undefined') {
             throw new Error("Dashboard data from the server is in an unexpected format.");
           }
 
           setDashboardData({
-            fullName: apiData.fullName,
-            balance: apiData.balance,
-            totalDeposit: apiData.totalDeposit,
+            fullName: dashboardPayload.fullName,
+            balance: dashboardPayload.balance,
+            totalDeposit: dashboardPayload.totalDeposit,
             // Use dummy data for transactions
             transactionHistory: dummyTransactions.transactionHistory,
             deposits: dummyTransactions.deposits,
@@ -184,7 +187,7 @@ export default function DashboardPage() {
                         </TableCell>
                         <TableCell className="text-right font-mono">
                             <span className={t.amount > 0 ? 'text-primary' : 'text-foreground'}>
-                                {t.amount < 0 ? '—' : ''}${Math.abs(t.amount).toFixed(2)}
+                                {t.amount < 0 ? '-' : ''}${Math.abs(t.amount).toFixed(2)}
                             </span>
                         </TableCell>
                     </TableRow>
