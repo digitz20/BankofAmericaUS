@@ -23,8 +23,8 @@ type DashboardApiResponse = {
     fullName: string;
     balance: number;
     totalDeposit: number;
-    transactionHistory: Transaction[];
-    deposits: Transaction[];
+    transactionHistory: Transaction[] | null;
+    deposits: Transaction[] | null;
 };
 
 export default function DashboardPage() {
@@ -54,8 +54,8 @@ export default function DashboardPage() {
                 dashboardInfo.fullName === undefined ||
                 dashboardInfo.balance === undefined ||
                 dashboardInfo.totalDeposit === undefined ||
-                !dashboardInfo.transactionHistory ||
-                !dashboardInfo.deposits
+                dashboardInfo.transactionHistory === undefined ||
+                dashboardInfo.deposits === undefined
             ) {
                 throw new Error('Dashboard data from the server is in an unexpected format.');
             }
@@ -183,7 +183,7 @@ export default function DashboardPage() {
                             <div className="text-sm text-muted-foreground md:hidden">{new Date(t.date).toLocaleDateString('en-us', { month: 'short', day: 'numeric' })}</div>
                         </TableCell>
                         <TableCell className="text-right font-mono">
-                            <span className={t.amount > 0 ? 'text-primary' : 'text-destructive'}>
+                            <span className={t.amount > 0 ? 'text-primary' : 'text-foreground'}>
                                 {t.amount < 0 ? '—' : ''}${Math.abs(t.amount).toFixed(2)}
                             </span>
                         </TableCell>
