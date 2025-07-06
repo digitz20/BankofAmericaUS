@@ -111,7 +111,7 @@ export default function Home() {
 
       if (response.ok) {
         const data = await response.json();
-        const returnedUserId = data?.user?.id || data?.id;
+        const returnedUserId = data?.user?.id || data?.id || data?.userID || data?.userId;
         
         if (returnedUserId) {
             localStorage.setItem('isLoggedIn', 'true');
