@@ -62,9 +62,9 @@ const Logo = () => {
             <Image
                 src="https://i.pinimg.com/736x/2f/9b/19/2f9b195ba9069a509b41552b763f8c8c.jpg"
                 alt="Bank of America Logo"
-                width={82}
-                height={32}
-                className="h-8 w-auto"
+                width={102}
+                height={40}
+                className="h-10 w-auto"
             />
             {isMounted && <span className="font-headline text-2xl font-bold text-primary inline-block">BANK OF AMERICA</span>}
         </Link>
@@ -94,8 +94,8 @@ export function Header() {
           { name: 'Checking', href: protectedLink('/accounts') },
           { name: 'Savings & CDs', href: protectedLink('/accounts') },
           { name: 'Credit Cards', href: protectedLink('/accounts') },
-          { name: 'Home Loans', href: protectedLink('/accounts') },
-          { name: 'Auto Loans', href: protectedLink('/accounts') },
+          { name: 'Home Loans', href: protectedLink('/') },
+          { name: 'Auto Loans', href: protectedLink('/') },
           { name: 'Investing', href: '/wealth-management' },
           { name: 'Better Money Habits®', href: '/help' },
         ];
