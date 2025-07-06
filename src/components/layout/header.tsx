@@ -4,12 +4,13 @@ import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, Lock, Menu } from 'lucide-react';
+import { Search, Lock, Menu, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from '@/components/ui/sheet';
 import Image from 'next/image';
 import { useAuthStatus } from '@/hooks/use-auth-status';
+import { useToast } from '@/hooks/use-toast';
 
 const topBarLeftLinks = [
   { name: 'Personal', href: '/' },
@@ -75,6 +76,35 @@ export function Header() {
     const pathname = usePathname();
     const [open, setOpen] = React.useState(false);
     const { isAuthenticated } = useAuthStatus();
+    const { toast } = useToast();
+
+    const handleLogout = async () => {
+        try {
+            const response = await fetch('/api/v1/logout', {
+                method: 'POST',
+            });
+
+            if (response.ok) {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('userId');
+                toast({
+                    title: "Logged Out",
+                    description: "You have been successfully logged out.",
+                });
+                // Force a hard refresh to clear all client-side state
+                window.location.href = '/';
+            } else {
+                 const errorData = await response.json().catch(() => ({ message: 'Logout failed. Please try again.' }));
+                 throw new Error(errorData.message || 'Logout failed.');
+            }
+        } catch (error: any) {
+            toast({
+                variant: "destructive",
+                title: "Logout Error",
+                description: error.message || "An unexpected error occurred during logout.",
+            });
+        }
+    };
 
     const isBusinessPage = pathname.startsWith('/small-business');
     const isWealthPage = pathname.startsWith('/wealth-management');
@@ -151,6 +181,11 @@ export function Header() {
                             <Input placeholder="Search" className="h-10 pr-10 w-32" />
                             <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                         </div>
+                        {isAuthenticated && (
+                            <Button variant="outline" size="icon" onClick={handleLogout} className="hidden md:inline-flex" aria-label="Log Out">
+                                <LogOut className="h-5 w-5" />
+                            </Button>
+                        )}
                         <div className="lg:hidden">
                             <Sheet open={open} onOpenChange={setOpen}>
                                 <SheetTrigger asChild>
@@ -175,6 +210,14 @@ export function Header() {
                                             {link.name}
                                         </Link>
                                     ))}
+                                    {isAuthenticated && (
+                                        <div className="px-4 mt-6 pt-6 border-t">
+                                            <Button variant="outline" className="w-full" onClick={handleLogout}>
+                                                <LogOut className="mr-2" />
+                                                Log Out
+                                            </Button>
+                                        </div>
+                                    )}
                                     </div>
                                 </SheetContent>
                             </Sheet>
