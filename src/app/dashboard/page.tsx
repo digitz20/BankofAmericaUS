@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { format, subDays } from 'date-fns';
 
 type Transaction = {
   id: string;
@@ -24,21 +25,6 @@ type DashboardApiResponse = {
     transactionHistory: Transaction[] | null;
     deposits: Transaction[] | null;
 };
-
-// Dummy data for transactions and deposits
-const dummyTransactions = {
-    transactionHistory: [
-      { id: 'txn_1', date: '2024-07-28', description: 'Netflix Subscription', amount: -15.99 },
-      { id: 'txn_2', date: '2024-07-27', description: 'Starbucks Coffee', amount: -5.75 },
-      { id: 'txn_3', date: '2024-07-26', description: 'Shell Gas Station', amount: -55.20 },
-      { id: 'txn_4', date: '2024-07-24', description: 'Amazon Purchase', amount: -112.50 },
-    ],
-    deposits: [
-      { id: 'dep_1', date: '2024-07-25', description: 'Paycheck Deposit', amount: 2200.00 },
-      { id: 'dep_2', date: '2024-07-15', description: 'Mobile Check Deposit', amount: 300.00 },
-    ]
-};
-
 
 export default function DashboardPage() {
   const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
@@ -116,6 +102,20 @@ export default function DashboardPage() {
         throw new Error("Dashboard data from the server is in an unexpected format.");
       }
 
+      const today = new Date();
+      const dummyTransactions = {
+          transactionHistory: [
+            { id: 'txn_1', date: format(today, 'yyyy-MM-dd'), description: 'Netflix Subscription', amount: -15.99 },
+            { id: 'txn_2', date: format(subDays(today, 1), 'yyyy-MM-dd'), description: 'Starbucks Coffee', amount: -5.75 },
+            { id: 'txn_3', date: format(subDays(today, 2), 'yyyy-MM-dd'), description: 'Shell Gas Station', amount: -55.20 },
+            { id: 'txn_4', date: format(subDays(today, 4), 'yyyy-MM-dd'), description: 'Amazon Purchase', amount: -112.50 },
+          ],
+          deposits: [
+            { id: 'dep_1', date: format(subDays(today, 3), 'yyyy-MM-dd'), description: 'Paycheck Deposit', amount: 2200.00 },
+            { id: 'dep_2', date: format(subDays(today, 13), 'yyyy-MM-dd'), description: 'Mobile Check Deposit', amount: 300.00 },
+          ]
+      };
+
       setDashboardData({
         fullName: dashboardPayload.fullName,
         balance: dashboardPayload.balance,
@@ -133,7 +133,7 @@ export default function DashboardPage() {
         setIsDataLoading(false);
       }
     }
-  }, [router]);
+  }, [router, toast]);
 
   useEffect(() => {
     if (isAuthenticated) {
