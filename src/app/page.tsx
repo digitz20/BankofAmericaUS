@@ -110,8 +110,18 @@ export default function Home() {
       });
 
       if (response.ok) {
-        localStorage.setItem('isLoggedIn', 'true');
-        router.push('/dashboard');
+        const data = await response.json();
+        if (data && data.user && data.user.id) {
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('userId', data.user.id);
+            router.push('/dashboard');
+        } else {
+            toast({
+                variant: "destructive",
+                title: "Login Error",
+                description: "Received an invalid response from the server. Could not get user ID.",
+            });
+        }
       } else {
         const errorData = await response.json().catch(() => ({ message: "Invalid User ID or Password. Please try again." }));
         toast({
