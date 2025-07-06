@@ -111,9 +111,11 @@ export default function Home() {
 
       if (response.ok) {
         const data = await response.json();
-        if (data && data.user && data.user.id) {
+        const returnedUserId = data?.user?.id || data?.id;
+        
+        if (returnedUserId) {
             localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('userId', data.user.id);
+            localStorage.setItem('userId', returnedUserId);
             router.push('/dashboard');
         } else {
             toast({
