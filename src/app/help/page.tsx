@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { ArrowRight, Search, Phone, Calendar, MapPin } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const trendingTopics = ["Routing number", "Bill Pay", "Make a payment", "Dispute charge", "Erica® virtual assistant"];
 
@@ -38,11 +39,22 @@ export default function HelpPage() {
     return (
         <div className="bg-background">
             {/* Header Section */}
-            <header className="bg-muted py-16 text-center">
-                <div className="container mx-auto px-4">
-                    <h1 className="font-headline text-4xl md:text-5xl font-bold text-primary">How can we help?</h1>
+            <header className="relative text-white py-20 text-center overflow-hidden">
+                 <div className="absolute inset-0">
+                    <Image
+                        src="https://i.pinimg.com/736x/66/46/d2/6646d2494e668989ab099759e7a947a3.jpg"
+                        alt="Customer support representative"
+                        data-ai-hint="customer support"
+                        fill
+                        className="object-cover"
+                        priority
+                    />
+                    <div className="absolute inset-0 bg-primary/70" />
+                </div>
+                <div className="container mx-auto px-4 relative z-10">
+                    <h1 className="font-headline text-4xl md:text-5xl font-bold">How can we help?</h1>
                     <div className="relative max-w-2xl mx-auto mt-8">
-                        <Input placeholder="Search for a topic" className="h-12 pl-12 text-lg" />
+                        <Input placeholder="Search for a topic" className="h-12 pl-12 text-lg text-black" />
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-6 w-6 text-muted-foreground" />
                     </div>
                 </div>
