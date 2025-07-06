@@ -1,8 +1,11 @@
 
+'use client';
+
+import { useAuth } from '@/hooks/use-auth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { PlusCircle, CreditCard, Landmark, DollarSign } from 'lucide-react';
+import { PlusCircle, CreditCard, Landmark, DollarSign, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 
 const accounts = [
@@ -22,6 +25,20 @@ const transactions = [
 ];
 
 export default function AccountsPage() {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-grow items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return null;
+  }
+  
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
