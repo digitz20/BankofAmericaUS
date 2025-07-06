@@ -7,12 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertTriangle, ShieldCheck, UserCheck, Lock, Bell, Settings, FileText } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useAuthStatus } from '@/hooks/use-auth-status';
 
 export default function SecurityPage() {
-  const { isAuthenticated } = useAuthStatus();
-  const protectedLink = (path: string) => isAuthenticated ? path : '/';
-
   return (
     <div className="bg-background">
       {/* Hero Section */}
@@ -92,7 +88,7 @@ export default function SecurityPage() {
               <CardContent className="space-y-3">
                 <p className="text-sm text-muted-foreground">Log in to manage your security settings.</p>
                 <Button className="w-full" asChild>
-                  <Link href={protectedLink("/dashboard")}>Log in and manage your security</Link>
+                  <Link href="/">Log in and manage your security</Link>
                 </Button>
                  <Button variant="link" className="px-0 text-sm">Learn more about managing your security</Button>
               </CardContent>
@@ -118,7 +114,7 @@ export default function SecurityPage() {
               <CardContent>
                 <p className="text-sm text-muted-foreground">Know when irregular card activity or changes take place on your account.</p>
                 <Button className="w-full mt-3" asChild>
-                  <Link href={protectedLink("/dashboard")}>Log in and manage your alerts</Link>
+                  <Link href="/">Log in and manage your alerts</Link>
                 </Button>
               </CardContent>
             </Card>

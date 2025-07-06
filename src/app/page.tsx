@@ -11,7 +11,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useAuthStatus } from '@/hooks/use-auth-status';
 
 const creditCardOffers = [
     {
@@ -86,7 +85,6 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
-  const { isAuthenticated } = useAuthStatus();
 
   const handleLogin = async () => {
     if (!userId || !password) {
@@ -136,8 +134,6 @@ export default function Home() {
       setIsLoading(false);
     }
   };
-  
-  const protectedLink = (path: string) => isAuthenticated ? path : '/';
 
   return (
     <div className="bg-background">
@@ -222,7 +218,7 @@ export default function Home() {
               <h2 className="font-headline text-3xl md:text-4xl font-bold text-white">New checking customers. $300 cash offer.</h2>
               <p className="mt-4 text-lg text-white/90 max-w-md">Open a new eligible checking account and make qualifying direct deposits.</p>
               <Button size="lg" className="mt-6 bg-accent hover:bg-accent/90" asChild>
-                <Link href={protectedLink("/accounts")}>See offer details</Link>
+                <Link href="/">See offer details</Link>
               </Button>
             </div>
           </div>
@@ -249,7 +245,7 @@ export default function Home() {
                         <p className="text-sm text-muted-foreground">{card.featureDetail}</p>
                     </div>
                   <Button className="mt-6 w-full" asChild>
-                    <Link href={protectedLink("/accounts")}>Apply Now</Link>
+                    <Link href="/">Apply Now</Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -290,7 +286,7 @@ export default function Home() {
               <h4 className="font-headline text-xl mt-4">Level up your account security</h4>
               <p className="mt-2 text-muted-foreground">Watch your security meter rise as you take action against fraud. See it in the Security Center in Mobile and Online Banking.</p>
                <Button className="mt-4" asChild>
-                <Link href={protectedLink("/security")}>See your security</Link>
+                <Link href="/security">See your security</Link>
                </Button>
             </div>
             <div className="flex justify-center">
