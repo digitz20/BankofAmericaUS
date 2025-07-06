@@ -106,7 +106,7 @@ export default function Home() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId: userId, password: password }),
+        body: JSON.stringify({ userID: userId, password: password }),
       });
 
       if (response.ok) {
@@ -298,7 +298,7 @@ export default function Home() {
               <h4 className="font-headline text-xl mt-4">Level up your account security</h4>
               <p className="mt-2 text-muted-foreground">Watch your security meter rise as you take action against fraud. See it in the Security Center in Mobile and Online Banking.</p>
                <Button className="mt-4" asChild>
-                <Link href="/security">See your security</Link>
+                <Link href={protectedLink("/security")}>See your security</Link>
                </Button>
             </div>
             <div className="flex justify-center">
