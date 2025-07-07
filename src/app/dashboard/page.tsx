@@ -476,8 +476,8 @@ export default function DashboardPage() {
             <Image
                 src="https://i.pinimg.com/736x/2f/9b/19/2f9b195ba9069a509b41552b763f8c8c.jpg"
                 alt="Bank of America Watermark"
-                width={900}
-                height={360}
+                width={1800}
+                height={720}
                 className="opacity-20 pointer-events-none"
             />
         </div>
