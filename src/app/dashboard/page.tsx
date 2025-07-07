@@ -64,6 +64,7 @@ const staticRecipients = [
   { bankName: 'Citibank USA', accountNumber: '637765289365', accountName: 'James Crawford' },
   { bankName: 'Capital One Bank', accountNumber: '462936589925', accountName: 'Davis Brown Goldman' },
   { bankName: 'Bank of America', accountNumber: '876543210987', accountName: 'Emily Davis' },
+  { bankName: 'Bank of America', accountNumber: '735421529993', accountName: 'Alexis Wilson' },
   { bankName: 'Truist Bank', accountNumber: '765432109876', accountName: 'Robert Wilson' },
 ];
 
@@ -72,6 +73,14 @@ const transactionFormSchema = z.object({
   bankName: z.string().min(1, { message: "Please select a bank." }),
   accountNumber: z.string().regex(/^\d{12}$/, { message: "Recipient account number must be 12 digits." }),
   recipientName: z.string(), // No validation needed here as it's auto-filled
+}).refine((data) => {
+    const recipient = staticRecipients.find(
+        (r) => r.accountNumber === data.accountNumber && r.bankName === data.bankName
+    );
+    return !!recipient;
+}, {
+    message: "Recipient not found",
+    path: ["recipientName"],
 });
 
 export default function DashboardPage() {
@@ -110,14 +119,12 @@ export default function DashboardPage() {
       );
       if (recipient) {
         form.setValue('recipientName', recipient.accountName, { shouldValidate: true });
-        form.clearErrors('recipientName');
       } else {
-        form.setValue('recipientName', '');
-        form.setError('recipientName', { type: 'manual', message: 'Recipient not found' });
+        form.setValue('recipientName', '', { shouldValidate: true });
+        form.trigger('recipientName'); // Trigger validation to show the error
       }
     } else {
       form.setValue('recipientName', '', { shouldValidate: false });
-      form.clearErrors('recipientName');
     }
   }, [watchedAccountNumber, watchedBankName, form]);
 
@@ -128,15 +135,7 @@ export default function DashboardPage() {
   }
 
   async function onTransactionSubmit(values: z.infer<typeof transactionFormSchema>) {
-    const recipient = staticRecipients.find(
-        (r) => r.accountNumber === values.accountNumber && r.bankName === values.bankName
-    );
-
-    if (!recipient) {
-        form.setError('recipientName', { type: 'manual', message: 'Recipient not found' });
-        return;
-    }
-      
+    // The Zod schema already validated the recipient exists
     if (dashboardData) {
         const newTransaction: Transaction = {
             id: `txn_${new Date().getTime()}`,
