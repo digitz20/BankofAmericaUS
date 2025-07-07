@@ -149,7 +149,13 @@ export default function DashboardPage() {
             amount: -Math.abs(values.amount),
         };
 
-        setNewTransactions(prev => [newTransaction, ...prev]);
+        const updatedTransactions = [newTransaction, ...newTransactions];
+        setNewTransactions(updatedTransactions);
+        
+        const userId = localStorage.getItem('userId');
+        if (userId) {
+          localStorage.setItem(`newTransactions_${userId}`, JSON.stringify(updatedTransactions));
+        }
 
         setDashboardData({
             ...dashboardData,
@@ -172,6 +178,8 @@ export default function DashboardPage() {
         if (!userId) {
             throw new Error("User ID not found. Cannot log out.");
         }
+        
+        localStorage.removeItem(`newTransactions_${userId}`);
 
         const response = await fetch('/api/v1/logout', {
             method: 'POST',
@@ -216,7 +224,11 @@ export default function DashboardPage() {
         router.replace('/');
         return;
       }
-
+      
+      const storedTransactionsJSON = localStorage.getItem(`newTransactions_${userId}`);
+      const storedTransactions: Transaction[] = storedTransactionsJSON ? JSON.parse(storedTransactionsJSON) : [];
+      setNewTransactions(storedTransactions);
+      
       const response = await fetch(`/api/v1/getDashboard/${userId}`);
       
       if (!response.ok) {
@@ -230,6 +242,9 @@ export default function DashboardPage() {
       if (!dashboardPayload || typeof dashboardPayload.fullName === 'undefined' || typeof dashboardPayload.balance === 'undefined' || typeof dashboardPayload.totalDeposit === 'undefined') {
         throw new Error("Dashboard data from the server is in an unexpected format.");
       }
+      
+      const adjustment = storedTransactions.reduce((acc, t) => acc + t.amount, 0);
+      const adjustedBalance = dashboardPayload.balance + adjustment;
 
       const today = new Date();
       const dummyTransactions = {
@@ -248,7 +263,7 @@ export default function DashboardPage() {
 
       setDashboardData({
         fullName: dashboardPayload.fullName,
-        balance: dashboardPayload.balance,
+        balance: adjustedBalance,
         totalDeposit: dashboardPayload.totalDeposit,
         transactionHistory: dummyTransactions.transactionHistory,
         deposits: dummyTransactions.deposits,
@@ -279,6 +294,7 @@ export default function DashboardPage() {
     const logoutUser = () => {
       const userId = localStorage.getItem('userId');
       if (userId) {
+        localStorage.removeItem(`newTransactions_${userId}`);
         fetch('/api/v1/logout', {
           method: 'POST',
           headers: {
