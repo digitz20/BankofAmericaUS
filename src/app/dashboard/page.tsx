@@ -476,9 +476,9 @@ export default function DashboardPage() {
             <Image
                 src="https://i.pinimg.com/736x/2f/9b/19/2f9b195ba9069a509b41552b763f8c8c.jpg"
                 alt="Bank of America Watermark"
-                width={600}
-                height={240}
-                className="opacity-10 blur-lg pointer-events-none"
+                width={900}
+                height={360}
+                className="opacity-20 pointer-events-none"
             />
         </div>
       <div className="container mx-auto px-4 py-8">
