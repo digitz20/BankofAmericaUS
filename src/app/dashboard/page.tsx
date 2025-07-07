@@ -89,6 +89,7 @@ export default function DashboardPage() {
 
   const form = useForm<z.infer<typeof transactionFormSchema>>({
     resolver: zodResolver(transactionFormSchema),
+    mode: 'onChange', // Validate on change to provide real-time feedback
     defaultValues: {
       amount: undefined,
       bankName: '',
@@ -106,13 +107,15 @@ export default function DashboardPage() {
         (r) => r.accountNumber === watchedAccountNumber && r.bankName === watchedBankName
       );
       if (recipient) {
-        form.setValue('recipientName', recipient.accountName);
-        form.clearErrors('recipientName');
+        form.setValue('recipientName', recipient.accountName, { shouldValidate: true });
       } else {
-        form.setValue('recipientName', '');
+        form.setValue('recipientName', '', { shouldValidate: true });
       }
     } else {
-        form.setValue('recipientName', '');
+      // Only clear the recipient name if it has a value
+      if (form.getValues('recipientName')) {
+        form.setValue('recipientName', '', { shouldValidate: true });
+      }
     }
   }, [watchedAccountNumber, watchedBankName, form]);
 
@@ -539,14 +542,14 @@ export default function DashboardPage() {
                           <FormItem>
                               <FormLabel>Amount</FormLabel>
                               <FormControl>
-                                  <Input type="number" placeholder="0.00" {...field} value={field.value ?? ''} />
+                                  <Input type="number" placeholder="0.00" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} value={field.value ?? ''} />
                               </FormControl>
                               <FormMessage />
                           </FormItem>
                       )}
                   />
                   <DialogFooter>
-                      <Button type="submit" disabled={form.formState.isSubmitting || !form.getValues('recipientName')}>
+                      <Button type="submit" disabled={form.formState.isSubmitting || !form.formState.isValid}>
                         {form.formState.isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                         {transactionType}
                       </Button>
