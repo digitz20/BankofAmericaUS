@@ -75,7 +75,6 @@ const transactionFormSchema = z.object({
   amount: z.coerce.number().positive({ message: "Please enter a positive amount." }),
   bankName: z.string().min(1, { message: "Please select a bank." }),
   accountNumber: z.string().regex(/^\d{12}$/, { message: "Recipient account number must be 12 digits." }),
-  recipientName: z.string(),
 });
 
 export default function DashboardPage() {
@@ -108,23 +107,8 @@ export default function DashboardPage() {
       amount: undefined,
       bankName: '',
       accountNumber: '',
-      recipientName: '',
     },
   });
-
-  const watchedAccountNumber = form.watch('accountNumber');
-  const watchedBankName = form.watch('bankName');
-
-  useEffect(() => {
-    if (watchedAccountNumber.length === 12 && watchedBankName) {
-      const recipient = staticRecipients.find(
-        (r) => r.accountNumber === watchedAccountNumber && r.bankName === watchedBankName
-      );
-      form.setValue('recipientName', recipient?.accountName || '');
-    } else {
-      form.setValue('recipientName', '');
-    }
-  }, [watchedAccountNumber, watchedBankName, form]);
 
   function openTransactionDialog(type: 'Withdraw' | 'Transfer') {
     setTransactionType(type);
@@ -164,7 +148,7 @@ export default function DashboardPage() {
             const newTransaction: Transaction = {
                 id: `txn_${new Date().getTime()}`,
                 date: new Date().toISOString(),
-                description: `${transactionType} to ${values.recipientName}`,
+                description: `${transactionType} to ${recipient.accountName}`,
                 amount: -Math.abs(values.amount),
                 recipientAccountNumber: values.accountNumber,
             };
@@ -184,7 +168,7 @@ export default function DashboardPage() {
 
             toast({
                 title: `${transactionType} Successful`,
-                description: `${values.amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} has been sent to ${values.recipientName}.`,
+                description: `${values.amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} has been sent to ${recipient.accountName}.`,
             });
         }
         form.reset();
@@ -661,19 +645,6 @@ export default function DashboardPage() {
                                 <FormLabel>Recipient Account Number</FormLabel>
                                 <FormControl>
                                     <Input placeholder="12-digit account number" {...field} maxLength={12} />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="recipientName"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Recipient Name</FormLabel>
-                                <FormControl>
-                                    <Input placeholder="Account name will appear here" {...field} readOnly className="bg-muted/50" />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
