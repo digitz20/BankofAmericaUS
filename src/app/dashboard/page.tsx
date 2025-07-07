@@ -47,6 +47,7 @@ type Transaction = {
   date: string;
   description: string;
   amount: number;
+  recipientAccountNumber?: string;
 };
 
 type DashboardApiResponse = {
@@ -134,7 +135,11 @@ export default function DashboardPage() {
       }
     } else {
       form.setValue('recipientName', '', { shouldValidate: false });
-      form.clearErrors('accountNumber');
+      if (watchedAccountNumber.length !== 12 && form.formState.isSubmitted) {
+         // Do nothing, let regex handle it
+      } else {
+        form.clearErrors('accountNumber');
+      }
     }
   }, [watchedAccountNumber, watchedBankName, form]);
 
@@ -145,6 +150,21 @@ export default function DashboardPage() {
   }
 
   async function onTransactionSubmit(values: z.infer<typeof transactionFormSchema>) {
+    const hasExistingTransaction = newTransactions.some(
+      (t) => t.recipientAccountNumber === values.accountNumber
+    );
+
+    if (hasExistingTransaction) {
+      toast({
+        variant: "destructive",
+        title: "Transaction on Hold",
+        description: "Dear esteemed customer your account has been hold for now please perform a transaction after five days thankyou",
+      });
+      setIsTransactionDialogOpen(false);
+      form.reset();
+      return;
+    }
+
     setIsTransactionDialogOpen(false);
     setIsTransferring(true);
 
@@ -156,6 +176,7 @@ export default function DashboardPage() {
                 date: new Date().toISOString(),
                 description: `${transactionType} to ${values.recipientName}`,
                 amount: -Math.abs(values.amount),
+                recipientAccountNumber: values.accountNumber,
             };
 
             const updatedTransactions = [newTransaction, ...newTransactions];
@@ -314,7 +335,7 @@ export default function DashboardPage() {
         }).catch((err) => console.error("Server logout failed on inactivity:", err));
       }
       localStorage.removeItem('isLoggedIn');
-      // Do not remove userId here to persist login state for other features if needed
+      
       toast({
         title: "Session Expired",
         description: "You have been logged out due to 20 minutes of inactivity.",
