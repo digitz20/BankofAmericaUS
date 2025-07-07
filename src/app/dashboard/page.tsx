@@ -4,7 +4,7 @@
 import { useAuth } from '@/hooks/use-auth';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Landmark, DollarSign, Loader2, AlertCircle, RefreshCw, Eye, EyeOff, LogOut, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import { Landmark, DollarSign, Loader2, AlertCircle, RefreshCw, Eye, EyeOff, LogOut, ArrowUpRight, ArrowDownLeft, Trash2 } from 'lucide-react';
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -189,7 +189,10 @@ export default function DashboardPage() {
 
         if (response.ok) {
             localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('userId');
+            // Do not remove userId here to persist login state for other features if needed
+            // But for full logout, we should remove it.
+            // Keeping userId to persist balance after logout as requested.
+            // Let's remove isLoggedIn only.
             toast({
                 title: "Logged Out",
                 description: "You have been successfully logged out.",
@@ -301,7 +304,7 @@ export default function DashboardPage() {
         }).catch((err) => console.error("Server logout failed on inactivity:", err));
       }
       localStorage.removeItem('isLoggedIn');
-      localStorage.removeItem('userId');
+      // Do not remove userId here to persist login state for other features if needed
       toast({
         title: "Session Expired",
         description: "You have been logged out due to 20 minutes of inactivity.",
@@ -346,6 +349,36 @@ export default function DashboardPage() {
     setCodeInputValue('');
   };
 
+  const handleDeleteTransaction = (transactionId: string) => {
+    const transactionToDelete = newTransactions.find((t) => t.id === transactionId);
+    if (!transactionToDelete || !dashboardData) {
+        return;
+    }
+
+    // Add back the amount to the balance (amount is negative, so subtracting it adds it back)
+    const updatedBalance = dashboardData.balance - transactionToDelete.amount;
+
+    // Filter out the transaction from the state
+    const updatedTransactions = newTransactions.filter((t) => t.id !== transactionId);
+    setNewTransactions(updatedTransactions);
+    
+    // Update local storage
+    const userId = localStorage.getItem('userId');
+    if (userId) {
+        localStorage.setItem(`newTransactions_${userId}`, JSON.stringify(updatedTransactions));
+    }
+
+    // Update the dashboard data in state
+    setDashboardData({
+        ...dashboardData,
+        balance: updatedBalance,
+    });
+
+    toast({
+        title: "Transaction Deleted",
+        description: `The transaction "${transactionToDelete.description}" has been removed.`,
+    });
+  };
 
   if (isAuthLoading || isDataLoading) {
     return (
@@ -394,6 +427,14 @@ export default function DashboardPage() {
         return format(new Date(dateString), 'MMM d, yyyy');
     } catch {
         return "Invalid Date";
+    }
+  };
+  
+  const formatTime = (dateString: string) => {
+    try {
+        return format(new Date(dateString), 'p'); // e.g., 5:30 PM
+    } catch {
+        return "Invalid Time";
     }
   };
 
@@ -498,19 +539,25 @@ export default function DashboardPage() {
           <Table>
             <TableHeader>
                 <TableRow>
-                    <TableHead>Date</TableHead>
+                    <TableHead className="hidden sm:table-cell">Date</TableHead>
                     <TableHead>Description</TableHead>
                     <TableHead className="text-right">Amount</TableHead>
+                    <TableHead className="w-[50px] text-right"><span className="sr-only">Actions</span></TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
                 {allVisibleTransactions.length > 0 ? (
                     allVisibleTransactions.map(t => (
                         <TableRow key={t.id}>
-                            <TableCell className="hidden sm:table-cell">{isActivityDetailsVisible ? formatDate(t.date) : '******'}</TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                                <div className="font-medium">{isActivityDetailsVisible ? formatDate(t.date) : '******'}</div>
+                                <div className="text-sm text-muted-foreground">{isActivityDetailsVisible ? formatTime(t.date) : '******'}</div>
+                            </TableCell>
                             <TableCell>
                                 <div className="font-medium">{isActivityDetailsVisible ? t.description : '******'}</div>
-                                <div className="text-sm text-muted-foreground md:hidden">{isActivityDetailsVisible ? formatDate(t.date) : '******'}</div>
+                                <div className="text-sm text-muted-foreground sm:hidden">
+                                    {isActivityDetailsVisible ? `${formatDate(t.date)} at ${formatTime(t.date)}` : '******'}
+                                </div>
                             </TableCell>
                             <TableCell className="text-right font-mono">
                                {isActivityDetailsVisible ? (
@@ -521,11 +568,19 @@ export default function DashboardPage() {
                                    '******'
                                )}
                             </TableCell>
+                            <TableCell className="text-right">
+                               {newTransactions.some(nt => nt.id === t.id) && isActivityDetailsVisible && (
+                                   <Button variant="ghost" size="icon" onClick={() => handleDeleteTransaction(t.id)}>
+                                       <Trash2 className="h-4 w-4 text-destructive" />
+                                       <span className="sr-only">Delete Transaction</span>
+                                   </Button>
+                               )}
+                            </TableCell>
                         </TableRow>
                     ))
                 ) : (
                     <TableRow>
-                        <TableCell colSpan={3} className="h-24 text-center text-muted-foreground">
+                        <TableCell colSpan={4} className="h-24 text-center text-muted-foreground">
                             {isCodeVerified ? "No transactions found." : "Enter code to view history."}
                         </TableCell>
                     </TableRow>
