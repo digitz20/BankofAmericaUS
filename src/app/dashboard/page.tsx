@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useAuth } from '@/hooks/use-auth';
@@ -10,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { format, subDays } from 'date-fns';
+import { format } from 'date-fns';
 import {
   Dialog,
   DialogContent,
@@ -31,6 +30,8 @@ import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 type Transaction = {
   id: string;
@@ -61,7 +62,7 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [balanceVisible, setBalanceVisible] = useState(false);
   const [depositsVisible, setDepositsVisible] = useState(false);
-  const [isActivityVisible, setIsActivityVisible] = useState(true);
+  const [isActivityDetailsVisible, setIsActivityDetailsVisible] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
   const [isTransactionDialogOpen, setIsTransactionDialogOpen] = useState(false);
@@ -83,9 +84,6 @@ export default function DashboardPage() {
   }
 
   async function onTransactionSubmit(values: z.infer<typeof transactionFormSchema>) {
-    // Simulate network delay for better UX
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
     toast({
       title: 'Account On Hold',
       description:
@@ -165,15 +163,15 @@ export default function DashboardPage() {
       const today = new Date();
       const dummyTransactions = {
           transactionHistory: [
-            { id: 'txn_1', date: subDays(today, 13).toISOString(), description: 'Netflix Subscription', amount: -15.99 },
-            { id: 'txn_2', date: subDays(today, 12).toISOString(), description: 'Amazon Purchase', amount: -112.50 },
-            { id: 'txn_3', date: subDays(today, 10).toISOString(), description: 'Shell Gas Station', amount: -55.20 },
-            { id: 'txn_4', date: subDays(today, 9).toISOString(), description: 'Starbucks Coffee', amount: -5.75 },
-            { id: 'txn_5', date: subDays(today, 7).toISOString(), description: 'Last week transaction', amount: -25.00 },
+            { id: 'txn_1', date: new Date(new Date().setDate(today.getDate() - 13)).toISOString(), description: 'Netflix Subscription', amount: -15.99 },
+            { id: 'txn_2', date: new Date(new Date().setDate(today.getDate() - 12)).toISOString(), description: 'Amazon Purchase', amount: -112.50 },
+            { id: 'txn_3', date: new Date(new Date().setDate(today.getDate() - 10)).toISOString(), description: 'Shell Gas Station', amount: -55.20 },
+            { id: 'txn_4', date: new Date(new Date().setDate(today.getDate() - 9)).toISOString(), description: 'Starbucks Coffee', amount: -5.75 },
+            { id: 'txn_5', date: new Date(new Date().setDate(today.getDate() - 7)).toISOString(), description: 'Last week transaction', amount: -25.00 },
           ],
           deposits: [
-            { id: 'dep_1', date: subDays(today, 14).toISOString(), description: 'Mobile Check Deposit', amount: 300.00 },
-            { id: 'dep_2', date: subDays(today, 8).toISOString(), description: 'Paycheck Deposit', amount: 2200.00 },
+            { id: 'dep_1', date: new Date(new Date().setDate(today.getDate() - 14)).toISOString(), description: 'Mobile Check Deposit', amount: 300.00 },
+            { id: 'dep_2', date: new Date(new Date().setDate(today.getDate() - 8)).toISOString(), description: 'Paycheck Deposit', amount: 2200.00 },
           ]
       };
 
@@ -373,43 +371,45 @@ export default function DashboardPage() {
       
       <div className="flex justify-between items-center mb-4">
         <h2 className="font-headline text-2xl font-bold">Recent Activity</h2>
-        <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => setIsActivityVisible(v => !v)}>
-            <span className="sr-only">{isActivityVisible ? 'Hide' : 'Show'} recent activity</span>
-            {isActivityVisible ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-        </Button>
+        <div className="flex items-center space-x-2">
+            <Switch id="activity-toggle" checked={isActivityDetailsVisible} onCheckedChange={setIsActivityDetailsVisible} />
+            <Label htmlFor="activity-toggle" className="text-sm">{isActivityDetailsVisible ? 'Visible' : 'Hidden'}</Label>
+        </div>
       </div>
 
-      {isActivityVisible && (
-          <Card>
-            <CardContent className="p-0">
-              <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead>Date</TableHead>
-                        <TableHead>Description</TableHead>
-                        <TableHead className="text-right">Amount</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {recentTransactions.map(t => (
-                        <TableRow key={t.id}>
-                            <TableCell className="hidden sm:table-cell">{formatDate(t.date)}</TableCell>
-                            <TableCell>
-                                <div className="font-medium">{t.description}</div>
-                                <div className="text-sm text-muted-foreground md:hidden">{formatDate(t.date)}</div>
-                            </TableCell>
-                            <TableCell className="text-right font-mono">
+      <Card>
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
+                <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Description</TableHead>
+                    <TableHead className="text-right">Amount</TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                {recentTransactions.map(t => (
+                    <TableRow key={t.id}>
+                        <TableCell className="hidden sm:table-cell">{isActivityDetailsVisible ? formatDate(t.date) : '******'}</TableCell>
+                        <TableCell>
+                            <div className="font-medium">{isActivityDetailsVisible ? t.description : '******'}</div>
+                            <div className="text-sm text-muted-foreground md:hidden">{isActivityDetailsVisible ? formatDate(t.date) : '******'}</div>
+                        </TableCell>
+                        <TableCell className="text-right font-mono">
+                           {isActivityDetailsVisible ? (
                                 <span className={t.amount > 0 ? 'text-primary' : 'text-foreground'}>
                                     {t.amount < 0 ? '-' : ''}${Math.abs(t.amount).toFixed(2)}
                                 </span>
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-            </CardContent>
-          </Card>
-      )}
+                           ) : (
+                               '******'
+                           )}
+                        </TableCell>
+                    </TableRow>
+                ))}
+            </TableBody>
+        </Table>
+        </CardContent>
+      </Card>
       
       <Dialog open={isTransactionDialogOpen} onOpenChange={setIsTransactionDialogOpen}>
         <DialogContent className="sm:max-w-[425px]">
@@ -473,4 +473,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
