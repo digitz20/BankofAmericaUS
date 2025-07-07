@@ -179,8 +179,6 @@ export default function DashboardPage() {
             throw new Error("User ID not found. Cannot log out.");
         }
         
-        localStorage.removeItem(`newTransactions_${userId}`);
-
         const response = await fetch('/api/v1/logout', {
             method: 'POST',
             headers: {
@@ -294,7 +292,6 @@ export default function DashboardPage() {
     const logoutUser = () => {
       const userId = localStorage.getItem('userId');
       if (userId) {
-        localStorage.removeItem(`newTransactions_${userId}`);
         fetch('/api/v1/logout', {
           method: 'POST',
           headers: {
