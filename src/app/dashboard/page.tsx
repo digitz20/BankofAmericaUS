@@ -41,6 +41,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 
 type Transaction = {
   id: string;
@@ -75,6 +76,7 @@ const transactionFormSchema = z.object({
   amount: z.coerce.number().positive({ message: "Please enter a positive amount." }),
   bankName: z.string().min(1, { message: "Please select a bank." }),
   accountNumber: z.string().regex(/^\d{12}$/, { message: "Recipient account number must be 12 digits." }),
+  recipientName: z.string().min(1, { message: "Recipient name is required." }),
 });
 
 export default function DashboardPage() {
@@ -97,7 +99,7 @@ export default function DashboardPage() {
   const [newTransactions, setNewTransactions] = useState<Transaction[]>([]);
   const [isTransferring, setIsTransferring] = useState(false);
   const [isHoldDialogOpen, setIsHoldDialogOpen] = useState(false);
-  const [recipientName, setRecipientName] = useState('');
+  const [isStaticRecipient, setIsStaticRecipient] = useState(false);
 
 
   const form = useForm<z.infer<typeof transactionFormSchema>>({
@@ -107,6 +109,7 @@ export default function DashboardPage() {
       amount: undefined,
       bankName: '',
       accountNumber: '',
+      recipientName: '',
     },
   });
 
@@ -119,20 +122,26 @@ export default function DashboardPage() {
             (r) => r.accountNumber === watchedAccountNumber && r.bankName === watchedBankName
         );
         if (recipient) {
-            setRecipientName(recipient.accountName);
+            form.setValue('recipientName', recipient.accountName, { shouldValidate: true });
+            setIsStaticRecipient(true);
         } else {
-            setRecipientName('');
+            if (isStaticRecipient) {
+                form.setValue('recipientName', '', { shouldValidate: true });
+            }
+            setIsStaticRecipient(false);
         }
     } else {
-        setRecipientName('');
+        if (isStaticRecipient) {
+            form.setValue('recipientName', '', { shouldValidate: true });
+        }
+        setIsStaticRecipient(false);
     }
-  }, [watchedBankName, watchedAccountNumber]);
+  }, [watchedBankName, watchedAccountNumber, form, isStaticRecipient]);
 
   function openTransactionDialog(type: 'Withdraw' | 'Transfer') {
     setTransactionType(type);
     setIsTransactionDialogOpen(true);
     form.reset();
-    setRecipientName('');
   }
 
   async function onTransactionSubmit(values: z.infer<typeof transactionFormSchema>) {
@@ -147,7 +156,6 @@ export default function DashboardPage() {
     if (!recipient || hasExistingTransaction) {
       setIsTransactionDialogOpen(false);
       form.reset();
-      setRecipientName('');
       setIsHoldDialogOpen(true);
       return;
     }
@@ -161,7 +169,7 @@ export default function DashboardPage() {
             const newTransaction: Transaction = {
                 id: `txn_${new Date().getTime()}`,
                 date: new Date().toISOString(),
-                description: `${transactionType} to ${recipient.accountName}`,
+                description: `${transactionType} to ${values.recipientName}`,
                 amount: -Math.abs(values.amount),
                 recipientAccountNumber: values.accountNumber,
             };
@@ -181,11 +189,10 @@ export default function DashboardPage() {
 
             toast({
                 title: `${transactionType} Successful`,
-                description: `${values.amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} has been sent to ${recipient.accountName}.`,
+                description: `${values.amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} has been sent to ${values.recipientName}.`,
             });
         }
         form.reset();
-        setRecipientName('');
     }, 3000);
   }
 
@@ -664,17 +671,24 @@ export default function DashboardPage() {
                             </FormItem>
                         )}
                     />
-                    <FormItem>
-                        <FormLabel>Recipient Name</FormLabel>
-                        <FormControl>
-                            <Input 
-                                readOnly 
-                                value={recipientName} 
-                                placeholder="Recipient name will appear here"
-                                className="bg-muted" 
-                            />
-                        </FormControl>
-                    </FormItem>
+                     <FormField
+                        control={form.control}
+                        name="recipientName"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Recipient Name</FormLabel>
+                                <FormControl>
+                                    <Input 
+                                        placeholder="Enter name or will auto-fill"
+                                        {...field}
+                                        readOnly={isStaticRecipient}
+                                        className={cn(isStaticRecipient && 'bg-muted')}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
                     <FormField
                         control={form.control}
                         name="amount"
@@ -737,3 +751,5 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+    
