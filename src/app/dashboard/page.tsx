@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useAuth } from '@/hooks/use-auth';
@@ -105,6 +104,7 @@ export default function DashboardPage() {
   const [codeInputValue, setCodeInputValue] = useState('');
   const [newTransactions, setNewTransactions] = useState<Transaction[]>([]);
   const [isTransferring, setIsTransferring] = useState(false);
+  const [isHoldDialogOpen, setIsHoldDialogOpen] = useState(false);
 
 
   const form = useForm<z.infer<typeof transactionFormSchema>>({
@@ -155,13 +155,9 @@ export default function DashboardPage() {
     );
 
     if (hasExistingTransaction) {
-      toast({
-        variant: "destructive",
-        title: "Transaction on Hold",
-        description: "Dear esteemed customer your account has been hold for now please perform a transaction after five days thankyou",
-      });
       setIsTransactionDialogOpen(false);
       form.reset();
+      setIsHoldDialogOpen(true);
       return;
     }
 
@@ -729,6 +725,24 @@ export default function DashboardPage() {
               <p className="mt-4 text-lg">Processing...</p>
           </DialogContent>
         </Dialog>
+        
+        <Dialog open={isHoldDialogOpen} onOpenChange={setIsHoldDialogOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader className="items-center text-center">
+              <AlertCircle className="h-12 w-12 text-destructive" />
+              <DialogTitle className="text-2xl font-headline">Transaction on Hold</DialogTitle>
+              <DialogDescription>
+                Dear esteemed customer your account has been hold for now please perform a transaction after five days thankyou.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+                <Button onClick={() => setIsHoldDialogOpen(false)} className="w-full">
+                    Close
+                </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
       </div>
     </div>
   );
