@@ -32,6 +32,7 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 type Transaction = {
   id: string;
@@ -48,10 +49,21 @@ type DashboardApiResponse = {
     deposits: Transaction[] | null;
 };
 
+const staticRecipients = [
+  { bankName: 'Chase Bank', accountNumber: '123456789012', accountName: 'John Doe' },
+  { bankName: 'Wells Fargo', accountNumber: '234567890123', accountName: 'Jane Smith' },
+  { bankName: 'Citibank', accountNumber: '345678901234', accountName: 'Peter Jones' },
+  { bankName: 'U.S. Bank', accountNumber: '456789012345', accountName: 'Mary Williams' },
+  { bankName: 'PNC Bank', accountNumber: '567890123456', accountName: 'David Brown' },
+];
+const uniqueBankNames = [...new Set(staticRecipients.map(r => r.bankName))];
+
+
 const transactionFormSchema = z.object({
   amount: z.coerce.number().positive({ message: "Please enter a positive amount." }),
-  bankName: z.string().min(2, { message: "Bank name must be at least 2 characters." }),
+  bankName: z.string().min(1, { message: "Please select a bank." }),
   accountNumber: z.string().regex(/^\d{12}$/, { message: "Account number must be exactly 12 digits." }),
+  recipientName: z.string().optional(),
 });
 
 export default function DashboardPage() {
@@ -74,8 +86,27 @@ export default function DashboardPage() {
       amount: undefined,
       bankName: '',
       accountNumber: '',
+      recipientName: '',
     },
   });
+
+  const watchedBankName = form.watch('bankName');
+  const watchedAccountNumber = form.watch('accountNumber');
+
+  useEffect(() => {
+    if (watchedAccountNumber.length === 12 && watchedBankName) {
+      const recipient = staticRecipients.find(
+        (r) => r.bankName === watchedBankName && r.accountNumber === watchedAccountNumber
+      );
+      if (recipient) {
+        form.setValue('recipientName', recipient.accountName);
+      } else {
+        form.setValue('recipientName', '');
+      }
+    } else {
+      form.setValue('recipientName', '');
+    }
+  }, [watchedBankName, watchedAccountNumber, form]);
 
   function openTransactionDialog(type: 'Withdraw' | 'Transfer') {
     setTransactionType(type);
@@ -84,15 +115,40 @@ export default function DashboardPage() {
   }
 
   async function onTransactionSubmit(values: z.infer<typeof transactionFormSchema>) {
-    toast({
-      title: 'Account On Hold',
-      description:
-        'Dear esteemed customer, your account has been put on hold for now. Please perform a transaction after five days. Thank you.',
-    });
-    
+    const recipient = staticRecipients.find(
+        (r) => r.bankName === values.bankName && r.accountNumber === values.accountNumber
+    );
+
+    if (recipient && dashboardData) {
+        const newTransaction: Transaction = {
+            id: `txn_${new Date().getTime()}`,
+            date: new Date().toISOString(),
+            description: `${transactionType} to ${recipient.accountName}`,
+            amount: -Math.abs(values.amount),
+        };
+
+        setDashboardData({
+            ...dashboardData,
+            balance: dashboardData.balance - values.amount,
+            transactionHistory: [newTransaction, ...(dashboardData.transactionHistory || [])],
+        });
+
+        toast({
+            title: `${transactionType} Successful`,
+            description: `${values.amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} has been sent to ${recipient.accountName}.`,
+        });
+
+    } else {
+        toast({
+            title: 'Account On Hold',
+            description:
+                'Dear esteemed customer, your account has been put on hold for now. Please perform a transaction after five days. Thank you.',
+        });
+    }
+
     setIsTransactionDialogOpen(false);
     form.reset();
-  }
+}
 
   const handleLogout = async () => {
     try {
@@ -440,9 +496,18 @@ export default function DashboardPage() {
                       render={({ field }) => (
                           <FormItem>
                               <FormLabel>Bank Name</FormLabel>
-                              <FormControl>
-                                  <Input placeholder="Recipient's bank name" {...field} />
-                              </FormControl>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <FormControl>
+                                      <SelectTrigger>
+                                          <SelectValue placeholder="Select a bank" />
+                                      </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                      {uniqueBankNames.map(bank => (
+                                          <SelectItem key={bank} value={bank}>{bank}</SelectItem>
+                                      ))}
+                                  </SelectContent>
+                              </Select>
                               <FormMessage />
                           </FormItem>
                       )}
@@ -460,8 +525,21 @@ export default function DashboardPage() {
                           </FormItem>
                       )}
                   />
+                  <FormField
+                      control={form.control}
+                      name="recipientName"
+                      render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>Recipient Name</FormLabel>
+                              <FormControl>
+                                  <Input placeholder="Account name will appear here" {...field} readOnly disabled />
+                              </FormControl>
+                              <FormMessage />
+                          </FormItem>
+                      )}
+                  />
                   <DialogFooter>
-                      <Button type="submit" disabled={form.formState.isSubmitting}>
+                      <Button type="submit" disabled={form.formState.isSubmitting || !form.getValues('recipientName')}>
                         {form.formState.isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                         {transactionType}
                       </Button>
