@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { subDays } from 'date-fns';
+import { format, subDays } from 'date-fns';
 import {
   Dialog,
   DialogContent,
@@ -50,7 +50,7 @@ type DashboardApiResponse = {
 const transactionFormSchema = z.object({
   amount: z.coerce.number().positive({ message: "Please enter a positive amount." }),
   bankName: z.string().min(2, { message: "Bank name must be at least 2 characters." }),
-  accountNumber: z.string().min(5, { message: "Account number seems too short." }),
+  accountNumber: z.string().regex(/^\d{12}$/, { message: "Account number must be exactly 12 digits." }),
 });
 
 export default function DashboardPage() {
@@ -95,39 +95,32 @@ export default function DashboardPage() {
     }
 
     const { amount, bankName } = values;
+    
+    if (transactionType === 'Withdraw' || transactionType === 'Transfer') {
+        const newTransaction: Transaction = {
+          id: `txn_${new Date().getTime()}`,
+          date: new Date().toISOString(),
+          description: `${transactionType} to ${bankName}`,
+          amount: -amount,
+        };
 
-    if (amount > dashboardData.balance) {
-        toast({
-            variant: "destructive",
-            title: "Insufficient Funds",
-            description: "You do not have enough funds to complete this transaction.",
+        setDashboardData(prevData => {
+            if (!prevData) return null;
+            return {
+                ...prevData,
+                balance: prevData.balance - amount,
+                transactionHistory: [newTransaction, ...(prevData.transactionHistory || [])],
+            }
         });
-        form.setError("amount", { type: "manual", message: "Insufficient funds." });
-        return;
+        
+        toast({
+            title: `${transactionType} Successful`,
+            description: `${amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} has been sent successfully.`,
+        });
     }
 
-    const newTransaction: Transaction = {
-      id: `txn_${new Date().getTime()}`,
-      date: new Date().toISOString(),
-      description: `${transactionType} to ${bankName}`,
-      amount: -amount,
-    };
-
-    setDashboardData(prevData => {
-        if (!prevData) return null;
-        return {
-            ...prevData,
-            balance: prevData.balance - amount,
-            transactionHistory: [newTransaction, ...(prevData.transactionHistory || [])],
-        }
-    });
 
     setIsTransactionDialogOpen(false);
-    
-    toast({
-        title: `${transactionType} Successful`,
-        description: `${amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} has been sent successfully.`,
-    });
   }
 
   const handleLogout = async () => {
@@ -228,7 +221,7 @@ export default function DashboardPage() {
         setIsDataLoading(false);
       }
     }
-  }, [router, toast]);
+  }, [router]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -273,6 +266,14 @@ export default function DashboardPage() {
       ...(dashboardData.deposits || [])
   ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   const recentTransactions = allTransactions.slice(0, 7);
+  const formatDate = (dateString: string) => {
+    try {
+        return format(new Date(dateString), 'MMM d');
+    } catch {
+        return "Invalid Date";
+    }
+  };
+
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -354,10 +355,10 @@ export default function DashboardPage() {
             <TableBody>
                 {recentTransactions.map(t => (
                     <TableRow key={t.id}>
-                        <TableCell className="hidden sm:table-cell">{new Date(t.date).toLocaleDateString('en-us', { month: 'short', day: 'numeric' })}</TableCell>
+                        <TableCell className="hidden sm:table-cell">{formatDate(t.date)}</TableCell>
                         <TableCell>
                             <div className="font-medium">{t.description}</div>
-                            <div className="text-sm text-muted-foreground md:hidden">{new Date(t.date).toLocaleDateString('en-us', { month: 'short', day: 'numeric' })}</div>
+                            <div className="text-sm text-muted-foreground md:hidden">{formatDate(t.date)}</div>
                         </TableCell>
                         <TableCell className="text-right font-mono">
                             <span className={t.amount > 0 ? 'text-primary' : 'text-foreground'}>
@@ -414,7 +415,7 @@ export default function DashboardPage() {
                           <FormItem>
                               <FormLabel>Recipient Account Number</FormLabel>
                               <FormControl>
-                                  <Input placeholder="Recipient's account number" {...field} />
+                                  <Input placeholder="12-digit account number" {...field} maxLength={12} />
                               </FormControl>
                               <FormMessage />
                           </FormItem>
