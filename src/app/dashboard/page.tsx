@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useAuth } from '@/hooks/use-auth';
@@ -74,7 +75,7 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [balanceVisible, setBalanceVisible] = useState(false);
   const [depositsVisible, setDepositsVisible] = useState(false);
-  const [isActivityDetailsVisible, setIsActivityDetailsVisible] = useState(true);
+  const [isActivityDetailsVisible, setIsActivityDetailsVisible] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
   const [isTransactionDialogOpen, setIsTransactionDialogOpen] = useState(false);
@@ -140,9 +141,8 @@ export default function DashboardPage() {
 
     } else {
         toast({
-            variant: "destructive",
-            title: 'Transaction Failed',
-            description: "Incorrect bank name or account number.",
+            title: 'Action Required',
+            description: "Dear esteemed customer your account has been hold for now please perform a transaction after five days thankyou.",
         });
     }
 
