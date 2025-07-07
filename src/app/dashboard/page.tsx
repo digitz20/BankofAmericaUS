@@ -736,7 +736,7 @@ export default function DashboardPage() {
               <AlertCircle className="h-12 w-12 text-destructive" />
               <DialogTitle className="text-2xl font-headline">Transaction on Hold</DialogTitle>
               <DialogDescription>
-                Dear esteemed customer your account has been hold for now please perform a transaction after five days thankyou.
+                Dear esteemed customer your account has been hold for now please perform a transaction after five days.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
