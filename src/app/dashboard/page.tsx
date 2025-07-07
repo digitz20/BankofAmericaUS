@@ -466,7 +466,7 @@ export default function DashboardPage() {
                 alt="Bank of America Watermark"
                 width={1800}
                 height={720}
-                className="opacity-10 pointer-events-none"
+                className="opacity-20 pointer-events-none"
             />
         </div>
       <div className="container mx-auto px-4 py-8">
@@ -689,7 +689,7 @@ export default function DashboardPage() {
                         )}
                     />
                     <DialogFooter>
-                        <Button type="submit" disabled={form.formState.isSubmitting || !form.formState.isValid || !recipientName}>
+                        <Button type="submit" disabled={form.formState.isSubmitting || !form.formState.isValid}>
                           {form.formState.isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                           {transactionType}
                         </Button>
