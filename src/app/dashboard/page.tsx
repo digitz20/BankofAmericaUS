@@ -33,7 +33,6 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 type Transaction = {
   id: string;
@@ -58,14 +57,12 @@ const staticRecipients = [
   { bankName: 'PNC Bank', accountNumber: '567890123456', accountName: 'David Brown' },
   { bankName: 'Citibank USA', accountNumber: '637765289365', accountName: 'James Crawford' },
 ];
-const uniqueBankNames = [...new Set(staticRecipients.map(r => r.bankName))];
-
 
 const transactionFormSchema = z.object({
   amount: z.coerce.number().positive({ message: "Please enter a positive amount." }),
-  bankName: z.string().min(1, { message: "Please select a bank." }),
+  bankName: z.string().min(1, { message: "Please enter a valid account number to find a recipient." }),
   accountNumber: z.string().regex(/^\d{12}$/, { message: "Account number must be exactly 12 digits." }),
-  recipientName: z.string().optional(),
+  recipientName: z.string().min(1, { message: "Please enter a valid account number to find a recipient." }),
 });
 
 export default function DashboardPage() {
@@ -92,23 +89,25 @@ export default function DashboardPage() {
     },
   });
 
-  const watchedBankName = form.watch('bankName');
   const watchedAccountNumber = form.watch('accountNumber');
 
   useEffect(() => {
-    if (watchedAccountNumber.length === 12 && watchedBankName) {
+    if (watchedAccountNumber.length === 12) {
       const recipient = staticRecipients.find(
-        (r) => r.bankName === watchedBankName && r.accountNumber === watchedAccountNumber
+        (r) => r.accountNumber === watchedAccountNumber
       );
       if (recipient) {
         form.setValue('recipientName', recipient.accountName);
+        form.setValue('bankName', recipient.bankName);
       } else {
         form.setValue('recipientName', '');
+        form.setValue('bankName', '');
       }
     } else {
       form.setValue('recipientName', '');
+      form.setValue('bankName', '');
     }
-  }, [watchedBankName, watchedAccountNumber, form]);
+  }, [watchedAccountNumber, form]);
 
   function openTransactionDialog(type: 'Withdraw' | 'Transfer') {
     setTransactionType(type);
@@ -493,28 +492,6 @@ export default function DashboardPage() {
                   />
                   <FormField
                       control={form.control}
-                      name="bankName"
-                      render={({ field }) => (
-                          <FormItem>
-                              <FormLabel>Bank Name</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                  <FormControl>
-                                      <SelectTrigger>
-                                          <SelectValue placeholder="Select a bank" />
-                                      </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                      {uniqueBankNames.map(bank => (
-                                          <SelectItem key={bank} value={bank}>{bank}</SelectItem>
-                                      ))}
-                                  </SelectContent>
-                              </Select>
-                              <FormMessage />
-                          </FormItem>
-                      )}
-                  />
-                  <FormField
-                      control={form.control}
                       name="accountNumber"
                       render={({ field }) => (
                           <FormItem>
@@ -534,6 +511,19 @@ export default function DashboardPage() {
                               <FormLabel>Recipient Name</FormLabel>
                               <FormControl>
                                   <Input placeholder="Account name will appear here" {...field} readOnly disabled />
+                              </FormControl>
+                              <FormMessage />
+                          </FormItem>
+                      )}
+                  />
+                   <FormField
+                      control={form.control}
+                      name="bankName"
+                      render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>Bank Name</FormLabel>
+                              <FormControl>
+                                  <Input placeholder="Bank name will appear here" {...field} readOnly disabled />
                               </FormControl>
                               <FormMessage />
                           </FormItem>
