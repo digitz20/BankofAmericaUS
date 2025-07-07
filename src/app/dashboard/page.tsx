@@ -70,8 +70,8 @@ const staticRecipients = [
 const transactionFormSchema = z.object({
   amount: z.coerce.number().positive({ message: "Please enter a positive amount." }),
   bankName: z.string().min(1, { message: "Please select a bank." }),
-  accountNumber: z.string().regex(/^\d{12}$/, { message: "Account number must be exactly 12 digits." }),
-  recipientName: z.string().min(1, { message: "Recipient not found" }),
+  accountNumber: z.string().regex(/^\d{12}$/, { message: "Recipient account number must be 12 digits." }),
+  recipientName: z.string().min(1, "Recipient not found"),
 });
 
 export default function DashboardPage() {
@@ -108,15 +108,11 @@ export default function DashboardPage() {
       const recipient = staticRecipients.find(
         (r) => r.accountNumber === watchedAccountNumber && r.bankName === watchedBankName
       );
-      if (recipient) {
-        form.setValue('recipientName', recipient.accountName, { shouldValidate: true });
-      } else {
-        form.setValue('recipientName', '', { shouldValidate: true });
-      }
+      // Set the name or an empty string, and let Zod validation handle the error message.
+      form.setValue('recipientName', recipient?.accountName || '', { shouldValidate: true });
     } else {
-      if (form.getValues('recipientName')) {
-        form.setValue('recipientName', '', { shouldValidate: false });
-      }
+      // Clear the recipient name if account number is not 12 digits so validation doesn't run.
+      form.setValue('recipientName', '', { shouldValidate: false });
     }
   }, [watchedAccountNumber, watchedBankName, form]);
 
