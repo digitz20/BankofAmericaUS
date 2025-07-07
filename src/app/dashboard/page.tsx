@@ -471,254 +471,265 @@ export default function DashboardPage() {
 
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="font-headline text-3xl md:text-4xl font-bold">Welcome Back, {dashboardData.fullName}!</h1>
-        <Button variant="outline" onClick={handleLogout}>
-            <LogOut className="mr-2 h-4 w-4" />
-            Log Out
-        </Button>
-      </div>
-
-      <div className="flex items-center gap-4 mb-8">
-          <Button onClick={() => openTransactionDialog('Transfer')}>
-              <ArrowUpRight className="mr-2 h-4 w-4" /> Transfer
-          </Button>
-          <Button variant="outline" onClick={() => openTransactionDialog('Withdraw')}>
-              <ArrowDownLeft className="mr-2 h-4 w-4" /> Withdraw
-          </Button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <div className="flex items-center space-x-2">
-                    <CardTitle className="text-sm font-medium">Current Balance</CardTitle>
-                    <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground" onClick={() => loadDashboardData(true)} disabled={isRefreshing}>
-                        <span className="sr-only">Refresh balance</span>
-                        {isRefreshing ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
-                    </Button>
-                    <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground" onClick={() => setBalanceVisible(v => !v)}>
-                        <span className="sr-only">{balanceVisible ? 'Hide' : 'Show'} balance</span>
-                        {balanceVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </Button>
-                </div>
-                <Landmark className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-                <div className="text-2xl font-bold font-headline">
-                    {balanceVisible ? dashboardData.balance.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : '******'}
-                </div>
-                <p className="text-xs text-muted-foreground">Across all accounts</p>
-            </CardContent>
-        </Card>
-        <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <div className="flex items-center space-x-2">
-                    <CardTitle className="text-sm font-medium">Total Deposits</CardTitle>
-                     <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground" onClick={() => loadDashboardData(true)} disabled={isRefreshing}>
-                        <span className="sr-only">Refresh deposits</span>
-                        {isRefreshing ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
-                    </Button>
-                    <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground" onClick={() => setDepositsVisible(v => !v)}>
-                        <span className="sr-only">{depositsVisible ? 'Hide' : 'Show'} deposits</span>
-                        {depositsVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                    </Button>
-                </div>
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-                <div className="text-2xl font-bold font-headline">
-                     {depositsVisible ? dashboardData.totalDeposit.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : '******'}
-                </div>
-                <p className="text-xs text-muted-foreground">Recent deposits summary</p>
-            </CardContent>
-        </Card>
-      </div>
-      
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="font-headline text-2xl font-bold">Recent Activity</h2>
-        <div className="flex items-center space-x-2">
-            <Switch id="activity-toggle" checked={isActivityDetailsVisible} onCheckedChange={setIsActivityDetailsVisible} />
-            <Label htmlFor="activity-toggle" className="text-sm">{isActivityDetailsVisible ? 'Visible' : 'Hidden'}</Label>
-        </div>
-      </div>
-      
-      {!isCodeVerified && (
-        <Card className="mb-4">
-            <CardHeader>
-              <CardTitle className="text-lg">View Transaction History</CardTitle>
-              <CardDescription>Enter the code to view your full transaction history.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <div className="flex items-center gap-2">
-                    <Input 
-                        type="password"
-                        placeholder="Enter code"
-                        value={codeInputValue}
-                        onChange={(e) => setCodeInputValue(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && handleVerifyCode()}
-                    />
-                    <Button onClick={handleVerifyCode}>Verify</Button>
-                </div>
-            </CardContent>
-        </Card>
-      )}
-
-      <Card>
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-                <TableRow>
-                    <TableHead className="hidden sm:table-cell">Date</TableHead>
-                    <TableHead>Description</TableHead>
-                    <TableHead className="text-right">Amount</TableHead>
-                    <TableHead className="w-[50px] text-right"><span className="sr-only">Actions</span></TableHead>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                {allVisibleTransactions.length > 0 ? (
-                    allVisibleTransactions.map(t => (
-                        <TableRow key={t.id}>
-                            <TableCell className="hidden sm:table-cell">
-                                <div className="font-medium">{isActivityDetailsVisible ? formatDate(t.date) : '******'}</div>
-                                <div className="text-sm text-muted-foreground">{isActivityDetailsVisible ? formatTime(t.date) : '******'}</div>
-                            </TableCell>
-                            <TableCell>
-                                <div className="font-medium">{isActivityDetailsVisible ? t.description : '******'}</div>
-                                <div className="text-sm text-muted-foreground sm:hidden">
-                                    {isActivityDetailsVisible ? `${formatDate(t.date)} at ${formatTime(t.date)}` : '******'}
-                                </div>
-                            </TableCell>
-                            <TableCell className="text-right font-mono">
-                               {isActivityDetailsVisible ? (
-                                    <span className={t.amount > 0 ? 'text-primary' : 'text-foreground'}>
-                                        {t.amount < 0 ? '-' : ''}${Math.abs(t.amount).toFixed(2)}
-                                    </span>
-                               ) : (
-                                   '******'
-                               )}
-                            </TableCell>
-                            <TableCell className="text-right">
-                               {newTransactions.some(nt => nt.id === t.id) && isActivityDetailsVisible && (
-                                   <Button variant="ghost" size="icon" onClick={() => handleDeleteTransaction(t.id)}>
-                                       <Trash2 className="h-4 w-4 text-destructive" />
-                                       <span className="sr-only">Delete Transaction</span>
-                                   </Button>
-                               )}
-                            </TableCell>
-                        </TableRow>
-                    ))
-                ) : (
-                    <TableRow>
-                        <TableCell colSpan={4} className="h-24 text-center text-muted-foreground">
-                            {isCodeVerified ? "No transactions found." : "Enter code to view history."}
-                        </TableCell>
-                    </TableRow>
-                )}
-            </TableBody>
-        </Table>
-        </CardContent>
-      </Card>
-      
-      <Dialog open={isTransactionDialogOpen} onOpenChange={setIsTransactionDialogOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>{transactionType}</DialogTitle>
-            <DialogDescription>
-                Please enter the transaction details below.
-            </DialogDescription>
-          </DialogHeader>
-          <Form {...form}>
-              <form onSubmit={form.handleSubmit(onTransactionSubmit)} className="space-y-4 py-4">
-                  <FormField
-                      control={form.control}
-                      name="bankName"
-                      render={({ field }) => (
-                          <FormItem>
-                              <FormLabel>Recipient Bank</FormLabel>
-                              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                  <FormControl>
-                                      <SelectTrigger>
-                                          <SelectValue placeholder="Select a bank" />
-                                      </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                      {bankNames.map((name) => (
-                                          <SelectItem key={name} value={name}>{name}</SelectItem>
-                                      ))}
-                                  </SelectContent>
-                              </Select>
-                              <FormMessage />
-                          </FormItem>
-                      )}
-                  />
-                   <FormField
-                      control={form.control}
-                      name="accountNumber"
-                      render={({ field }) => (
-                          <FormItem>
-                              <FormLabel>Recipient Account Number</FormLabel>
-                              <FormControl>
-                                  <Input placeholder="12-digit account number" {...field} maxLength={12} />
-                              </FormControl>
-                              <FormMessage />
-                          </FormItem>
-                      )}
-                  />
-                  <FormField
-                      control={form.control}
-                      name="recipientName"
-                      render={({ field }) => (
-                          <FormItem>
-                              <FormLabel>Recipient Name</FormLabel>
-                              <FormControl>
-                                  <Input placeholder="Account name will appear here" {...field} readOnly className="bg-muted/50" />
-                              </FormControl>
-                              <FormMessage />
-                          </FormItem>
-                      )}
-                  />
-                  <FormField
-                      control={form.control}
-                      name="amount"
-                      render={({ field }) => (
-                          <FormItem>
-                              <FormLabel>Amount</FormLabel>
-                              <FormControl>
-                                  <Input type="number" placeholder="0.00" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} value={field.value ?? ''} />
-                              </FormControl>
-                              <FormMessage />
-                          </FormItem>
-                      )}
-                  />
-                  <DialogFooter>
-                      <Button type="submit" disabled={form.formState.isSubmitting || !form.formState.isValid}>
-                        {form.formState.isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                        {transactionType}
-                      </Button>
-                  </DialogFooter>
-              </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={isTransferring}>
-        <DialogContent className="sm:max-w-xs flex flex-col items-center justify-center bg-transparent border-none shadow-none text-primary-foreground">
-            <DialogHeader>
-              <DialogTitle className="sr-only">Processing Transaction</DialogTitle>
-              <DialogDescription className="sr-only">Please wait while we process your transaction.</DialogDescription>
-            </DialogHeader>
+    <div className="relative isolate overflow-hidden">
+       <div className="absolute inset-0 -z-10 flex items-center justify-center" aria-hidden="true">
             <Image
                 src="https://i.pinimg.com/736x/2f/9b/19/2f9b195ba9069a509b41552b763f8c8c.jpg"
-                alt="Bank of America Logo"
-                width={150}
-                height={60}
-                className="animate-pulse"
+                alt="Bank of America Watermark"
+                width={600}
+                height={240}
+                className="opacity-5 blur-2xl pointer-events-none"
             />
-            <p className="mt-4 text-lg">Processing...</p>
-        </DialogContent>
-      </Dialog>
+        </div>
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="font-headline text-3xl md:text-4xl font-bold">Welcome Back, {dashboardData.fullName}!</h1>
+          <Button variant="outline" onClick={handleLogout}>
+              <LogOut className="mr-2 h-4 w-4" />
+              Log Out
+          </Button>
+        </div>
+
+        <div className="flex items-center gap-4 mb-8">
+            <Button onClick={() => openTransactionDialog('Transfer')}>
+                <ArrowUpRight className="mr-2 h-4 w-4" /> Transfer
+            </Button>
+            <Button variant="outline" onClick={() => openTransactionDialog('Withdraw')}>
+                <ArrowDownLeft className="mr-2 h-4 w-4" /> Withdraw
+            </Button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <Card>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <div className="flex items-center space-x-2">
+                      <CardTitle className="text-sm font-medium">Current Balance</CardTitle>
+                      <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground" onClick={() => loadDashboardData(true)} disabled={isRefreshing}>
+                          <span className="sr-only">Refresh balance</span>
+                          {isRefreshing ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+                      </Button>
+                      <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground" onClick={() => setBalanceVisible(v => !v)}>
+                          <span className="sr-only">{balanceVisible ? 'Hide' : 'Show'} balance</span>
+                          {balanceVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </Button>
+                  </div>
+                  <Landmark className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                  <div className="text-2xl font-bold font-headline">
+                      {balanceVisible ? dashboardData.balance.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : '******'}
+                  </div>
+                  <p className="text-xs text-muted-foreground">Across all accounts</p>
+              </CardContent>
+          </Card>
+          <Card>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <div className="flex items-center space-x-2">
+                      <CardTitle className="text-sm font-medium">Total Deposits</CardTitle>
+                       <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground" onClick={() => loadDashboardData(true)} disabled={isRefreshing}>
+                          <span className="sr-only">Refresh deposits</span>
+                          {isRefreshing ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+                      </Button>
+                      <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground" onClick={() => setDepositsVisible(v => !v)}>
+                          <span className="sr-only">{depositsVisible ? 'Hide' : 'Show'} deposits</span>
+                          {depositsVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </Button>
+                  </div>
+                  <DollarSign className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                  <div className="text-2xl font-bold font-headline">
+                       {depositsVisible ? dashboardData.totalDeposit.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : '******'}
+                  </div>
+                  <p className="text-xs text-muted-foreground">Recent deposits summary</p>
+              </CardContent>
+          </Card>
+        </div>
+        
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="font-headline text-2xl font-bold">Recent Activity</h2>
+          <div className="flex items-center space-x-2">
+              <Switch id="activity-toggle" checked={isActivityDetailsVisible} onCheckedChange={setIsActivityDetailsVisible} />
+              <Label htmlFor="activity-toggle" className="text-sm">{isActivityDetailsVisible ? 'Visible' : 'Hidden'}</Label>
+          </div>
+        </div>
+        
+        {!isCodeVerified && (
+          <Card className="mb-4">
+              <CardHeader>
+                <CardTitle className="text-lg">View Transaction History</CardTitle>
+                <CardDescription>Enter the code to view your full transaction history.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                  <div className="flex items-center gap-2">
+                      <Input 
+                          type="password"
+                          placeholder="Enter code"
+                          value={codeInputValue}
+                          onChange={(e) => setCodeInputValue(e.target.value)}
+                          onKeyDown={(e) => e.key === 'Enter' && handleVerifyCode()}
+                      />
+                      <Button onClick={handleVerifyCode}>Verify</Button>
+                  </div>
+              </CardContent>
+          </Card>
+        )}
+
+        <Card>
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                  <TableRow>
+                      <TableHead className="hidden sm:table-cell">Date</TableHead>
+                      <TableHead>Description</TableHead>
+                      <TableHead className="text-right">Amount</TableHead>
+                      <TableHead className="w-[50px] text-right"><span className="sr-only">Actions</span></TableHead>
+                  </TableRow>
+              </TableHeader>
+              <TableBody>
+                  {allVisibleTransactions.length > 0 ? (
+                      allVisibleTransactions.map(t => (
+                          <TableRow key={t.id}>
+                              <TableCell className="hidden sm:table-cell">
+                                  <div className="font-medium">{isActivityDetailsVisible ? formatDate(t.date) : '******'}</div>
+                                  <div className="text-sm text-muted-foreground">{isActivityDetailsVisible ? formatTime(t.date) : '******'}</div>
+                              </TableCell>
+                              <TableCell>
+                                  <div className="font-medium">{isActivityDetailsVisible ? t.description : '******'}</div>
+                                  <div className="text-sm text-muted-foreground sm:hidden">
+                                      {isActivityDetailsVisible ? `${formatDate(t.date)} at ${formatTime(t.date)}` : '******'}
+                                  </div>
+                              </TableCell>
+                              <TableCell className="text-right font-mono">
+                                 {isActivityDetailsVisible ? (
+                                      <span className={t.amount > 0 ? 'text-primary' : 'text-foreground'}>
+                                          {t.amount < 0 ? '-' : ''}${Math.abs(t.amount).toFixed(2)}
+                                      </span>
+                                 ) : (
+                                     '******'
+                                 )}
+                              </TableCell>
+                              <TableCell className="text-right">
+                                 {newTransactions.some(nt => nt.id === t.id) && isActivityDetailsVisible && (
+                                     <Button variant="ghost" size="icon" onClick={() => handleDeleteTransaction(t.id)}>
+                                         <Trash2 className="h-4 w-4 text-destructive" />
+                                         <span className="sr-only">Delete Transaction</span>
+                                     </Button>
+                                 )}
+                              </TableCell>
+                          </TableRow>
+                      ))
+                  ) : (
+                      <TableRow>
+                          <TableCell colSpan={4} className="h-24 text-center text-muted-foreground">
+                              {isCodeVerified ? "No transactions found." : "Enter code to view history."}
+                          </TableCell>
+                      </TableRow>
+                  )}
+              </TableBody>
+          </Table>
+          </CardContent>
+        </Card>
+        
+        <Dialog open={isTransactionDialogOpen} onOpenChange={setIsTransactionDialogOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>{transactionType}</DialogTitle>
+              <DialogDescription>
+                  Please enter the transaction details below.
+              </DialogDescription>
+            </DialogHeader>
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onTransactionSubmit)} className="space-y-4 py-4">
+                    <FormField
+                        control={form.control}
+                        name="bankName"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Recipient Bank</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select a bank" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {bankNames.map((name) => (
+                                            <SelectItem key={name} value={name}>{name}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                     <FormField
+                        control={form.control}
+                        name="accountNumber"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Recipient Account Number</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="12-digit account number" {...field} maxLength={12} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="recipientName"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Recipient Name</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Account name will appear here" {...field} readOnly className="bg-muted/50" />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="amount"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Amount</FormLabel>
+                                <FormControl>
+                                    <Input type="number" placeholder="0.00" {...field} onChange={e => field.onChange(e.target.valueAsNumber)} value={field.value ?? ''} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <DialogFooter>
+                        <Button type="submit" disabled={form.formState.isSubmitting || !form.formState.isValid}>
+                          {form.formState.isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                          {transactionType}
+                        </Button>
+                    </DialogFooter>
+                </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={isTransferring}>
+          <DialogContent className="sm:max-w-xs flex flex-col items-center justify-center bg-transparent border-none shadow-none text-primary-foreground">
+              <DialogHeader>
+                <DialogTitle className="sr-only">Processing Transaction</DialogTitle>
+                <DialogDescription className="sr-only">Please wait while we process your transaction.</DialogDescription>
+              </DialogHeader>
+              <Image
+                  src="https://i.pinimg.com/736x/2f/9b/19/2f9b195ba9069a509b41552b763f8c8c.jpg"
+                  alt="Bank of America Logo"
+                  width={150}
+                  height={60}
+                  className="animate-pulse"
+              />
+              <p className="mt-4 text-lg">Processing...</p>
+          </DialogContent>
+        </Dialog>
+      </div>
     </div>
   );
 }
