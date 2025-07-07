@@ -97,7 +97,6 @@ export default function DashboardPage() {
   const [newTransactions, setNewTransactions] = useState<Transaction[]>([]);
   const [isTransferring, setIsTransferring] = useState(false);
   const [isHoldDialogOpen, setIsHoldDialogOpen] = useState(false);
-  const [isInvalidAccountDialogOpen, setIsInvalidAccountDialogOpen] = useState(false);
   const [recipientName, setRecipientName] = useState('');
 
 
@@ -141,19 +140,11 @@ export default function DashboardPage() {
       (r) => r.accountNumber === values.accountNumber && r.bankName === values.bankName
     );
 
-    if (!recipient) {
-      setIsTransactionDialogOpen(false);
-      form.reset();
-      setRecipientName('');
-      setIsInvalidAccountDialogOpen(true);
-      return;
-    }
-
     const hasExistingTransaction = newTransactions.some(
       (t) => t.recipientAccountNumber === values.accountNumber
     );
 
-    if (hasExistingTransaction) {
+    if (!recipient || hasExistingTransaction) {
       setIsTransactionDialogOpen(false);
       form.reset();
       setRecipientName('');
@@ -708,7 +699,7 @@ export default function DashboardPage() {
           </DialogContent>
         </Dialog>
 
-        <Dialog open={isTransferring}>
+        <Dialog open={isTransferring} onOpenChange={setIsTransferring}>
           <DialogContent className="sm:max-w-xs flex flex-col items-center justify-center bg-transparent border-none shadow-none text-primary-foreground">
               <DialogHeader>
                 <DialogTitle className="sr-only">Processing Transaction</DialogTitle>
@@ -742,26 +733,7 @@ export default function DashboardPage() {
           </DialogContent>
         </Dialog>
 
-        <Dialog open={isInvalidAccountDialogOpen} onOpenChange={setIsInvalidAccountDialogOpen}>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader className="items-center text-center">
-              <AlertCircle className="h-12 w-12 text-destructive" />
-              <DialogTitle className="text-2xl font-headline">Invalid Recipient</DialogTitle>
-              <DialogDescription>
-                The recipient account number could not be found. Please check the details and try again.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-                <Button onClick={() => setIsInvalidAccountDialogOpen(false)} className="w-full">
-                    Close
-                </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
       </div>
     </div>
   );
 }
-
-    
