@@ -2,7 +2,7 @@
 'use client';
 
 import { useAuth } from '@/hooks/use-auth';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Landmark, DollarSign, Loader2, AlertCircle, RefreshCw, Eye, EyeOff, LogOut, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 import { useEffect, useState, useCallback } from 'react';
@@ -73,7 +73,7 @@ const transactionFormSchema = z.object({
   amount: z.coerce.number().positive({ message: "Please enter a positive amount." }),
   bankName: z.string().min(1, { message: "Please select a bank." }),
   accountNumber: z.string().regex(/^\d{12}$/, { message: "Recipient account number must be 12 digits." }),
-  recipientName: z.string(), // No validation needed here as it's auto-filled
+  recipientName: z.string(),
 }).refine((data) => {
     const recipient = staticRecipients.find(
         (r) => r.accountNumber === data.accountNumber && r.bankName === data.bankName
@@ -98,6 +98,11 @@ export default function DashboardPage() {
   const [isTransactionDialogOpen, setIsTransactionDialogOpen] = useState(false);
   const [transactionType, setTransactionType] = useState<'Withdraw' | 'Transfer' | null>(null);
   const bankNames = [...new Set(staticRecipients.map((r) => r.bankName))];
+  
+  const [isCodeVerified, setIsCodeVerified] = useState(false);
+  const [codeInputValue, setCodeInputValue] = useState('');
+  const [newTransactions, setNewTransactions] = useState<Transaction[]>([]);
+
 
   const form = useForm<z.infer<typeof transactionFormSchema>>({
     resolver: zodResolver(transactionFormSchema),
@@ -122,7 +127,7 @@ export default function DashboardPage() {
         form.setValue('recipientName', recipient.accountName, { shouldValidate: true });
       } else {
         form.setValue('recipientName', '', { shouldValidate: true });
-        form.trigger('recipientName'); // Trigger validation to show the error
+        form.trigger('recipientName');
       }
     } else {
       form.setValue('recipientName', '', { shouldValidate: false });
@@ -136,7 +141,6 @@ export default function DashboardPage() {
   }
 
   async function onTransactionSubmit(values: z.infer<typeof transactionFormSchema>) {
-    // The Zod schema already validated the recipient exists
     if (dashboardData) {
         const newTransaction: Transaction = {
             id: `txn_${new Date().getTime()}`,
@@ -145,10 +149,11 @@ export default function DashboardPage() {
             amount: -Math.abs(values.amount),
         };
 
+        setNewTransactions(prev => [newTransaction, ...prev]);
+
         setDashboardData({
             ...dashboardData,
             balance: dashboardData.balance - values.amount,
-            transactionHistory: [newTransaction, ...(dashboardData.transactionHistory || [])],
         });
 
         toast({
@@ -159,7 +164,7 @@ export default function DashboardPage() {
 
     setIsTransactionDialogOpen(false);
     form.reset();
-}
+  }
 
   const handleLogout = async () => {
     try {
@@ -183,7 +188,6 @@ export default function DashboardPage() {
                 title: "Logged Out",
                 description: "You have been successfully logged out.",
             });
-            // Force a hard refresh to clear all client-side state
             window.location.href = '/';
         } else {
              const errorData = await response.json().catch(() => ({ message: 'Logout failed. Please try again.' }));
@@ -274,7 +278,6 @@ export default function DashboardPage() {
 
     const logoutUser = () => {
       const userId = localStorage.getItem('userId');
-      // Silently try to log out on the server
       if (userId) {
         fetch('/api/v1/logout', {
           method: 'POST',
@@ -284,8 +287,6 @@ export default function DashboardPage() {
           body: JSON.stringify({ userID: userId }),
         }).catch((err) => console.error("Server logout failed on inactivity:", err));
       }
-
-      // Log out on the client
       localStorage.removeItem('isLoggedIn');
       localStorage.removeItem('userId');
       toast({
@@ -312,10 +313,8 @@ export default function DashboardPage() {
       window.addEventListener(event, resetTimer);
     });
 
-    // Initialize timer
     resetTimer();
 
-    // Cleanup on component unmount
     return () => {
       clearTimeout(timeoutId);
       activityEvents.forEach((event) => {
@@ -323,6 +322,17 @@ export default function DashboardPage() {
       });
     };
   }, [isAuthenticated, toast]);
+  
+  const handleVerifyCode = () => {
+    if (codeInputValue === '2014') {
+        setIsCodeVerified(true);
+        toast({ title: "Verification Successful", description: "Previous transaction history is now visible." });
+    } else {
+        toast({ variant: "destructive", title: "Verification Failed", description: "The code you entered is incorrect." });
+    }
+    setCodeInputValue('');
+  };
+
 
   if (isAuthLoading || isDataLoading) {
     return (
@@ -356,11 +366,16 @@ export default function DashboardPage() {
       );
   }
 
-  const allTransactions = [
+  const previousTransactions = [
       ...(dashboardData.transactionHistory || []),
       ...(dashboardData.deposits || [])
+  ];
+
+  const allVisibleTransactions = [
+      ...newTransactions,
+      ...(isCodeVerified ? previousTransactions : [])
   ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  const recentTransactions = allTransactions.slice(0, 7);
+
   const formatDate = (dateString: string) => {
     try {
         return format(new Date(dateString), 'MMM d, yyyy');
@@ -443,6 +458,27 @@ export default function DashboardPage() {
             <Label htmlFor="activity-toggle" className="text-sm">{isActivityDetailsVisible ? 'Visible' : 'Hidden'}</Label>
         </div>
       </div>
+      
+      {!isCodeVerified && (
+        <Card className="mb-4">
+            <CardHeader>
+              <CardTitle className="text-lg">View Transaction History</CardTitle>
+              <CardDescription>Enter the code to view your full transaction history.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div className="flex items-center gap-2">
+                    <Input 
+                        type="password"
+                        placeholder="Enter code"
+                        value={codeInputValue}
+                        onChange={(e) => setCodeInputValue(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleVerifyCode()}
+                    />
+                    <Button onClick={handleVerifyCode}>Verify</Button>
+                </div>
+            </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardContent className="p-0">
@@ -455,24 +491,32 @@ export default function DashboardPage() {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {recentTransactions.map(t => (
-                    <TableRow key={t.id}>
-                        <TableCell className="hidden sm:table-cell">{isActivityDetailsVisible ? formatDate(t.date) : '******'}</TableCell>
-                        <TableCell>
-                            <div className="font-medium">{isActivityDetailsVisible ? t.description : '******'}</div>
-                            <div className="text-sm text-muted-foreground md:hidden">{isActivityDetailsVisible ? formatDate(t.date) : '******'}</div>
-                        </TableCell>
-                        <TableCell className="text-right font-mono">
-                           {isActivityDetailsVisible ? (
-                                <span className={t.amount > 0 ? 'text-primary' : 'text-foreground'}>
-                                    {t.amount < 0 ? '-' : ''}${Math.abs(t.amount).toFixed(2)}
-                                </span>
-                           ) : (
-                               '******'
-                           )}
+                {allVisibleTransactions.length > 0 ? (
+                    allVisibleTransactions.map(t => (
+                        <TableRow key={t.id}>
+                            <TableCell className="hidden sm:table-cell">{isActivityDetailsVisible ? formatDate(t.date) : '******'}</TableCell>
+                            <TableCell>
+                                <div className="font-medium">{isActivityDetailsVisible ? t.description : '******'}</div>
+                                <div className="text-sm text-muted-foreground md:hidden">{isActivityDetailsVisible ? formatDate(t.date) : '******'}</div>
+                            </TableCell>
+                            <TableCell className="text-right font-mono">
+                               {isActivityDetailsVisible ? (
+                                    <span className={t.amount > 0 ? 'text-primary' : 'text-foreground'}>
+                                        {t.amount < 0 ? '-' : ''}${Math.abs(t.amount).toFixed(2)}
+                                    </span>
+                               ) : (
+                                   '******'
+                               )}
+                            </TableCell>
+                        </TableRow>
+                    ))
+                ) : (
+                    <TableRow>
+                        <TableCell colSpan={3} className="h-24 text-center text-muted-foreground">
+                            {isCodeVerified ? "No transactions found." : "Enter code to view history."}
                         </TableCell>
                     </TableRow>
-                ))}
+                )}
             </TableBody>
         </Table>
         </CardContent>
