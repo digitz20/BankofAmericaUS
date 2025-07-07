@@ -91,9 +91,9 @@ export function Header() {
         const protectedLink = (path: string) => isAuthenticated ? path : '/';
 
         const personalMainNavLinks = [
-          { name: 'Checking', href: protectedLink('/accounts') },
-          { name: 'Savings & CDs', href: protectedLink('/accounts') },
-          { name: 'Credit Cards', href: protectedLink('/accounts') },
+          { name: 'Checking', href: '/' },
+          { name: 'Savings & CDs', href: '/' },
+          { name: 'Credit Cards', href: '/' },
           { name: 'Home Loans', href: protectedLink('/') },
           { name: 'Auto Loans', href: protectedLink('/') },
           { name: 'Investing', href: '/wealth-management' },
