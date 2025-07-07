@@ -71,7 +71,7 @@ const transactionFormSchema = z.object({
   amount: z.coerce.number().positive({ message: "Please enter a positive amount." }),
   bankName: z.string().min(1, { message: "Please select a bank." }),
   accountNumber: z.string().regex(/^\d{12}$/, { message: "Account number must be exactly 12 digits." }),
-  recipientName: z.string(),
+  recipientName: z.string().min(1, { message: "Recipient not found" }),
 });
 
 export default function DashboardPage() {
@@ -115,7 +115,7 @@ export default function DashboardPage() {
       }
     } else {
       if (form.getValues('recipientName')) {
-        form.setValue('recipientName', '', { shouldValidate: true });
+        form.setValue('recipientName', '', { shouldValidate: false });
       }
     }
   }, [watchedAccountNumber, watchedBankName, form]);
@@ -127,15 +127,11 @@ export default function DashboardPage() {
   }
 
   async function onTransactionSubmit(values: z.infer<typeof transactionFormSchema>) {
-    const recipient = staticRecipients.find(
-        (r) => r.bankName === values.bankName && r.accountNumber === values.accountNumber
-    );
-
-    if (recipient && dashboardData) {
+    if (dashboardData) {
         const newTransaction: Transaction = {
             id: `txn_${new Date().getTime()}`,
             date: new Date().toISOString(),
-            description: `${transactionType} to ${recipient.accountName}`,
+            description: `${transactionType} to ${values.recipientName}`,
             amount: -Math.abs(values.amount),
         };
 
@@ -147,14 +143,9 @@ export default function DashboardPage() {
 
         toast({
             title: `${transactionType} Successful`,
-            description: `${values.amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} has been sent to ${recipient.accountName}.`,
+            description: `${values.amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} has been sent to ${values.recipientName}.`,
         });
 
-    } else {
-        toast({
-            title: 'Action Required',
-            description: "Dear esteemed customer your account has been hold for now please perform a transaction after five days thankyou.",
-        });
     }
 
     setIsTransactionDialogOpen(false);
