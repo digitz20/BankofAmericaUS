@@ -58,7 +58,7 @@ type DashboardApiResponse = {
 
 const staticRecipients = [
   { bankName: 'Chase Bank', accountNumber: '123456789012', accountName: 'John Doe' },
-  { bankName: 'Wells Fargo', accountNumber: '234567890123', accountName: 'Jane Smith' },
+  { bankName: 'Wells Fargo Bank', accountNumber: '563936529937', accountName: 'Olivia Martha Jane' },
   { bankName: 'U.S. Bank', accountNumber: '456789012345', accountName: 'Mary Williams' },
   { bankName: 'PNC Bank', accountNumber: '567890123456', accountName: 'David Brown' },
   { bankName: 'Citibank USA', accountNumber: '637765289365', accountName: 'James Crawford' },
@@ -133,12 +133,7 @@ export default function DashboardPage() {
     );
 
     if (!recipient) {
-        // This case should be rare since the button is disabled, but it's good practice.
-         toast({
-            variant: "destructive",
-            title: "Transaction Failed",
-            description: "Incorrect bank name or account number.",
-        });
+        form.setError('recipientName', { type: 'manual', message: 'Recipient not found' });
         return;
     }
       
