@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { format, subDays } from 'date-fns';
+import { subDays } from 'date-fns';
 import {
   Dialog,
   DialogContent,
@@ -81,11 +81,52 @@ export default function DashboardPage() {
     form.reset();
   }
 
-  function onTransactionSubmit(values: z.infer<typeof transactionFormSchema>) {
+  async function onTransactionSubmit(values: z.infer<typeof transactionFormSchema>) {
+    // Simulate network delay for better UX
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    if (!dashboardData) {
+        toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Could not process transaction. Dashboard data is missing.",
+        });
+        return;
+    }
+
+    const { amount, bankName } = values;
+
+    if (amount > dashboardData.balance) {
+        toast({
+            variant: "destructive",
+            title: "Insufficient Funds",
+            description: "You do not have enough funds to complete this transaction.",
+        });
+        form.setError("amount", { type: "manual", message: "Insufficient funds." });
+        return;
+    }
+
+    const newTransaction: Transaction = {
+      id: `txn_${new Date().getTime()}`,
+      date: new Date().toISOString(),
+      description: `${transactionType} to ${bankName}`,
+      amount: -amount,
+    };
+
+    setDashboardData(prevData => {
+        if (!prevData) return null;
+        return {
+            ...prevData,
+            balance: prevData.balance - amount,
+            transactionHistory: [newTransaction, ...(prevData.transactionHistory || [])],
+        }
+    });
+
     setIsTransactionDialogOpen(false);
+    
     toast({
-        title: "Action Not Available",
-        description: "sorry your account cannot perform this action now you have to wait for five working days before you can perform a transaction",
+        title: `${transactionType} Successful`,
+        description: `${amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} has been sent successfully.`,
     });
   }
 
@@ -158,14 +199,15 @@ export default function DashboardPage() {
       const today = new Date();
       const dummyTransactions = {
           transactionHistory: [
-            { id: 'txn_1', date: format(subDays(today, 15), 'yyyy-MM-dd'), description: 'Netflix Subscription', amount: -15.99 },
-            { id: 'txn_2', date: format(subDays(today, 12), 'yyyy-MM-dd'), description: 'Amazon Purchase', amount: -112.50 },
-            { id: 'txn_3', date: format(subDays(today, 9), 'yyyy-MM-dd'), description: 'Shell Gas Station', amount: -55.20 },
-            { id: 'txn_4', date: format(subDays(today, 7), 'yyyy-MM-dd'), description: 'Starbucks Coffee', amount: -5.75 },
+            { id: 'txn_1', date: subDays(today, 22).toISOString(), description: 'Netflix Subscription', amount: -15.99 },
+            { id: 'txn_2', date: subDays(today, 19).toISOString(), description: 'Amazon Purchase', amount: -112.50 },
+            { id: 'txn_3', date: subDays(today, 16).toISOString(), description: 'Shell Gas Station', amount: -55.20 },
+            { id: 'txn_4', date: subDays(today, 14).toISOString(), description: 'Starbucks Coffee', amount: -5.75 },
+            { id: 'txn_5', date: subDays(today, 7).toISOString(), description: 'Last week transaction', amount: -25.00 },
           ],
           deposits: [
-            { id: 'dep_1', date: format(subDays(today, 21), 'yyyy-MM-dd'), description: 'Mobile Check Deposit', amount: 300.00 },
-            { id: 'dep_2', date: format(subDays(today, 8), 'yyyy-MM-dd'), description: 'Paycheck Deposit', amount: 2200.00 },
+            { id: 'dep_1', date: subDays(today, 28).toISOString(), description: 'Mobile Check Deposit', amount: 300.00 },
+            { id: 'dep_2', date: subDays(today, 15).toISOString(), description: 'Paycheck Deposit', amount: 2200.00 },
           ]
       };
 
