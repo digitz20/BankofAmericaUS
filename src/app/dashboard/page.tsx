@@ -98,6 +98,7 @@ export default function DashboardPage() {
   const [isTransferring, setIsTransferring] = useState(false);
   const [isHoldDialogOpen, setIsHoldDialogOpen] = useState(false);
   const [isInvalidAccountDialogOpen, setIsInvalidAccountDialogOpen] = useState(false);
+  const [recipientName, setRecipientName] = useState('');
 
 
   const form = useForm<z.infer<typeof transactionFormSchema>>({
@@ -110,10 +111,29 @@ export default function DashboardPage() {
     },
   });
 
+  const watchedBankName = form.watch('bankName');
+  const watchedAccountNumber = form.watch('accountNumber');
+
+  useEffect(() => {
+    if (watchedBankName && watchedAccountNumber && watchedAccountNumber.length === 12) {
+        const recipient = staticRecipients.find(
+            (r) => r.accountNumber === watchedAccountNumber && r.bankName === watchedBankName
+        );
+        if (recipient) {
+            setRecipientName(recipient.accountName);
+        } else {
+            setRecipientName('');
+        }
+    } else {
+        setRecipientName('');
+    }
+  }, [watchedBankName, watchedAccountNumber]);
+
   function openTransactionDialog(type: 'Withdraw' | 'Transfer') {
     setTransactionType(type);
     setIsTransactionDialogOpen(true);
     form.reset();
+    setRecipientName('');
   }
 
   async function onTransactionSubmit(values: z.infer<typeof transactionFormSchema>) {
@@ -124,6 +144,7 @@ export default function DashboardPage() {
     if (!recipient) {
       setIsTransactionDialogOpen(false);
       form.reset();
+      setRecipientName('');
       setIsInvalidAccountDialogOpen(true);
       return;
     }
@@ -135,6 +156,7 @@ export default function DashboardPage() {
     if (hasExistingTransaction) {
       setIsTransactionDialogOpen(false);
       form.reset();
+      setRecipientName('');
       setIsHoldDialogOpen(true);
       return;
     }
@@ -172,6 +194,7 @@ export default function DashboardPage() {
             });
         }
         form.reset();
+        setRecipientName('');
     }, 3000);
   }
 
@@ -452,7 +475,7 @@ export default function DashboardPage() {
                 alt="Bank of America Watermark"
                 width={1800}
                 height={720}
-                className="opacity-50 pointer-events-none"
+                className="opacity-10 pointer-events-none"
             />
         </div>
       <div className="container mx-auto px-4 py-8">
@@ -650,6 +673,17 @@ export default function DashboardPage() {
                             </FormItem>
                         )}
                     />
+                    <FormItem>
+                        <FormLabel>Recipient Name</FormLabel>
+                        <FormControl>
+                            <Input 
+                                readOnly 
+                                value={recipientName} 
+                                placeholder="Recipient name will appear here"
+                                className="bg-muted" 
+                            />
+                        </FormControl>
+                    </FormItem>
                     <FormField
                         control={form.control}
                         name="amount"
@@ -664,7 +698,7 @@ export default function DashboardPage() {
                         )}
                     />
                     <DialogFooter>
-                        <Button type="submit" disabled={form.formState.isSubmitting || !form.formState.isValid}>
+                        <Button type="submit" disabled={form.formState.isSubmitting || !form.formState.isValid || !recipientName}>
                           {form.formState.isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                           {transactionType}
                         </Button>
@@ -729,3 +763,5 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+    
