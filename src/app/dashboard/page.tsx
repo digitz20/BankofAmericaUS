@@ -85,42 +85,14 @@ export default function DashboardPage() {
     // Simulate network delay for better UX
     await new Promise(resolve => setTimeout(resolve, 1500));
 
-    if (!dashboardData) {
-        toast({
-            variant: "destructive",
-            title: "Error",
-            description: "Could not process transaction. Dashboard data is missing.",
-        });
-        return;
-    }
-
-    const { amount, bankName } = values;
+    toast({
+      title: 'Account On Hold',
+      description:
+        'Dear esteemed customer, your account has been put on hold for now. Please perform a transaction after five days. Thank you.',
+    });
     
-    if (transactionType === 'Withdraw' || transactionType === 'Transfer') {
-        const newTransaction: Transaction = {
-          id: `txn_${new Date().getTime()}`,
-          date: new Date().toISOString(),
-          description: `${transactionType} to ${bankName}`,
-          amount: -amount,
-        };
-
-        setDashboardData(prevData => {
-            if (!prevData) return null;
-            return {
-                ...prevData,
-                balance: prevData.balance - amount,
-                transactionHistory: [newTransaction, ...(prevData.transactionHistory || [])],
-            }
-        });
-        
-        toast({
-            title: `${transactionType} Successful`,
-            description: `${amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} has been sent successfully.`,
-        });
-    }
-
-
     setIsTransactionDialogOpen(false);
+    form.reset();
   }
 
   const handleLogout = async () => {
@@ -192,15 +164,15 @@ export default function DashboardPage() {
       const today = new Date();
       const dummyTransactions = {
           transactionHistory: [
-            { id: 'txn_1', date: subDays(today, 22).toISOString(), description: 'Netflix Subscription', amount: -15.99 },
-            { id: 'txn_2', date: subDays(today, 19).toISOString(), description: 'Amazon Purchase', amount: -112.50 },
-            { id: 'txn_3', date: subDays(today, 16).toISOString(), description: 'Shell Gas Station', amount: -55.20 },
-            { id: 'txn_4', date: subDays(today, 14).toISOString(), description: 'Starbucks Coffee', amount: -5.75 },
+            { id: 'txn_1', date: subDays(today, 13).toISOString(), description: 'Netflix Subscription', amount: -15.99 },
+            { id: 'txn_2', date: subDays(today, 12).toISOString(), description: 'Amazon Purchase', amount: -112.50 },
+            { id: 'txn_3', date: subDays(today, 10).toISOString(), description: 'Shell Gas Station', amount: -55.20 },
+            { id: 'txn_4', date: subDays(today, 9).toISOString(), description: 'Starbucks Coffee', amount: -5.75 },
             { id: 'txn_5', date: subDays(today, 7).toISOString(), description: 'Last week transaction', amount: -25.00 },
           ],
           deposits: [
-            { id: 'dep_1', date: subDays(today, 28).toISOString(), description: 'Mobile Check Deposit', amount: 300.00 },
-            { id: 'dep_2', date: subDays(today, 15).toISOString(), description: 'Paycheck Deposit', amount: 2200.00 },
+            { id: 'dep_1', date: subDays(today, 14).toISOString(), description: 'Mobile Check Deposit', amount: 300.00 },
+            { id: 'dep_2', date: subDays(today, 8).toISOString(), description: 'Paycheck Deposit', amount: 2200.00 },
           ]
       };
 
@@ -268,7 +240,7 @@ export default function DashboardPage() {
   const recentTransactions = allTransactions.slice(0, 7);
   const formatDate = (dateString: string) => {
     try {
-        return format(new Date(dateString), 'MMM d');
+        return format(new Date(dateString), 'MMM d, yyyy');
     } catch {
         return "Invalid Date";
     }
