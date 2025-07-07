@@ -56,6 +56,7 @@ const staticRecipients = [
   { bankName: 'Citibank', accountNumber: '345678901234', accountName: 'Peter Jones' },
   { bankName: 'U.S. Bank', accountNumber: '456789012345', accountName: 'Mary Williams' },
   { bankName: 'PNC Bank', accountNumber: '567890123456', accountName: 'David Brown' },
+  { bankName: 'Citibank USA', accountNumber: '637765289365', accountName: 'James Crawford' },
 ];
 const uniqueBankNames = [...new Set(staticRecipients.map(r => r.bankName))];
 
