@@ -69,7 +69,7 @@ const transactionFormSchema = z.object({
   amount: z.coerce.number().positive({ message: "Please enter a positive amount." }),
   bankName: z.string().min(1, { message: "Please select a bank." }),
   accountNumber: z.string().regex(/^\d{12}$/, { message: "Account number must be exactly 12 digits." }),
-  recipientName: z.string().min(1, { message: "Recipient not found. Please check bank and account number." }),
+  recipientName: z.string(),
 });
 
 export default function DashboardPage() {
@@ -89,7 +89,7 @@ export default function DashboardPage() {
 
   const form = useForm<z.infer<typeof transactionFormSchema>>({
     resolver: zodResolver(transactionFormSchema),
-    mode: 'onChange', // Validate on change to provide real-time feedback
+    mode: 'onBlur',
     defaultValues: {
       amount: undefined,
       bankName: '',
@@ -112,7 +112,6 @@ export default function DashboardPage() {
         form.setValue('recipientName', '', { shouldValidate: true });
       }
     } else {
-      // Only clear the recipient name if it has a value
       if (form.getValues('recipientName')) {
         form.setValue('recipientName', '', { shouldValidate: true });
       }
