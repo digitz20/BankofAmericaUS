@@ -33,6 +33,13 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 type Transaction = {
   id: string;
@@ -60,9 +67,9 @@ const staticRecipients = [
 
 const transactionFormSchema = z.object({
   amount: z.coerce.number().positive({ message: "Please enter a positive amount." }),
-  bankName: z.string().min(1, { message: "Please enter a valid account number to find a recipient." }),
+  bankName: z.string().min(1, { message: "Please select a bank." }),
   accountNumber: z.string().regex(/^\d{12}$/, { message: "Account number must be exactly 12 digits." }),
-  recipientName: z.string().min(1, { message: "Please enter a valid account number to find a recipient." }),
+  recipientName: z.string().min(1, { message: "Recipient not found. Please check bank and account number." }),
 });
 
 export default function DashboardPage() {
@@ -73,11 +80,12 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [balanceVisible, setBalanceVisible] = useState(false);
   const [depositsVisible, setDepositsVisible] = useState(false);
-  const [isActivityDetailsVisible, setIsActivityDetailsVisible] = useState(false);
+  const [isActivityDetailsVisible, setIsActivityDetailsVisible] = useState(true);
   const router = useRouter();
   const { toast } = useToast();
   const [isTransactionDialogOpen, setIsTransactionDialogOpen] = useState(false);
   const [transactionType, setTransactionType] = useState<'Withdraw' | 'Transfer' | null>(null);
+  const bankNames = [...new Set(staticRecipients.map((r) => r.bankName))];
 
   const form = useForm<z.infer<typeof transactionFormSchema>>({
     resolver: zodResolver(transactionFormSchema),
@@ -90,24 +98,23 @@ export default function DashboardPage() {
   });
 
   const watchedAccountNumber = form.watch('accountNumber');
+  const watchedBankName = form.watch('bankName');
 
   useEffect(() => {
-    if (watchedAccountNumber.length === 12) {
+    if (watchedAccountNumber.length === 12 && watchedBankName) {
       const recipient = staticRecipients.find(
-        (r) => r.accountNumber === watchedAccountNumber
+        (r) => r.accountNumber === watchedAccountNumber && r.bankName === watchedBankName
       );
       if (recipient) {
         form.setValue('recipientName', recipient.accountName);
-        form.setValue('bankName', recipient.bankName);
+        form.clearErrors('recipientName');
       } else {
         form.setValue('recipientName', '');
-        form.setValue('bankName', '');
       }
     } else {
-      form.setValue('recipientName', '');
-      form.setValue('bankName', '');
+        form.setValue('recipientName', '');
     }
-  }, [watchedAccountNumber, form]);
+  }, [watchedAccountNumber, watchedBankName, form]);
 
   function openTransactionDialog(type: 'Withdraw' | 'Transfer') {
     setTransactionType(type);
@@ -479,18 +486,27 @@ export default function DashboardPage() {
               <form onSubmit={form.handleSubmit(onTransactionSubmit)} className="space-y-4 py-4">
                   <FormField
                       control={form.control}
-                      name="amount"
+                      name="bankName"
                       render={({ field }) => (
                           <FormItem>
-                              <FormLabel>Amount</FormLabel>
-                              <FormControl>
-                                  <Input type="number" placeholder="0.00" {...field} value={field.value ?? ''} />
-                              </FormControl>
+                              <FormLabel>Recipient Bank</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <FormControl>
+                                      <SelectTrigger>
+                                          <SelectValue placeholder="Select a bank" />
+                                      </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                      {bankNames.map((name) => (
+                                          <SelectItem key={name} value={name}>{name}</SelectItem>
+                                      ))}
+                                  </SelectContent>
+                              </Select>
                               <FormMessage />
                           </FormItem>
                       )}
                   />
-                  <FormField
+                   <FormField
                       control={form.control}
                       name="accountNumber"
                       render={({ field }) => (
@@ -516,14 +532,14 @@ export default function DashboardPage() {
                           </FormItem>
                       )}
                   />
-                   <FormField
+                  <FormField
                       control={form.control}
-                      name="bankName"
+                      name="amount"
                       render={({ field }) => (
                           <FormItem>
-                              <FormLabel>Bank Name</FormLabel>
+                              <FormLabel>Amount</FormLabel>
                               <FormControl>
-                                  <Input placeholder="Bank name will appear here" {...field} readOnly disabled />
+                                  <Input type="number" placeholder="0.00" {...field} value={field.value ?? ''} />
                               </FormControl>
                               <FormMessage />
                           </FormItem>
