@@ -66,6 +66,7 @@ const staticRecipients = [
   { bankName: 'Bank of America', accountNumber: '876543210987', accountName: 'Emily Davis' },
   { bankName: 'Bank of America', accountNumber: '735421529993', accountName: 'Alexis Wilson' },
   { bankName: 'Truist Bank', accountNumber: '765432109876', accountName: 'Robert Wilson' },
+  { bankName: 'Truist Bank', accountNumber: '242783228221', accountName: 'Scarlett Arbney' },
 ];
 
 const transactionFormSchema = z.object({
