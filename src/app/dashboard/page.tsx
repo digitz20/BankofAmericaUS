@@ -478,7 +478,7 @@ export default function DashboardPage() {
                 alt="Bank of America Watermark"
                 width={600}
                 height={240}
-                className="opacity-5 blur-2xl pointer-events-none"
+                className="opacity-10 blur-lg pointer-events-none"
             />
         </div>
       <div className="container mx-auto px-4 py-8">
