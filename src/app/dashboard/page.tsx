@@ -685,6 +685,10 @@ export default function DashboardPage() {
 
       <Dialog open={isTransferring}>
         <DialogContent className="sm:max-w-xs flex flex-col items-center justify-center bg-transparent border-none shadow-none text-primary-foreground">
+            <DialogHeader>
+              <DialogTitle className="sr-only">Processing Transaction</DialogTitle>
+              <DialogDescription className="sr-only">Please wait while we process your transaction.</DialogDescription>
+            </DialogHeader>
             <Image
                 src="https://i.pinimg.com/736x/2f/9b/19/2f9b195ba9069a509b41552b763f8c8c.jpg"
                 alt="Bank of America Logo"
