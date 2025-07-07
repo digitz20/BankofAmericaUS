@@ -80,7 +80,7 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [balanceVisible, setBalanceVisible] = useState(false);
   const [depositsVisible, setDepositsVisible] = useState(false);
-  const [isActivityDetailsVisible, setIsActivityDetailsVisible] = useState(true);
+  const [isActivityDetailsVisible, setIsActivityDetailsVisible] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
   const [isTransactionDialogOpen, setIsTransactionDialogOpen] = useState(false);
@@ -526,7 +526,7 @@ export default function DashboardPage() {
                           <FormItem>
                               <FormLabel>Recipient Name</FormLabel>
                               <FormControl>
-                                  <Input placeholder="Account name will appear here" {...field} readOnly disabled />
+                                  <Input placeholder="Account name will appear here" {...field} readOnly className="bg-muted/50" />
                               </FormControl>
                               <FormMessage />
                           </FormItem>
