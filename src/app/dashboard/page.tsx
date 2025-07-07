@@ -78,7 +78,8 @@ const transactionFormSchema = z.object({
     const recipient = staticRecipients.find(
         (r) => r.accountNumber === data.accountNumber && r.bankName === data.bankName
     );
-    return !!recipient;
+    if (!recipient) return false;
+    return true;
 }, {
     message: "Recipient not found",
     path: ["recipientName"],
@@ -125,12 +126,14 @@ export default function DashboardPage() {
       );
       if (recipient) {
         form.setValue('recipientName', recipient.accountName, { shouldValidate: true });
+        form.clearErrors('recipientName');
       } else {
         form.setValue('recipientName', '', { shouldValidate: true });
-        form.trigger('recipientName');
+        form.setError('recipientName', { type: 'manual', message: 'Recipient not found' });
       }
     } else {
       form.setValue('recipientName', '', { shouldValidate: false });
+      form.clearErrors('recipientName');
     }
   }, [watchedAccountNumber, watchedBankName, form]);
 
@@ -189,10 +192,6 @@ export default function DashboardPage() {
 
         if (response.ok) {
             localStorage.removeItem('isLoggedIn');
-            // Do not remove userId here to persist login state for other features if needed
-            // But for full logout, we should remove it.
-            // Keeping userId to persist balance after logout as requested.
-            // Let's remove isLoggedIn only.
             toast({
                 title: "Logged Out",
                 description: "You have been successfully logged out.",
@@ -247,18 +246,24 @@ export default function DashboardPage() {
       const adjustment = storedTransactions.reduce((acc, t) => acc + t.amount, 0);
       const adjustedBalance = dashboardPayload.balance + adjustment;
 
-      const today = new Date();
+      const createPastDate = (days: number, hours: number, minutes: number) => {
+        const date = new Date();
+        date.setDate(date.getDate() - days);
+        date.setHours(hours, minutes, 0, 0);
+        return date.toISOString();
+      };
+
       const dummyTransactions = {
           transactionHistory: [
-            { id: 'txn_1', date: new Date(new Date().setDate(today.getDate() - 13)).toISOString(), description: 'Netflix Subscription', amount: -15.99 },
-            { id: 'txn_2', date: new Date(new Date().setDate(today.getDate() - 12)).toISOString(), description: 'Amazon Purchase', amount: -112.50 },
-            { id: 'txn_3', date: new Date(new Date().setDate(today.getDate() - 10)).toISOString(), description: 'Shell Gas Station', amount: -55.20 },
-            { id: 'txn_4', date: new Date(new Date().setDate(today.getDate() - 9)).toISOString(), description: 'Starbucks Coffee', amount: -5.75 },
-            { id: 'txn_5', date: new Date(new Date().setDate(today.getDate() - 7)).toISOString(), description: 'Last week transaction', amount: -25.00 },
+            { id: 'txn_1', date: createPastDate(13, 18, 32), description: 'Netflix Subscription', amount: -15.99 },
+            { id: 'txn_2', date: createPastDate(12, 9, 15), description: 'Amazon Purchase', amount: -112.50 },
+            { id: 'txn_3', date: createPastDate(10, 14, 5), description: 'Shell Gas Station', amount: -55.20 },
+            { id: 'txn_4', date: createPastDate(9, 8, 45), description: 'Starbucks Coffee', amount: -5.75 },
+            { id: 'txn_5', date: createPastDate(7, 20, 0), description: 'Last week transaction', amount: -25.00 },
           ],
           deposits: [
-            { id: 'dep_1', date: new Date(new Date().setDate(today.getDate() - 14)).toISOString(), description: 'Mobile Check Deposit', amount: 300.00 },
-            { id: 'dep_2', date: new Date(new Date().setDate(today.getDate() - 8)).toISOString(), description: 'Paycheck Deposit', amount: 2200.00 },
+            { id: 'dep_1', date: createPastDate(14, 7, 0), description: 'Mobile Check Deposit', amount: 300.00 },
+            { id: 'dep_2', date: createPastDate(8, 5, 30), description: 'Paycheck Deposit', amount: 2200.00 },
           ]
       };
 
