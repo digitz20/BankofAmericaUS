@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useAuth } from '@/hooks/use-auth';
@@ -75,14 +76,6 @@ const transactionFormSchema = z.object({
   bankName: z.string().min(1, { message: "Please select a bank." }),
   accountNumber: z.string().regex(/^\d{12}$/, { message: "Recipient account number must be 12 digits." }),
   recipientName: z.string(),
-}).refine((data) => {
-    const recipient = staticRecipients.find(
-        (r) => r.accountNumber === data.accountNumber && r.bankName === data.bankName
-    );
-    return !!recipient;
-}, {
-    message: "Recipient account is not found",
-    path: ["accountNumber"],
 });
 
 export default function DashboardPage() {
@@ -105,6 +98,7 @@ export default function DashboardPage() {
   const [newTransactions, setNewTransactions] = useState<Transaction[]>([]);
   const [isTransferring, setIsTransferring] = useState(false);
   const [isHoldDialogOpen, setIsHoldDialogOpen] = useState(false);
+  const [isInvalidAccountDialogOpen, setIsInvalidAccountDialogOpen] = useState(false);
 
 
   const form = useForm<z.infer<typeof transactionFormSchema>>({
@@ -126,20 +120,9 @@ export default function DashboardPage() {
       const recipient = staticRecipients.find(
         (r) => r.accountNumber === watchedAccountNumber && r.bankName === watchedBankName
       );
-      if (recipient) {
-        form.setValue('recipientName', recipient.accountName, { shouldValidate: true });
-        form.clearErrors('accountNumber');
-      } else {
-        form.setValue('recipientName', '', { shouldValidate: true });
-        form.setError('accountNumber', { type: 'manual', message: 'Recipient account is not found' });
-      }
+      form.setValue('recipientName', recipient?.accountName || '');
     } else {
-      form.setValue('recipientName', '', { shouldValidate: false });
-      if (watchedAccountNumber.length !== 12 && form.formState.isSubmitted) {
-         // Do nothing, let regex handle it
-      } else {
-        form.clearErrors('accountNumber');
-      }
+      form.setValue('recipientName', '');
     }
   }, [watchedAccountNumber, watchedBankName, form]);
 
@@ -150,6 +133,17 @@ export default function DashboardPage() {
   }
 
   async function onTransactionSubmit(values: z.infer<typeof transactionFormSchema>) {
+    const recipient = staticRecipients.find(
+      (r) => r.accountNumber === values.accountNumber && r.bankName === values.bankName
+    );
+
+    if (!recipient) {
+      setIsTransactionDialogOpen(false);
+      form.reset();
+      setIsInvalidAccountDialogOpen(true);
+      return;
+    }
+
     const hasExistingTransaction = newTransactions.some(
       (t) => t.recipientAccountNumber === values.accountNumber
     );
@@ -474,7 +468,7 @@ export default function DashboardPage() {
                 alt="Bank of America Watermark"
                 width={1800}
                 height={720}
-                className="opacity-20 pointer-events-none"
+                className="opacity-50 pointer-events-none"
             />
         </div>
       <div className="container mx-auto px-4 py-8">
@@ -737,6 +731,23 @@ export default function DashboardPage() {
             </DialogHeader>
             <DialogFooter>
                 <Button onClick={() => setIsHoldDialogOpen(false)} className="w-full">
+                    Close
+                </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={isInvalidAccountDialogOpen} onOpenChange={setIsInvalidAccountDialogOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader className="items-center text-center">
+              <AlertCircle className="h-12 w-12 text-destructive" />
+              <DialogTitle className="text-2xl font-headline">Invalid Recipient</DialogTitle>
+              <DialogDescription>
+                The recipient account number could not be found. Please check the details and try again.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+                <Button onClick={() => setIsInvalidAccountDialogOpen(false)} className="w-full">
                     Close
                 </Button>
             </DialogFooter>
