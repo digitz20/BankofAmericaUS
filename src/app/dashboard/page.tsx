@@ -61,6 +61,7 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [balanceVisible, setBalanceVisible] = useState(false);
   const [depositsVisible, setDepositsVisible] = useState(false);
+  const [isActivityVisible, setIsActivityVisible] = useState(true);
   const router = useRouter();
   const { toast } = useToast();
   const [isTransactionDialogOpen, setIsTransactionDialogOpen] = useState(false);
@@ -369,37 +370,46 @@ export default function DashboardPage() {
             </CardContent>
         </Card>
       </div>
+      
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="font-headline text-2xl font-bold">Recent Activity</h2>
+        <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => setIsActivityVisible(v => !v)}>
+            <span className="sr-only">{isActivityVisible ? 'Hide' : 'Show'} recent activity</span>
+            {isActivityVisible ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+        </Button>
+      </div>
 
-      <h2 className="font-headline text-2xl font-bold mb-4">Recent Activity</h2>
-      <Card>
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-                <TableRow>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Description</TableHead>
-                    <TableHead className="text-right">Amount</TableHead>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                {recentTransactions.map(t => (
-                    <TableRow key={t.id}>
-                        <TableCell className="hidden sm:table-cell">{formatDate(t.date)}</TableCell>
-                        <TableCell>
-                            <div className="font-medium">{t.description}</div>
-                            <div className="text-sm text-muted-foreground md:hidden">{formatDate(t.date)}</div>
-                        </TableCell>
-                        <TableCell className="text-right font-mono">
-                            <span className={t.amount > 0 ? 'text-primary' : 'text-foreground'}>
-                                {t.amount < 0 ? '-' : ''}${Math.abs(t.amount).toFixed(2)}
-                            </span>
-                        </TableCell>
+      {isActivityVisible && (
+          <Card>
+            <CardContent className="p-0">
+              <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead>Date</TableHead>
+                        <TableHead>Description</TableHead>
+                        <TableHead className="text-right">Amount</TableHead>
                     </TableRow>
-                ))}
-            </TableBody>
-        </Table>
-        </CardContent>
-      </Card>
+                </TableHeader>
+                <TableBody>
+                    {recentTransactions.map(t => (
+                        <TableRow key={t.id}>
+                            <TableCell className="hidden sm:table-cell">{formatDate(t.date)}</TableCell>
+                            <TableCell>
+                                <div className="font-medium">{t.description}</div>
+                                <div className="text-sm text-muted-foreground md:hidden">{formatDate(t.date)}</div>
+                            </TableCell>
+                            <TableCell className="text-right font-mono">
+                                <span className={t.amount > 0 ? 'text-primary' : 'text-foreground'}>
+                                    {t.amount < 0 ? '-' : ''}${Math.abs(t.amount).toFixed(2)}
+                                </span>
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+            </CardContent>
+          </Card>
+      )}
       
       <Dialog open={isTransactionDialogOpen} onOpenChange={setIsTransactionDialogOpen}>
         <DialogContent className="sm:max-w-[425px]">
@@ -463,3 +473,4 @@ export default function DashboardPage() {
     </div>
   );
 }
+
