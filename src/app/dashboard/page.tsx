@@ -74,7 +74,7 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [balanceVisible, setBalanceVisible] = useState(false);
   const [depositsVisible, setDepositsVisible] = useState(false);
-  const [isActivityDetailsVisible, setIsActivityDetailsVisible] = useState(false);
+  const [isActivityDetailsVisible, setIsActivityDetailsVisible] = useState(true);
   const router = useRouter();
   const { toast } = useToast();
   const [isTransactionDialogOpen, setIsTransactionDialogOpen] = useState(false);
@@ -140,9 +140,9 @@ export default function DashboardPage() {
 
     } else {
         toast({
-            title: 'Account On Hold',
-            description:
-                'Dear esteemed customer, your account has been put on hold for now. Please perform a transaction after five days. Thank you.',
+            variant: "destructive",
+            title: 'Transaction Failed',
+            description: "Incorrect bank name or account number.",
         });
     }
 
