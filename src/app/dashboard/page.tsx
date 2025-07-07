@@ -201,6 +201,63 @@ export default function DashboardPage() {
     }
   }, [isAuthenticated, loadDashboardData]);
 
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    let timeoutId: NodeJS.Timeout;
+
+    const logoutUser = () => {
+      const userId = localStorage.getItem('userId');
+      // Silently try to log out on the server
+      if (userId) {
+        fetch('/api/v1/logout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userID: userId }),
+        }).catch((err) => console.error("Server logout failed on inactivity:", err));
+      }
+
+      // Log out on the client
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('userId');
+      toast({
+        title: "Session Expired",
+        description: "You have been logged out due to 20 minutes of inactivity.",
+      });
+      window.location.href = '/';
+    };
+
+    const resetTimer = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(logoutUser, 20 * 60 * 1000); // 20 minutes
+    };
+
+    const activityEvents: (keyof WindowEventMap)[] = [
+      'mousemove',
+      'mousedown',
+      'keypress',
+      'touchstart',
+      'scroll',
+    ];
+
+    activityEvents.forEach((event) => {
+      window.addEventListener(event, resetTimer);
+    });
+
+    // Initialize timer
+    resetTimer();
+
+    // Cleanup on component unmount
+    return () => {
+      clearTimeout(timeoutId);
+      activityEvents.forEach((event) => {
+        window.removeEventListener(event, resetTimer);
+      });
+    };
+  }, [isAuthenticated, toast]);
+
   if (isAuthLoading || isDataLoading) {
     return (
       <div className="flex flex-grow items-center justify-center">
