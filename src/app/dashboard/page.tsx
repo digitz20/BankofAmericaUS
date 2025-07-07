@@ -59,8 +59,8 @@ export default function DashboardPage() {
   const [isDataLoading, setIsDataLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [balanceVisible, setBalanceVisible] = useState(true);
-  const [depositsVisible, setDepositsVisible] = useState(true);
+  const [balanceVisible, setBalanceVisible] = useState(false);
+  const [depositsVisible, setDepositsVisible] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
   const [isTransactionDialogOpen, setIsTransactionDialogOpen] = useState(false);
