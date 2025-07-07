@@ -59,7 +59,8 @@ export default function DashboardPage() {
   const [isDataLoading, setIsDataLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [balancesVisible, setBalancesVisible] = useState(true);
+  const [balanceVisible, setBalanceVisible] = useState(true);
+  const [depositsVisible, setDepositsVisible] = useState(true);
   const router = useRouter();
   const { toast } = useToast();
   const [isTransactionDialogOpen, setIsTransactionDialogOpen] = useState(false);
@@ -259,16 +260,16 @@ export default function DashboardPage() {
                         <span className="sr-only">Refresh balance</span>
                         {isRefreshing ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground" onClick={() => setBalancesVisible(v => !v)}>
-                        <span className="sr-only">{balancesVisible ? 'Hide' : 'Show'} balance</span>
-                        {balancesVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground" onClick={() => setBalanceVisible(v => !v)}>
+                        <span className="sr-only">{balanceVisible ? 'Hide' : 'Show'} balance</span>
+                        {balanceVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
                 </div>
                 <Landmark className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
                 <div className="text-2xl font-bold font-headline">
-                    {balancesVisible ? dashboardData.balance.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : '******'}
+                    {balanceVisible ? dashboardData.balance.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : '******'}
                 </div>
                 <p className="text-xs text-muted-foreground">Across all accounts</p>
             </CardContent>
@@ -281,16 +282,16 @@ export default function DashboardPage() {
                         <span className="sr-only">Refresh deposits</span>
                         {isRefreshing ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground" onClick={() => setBalancesVisible(v => !v)}>
-                        <span className="sr-only">{balancesVisible ? 'Hide' : 'Show'} deposits</span>
-                        {balancesVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    <Button variant="ghost" size="icon" className="h-6 w-6 text-muted-foreground" onClick={() => setDepositsVisible(v => !v)}>
+                        <span className="sr-only">{depositsVisible ? 'Hide' : 'Show'} deposits</span>
+                        {depositsVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
                 </div>
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
                 <div className="text-2xl font-bold font-headline">
-                     {balancesVisible ? dashboardData.totalDeposit.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : '******'}
+                     {depositsVisible ? dashboardData.totalDeposit.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : '******'}
                 </div>
                 <p className="text-xs text-muted-foreground">Recent deposits summary</p>
             </CardContent>
