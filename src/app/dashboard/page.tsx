@@ -59,7 +59,6 @@ type DashboardApiResponse = {
 const staticRecipients = [
   { bankName: 'Chase Bank', accountNumber: '123456789012', accountName: 'John Doe' },
   { bankName: 'Wells Fargo', accountNumber: '234567890123', accountName: 'Jane Smith' },
-  { bankName: 'Citibank', accountNumber: '345678901234', accountName: 'Peter Jones' },
   { bankName: 'U.S. Bank', accountNumber: '456789012345', accountName: 'Mary Williams' },
   { bankName: 'PNC Bank', accountNumber: '567890123456', accountName: 'David Brown' },
   { bankName: 'Citibank USA', accountNumber: '637765289365', accountName: 'James Crawford' },
