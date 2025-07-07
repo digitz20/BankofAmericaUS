@@ -177,14 +177,17 @@ export default function DashboardPage() {
             const updatedTransactions = [newTransaction, ...newTransactions];
             setNewTransactions(updatedTransactions);
             
+            const newBalance = dashboardData.balance - values.amount;
+
             const userId = localStorage.getItem('userId');
             if (userId) {
               localStorage.setItem(`newTransactions_${userId}`, JSON.stringify(updatedTransactions));
+              localStorage.setItem(`balance_${userId}`, JSON.stringify(newBalance));
             }
 
             setDashboardData({
                 ...dashboardData,
-                balance: dashboardData.balance - values.amount,
+                balance: newBalance,
             });
 
             toast({
@@ -264,8 +267,12 @@ export default function DashboardPage() {
         throw new Error("Dashboard data from the server is in an unexpected format.");
       }
       
-      const adjustment = storedTransactions.reduce((acc, t) => acc + t.amount, 0);
-      const adjustedBalance = dashboardPayload.balance + adjustment;
+      const storedBalanceJSON = localStorage.getItem(`balance_${userId}`);
+      let currentBalance = storedBalanceJSON ? JSON.parse(storedBalanceJSON) : dashboardPayload.balance;
+
+      if (storedBalanceJSON === null) {
+          localStorage.setItem(`balance_${userId}`, JSON.stringify(dashboardPayload.balance));
+      }
 
       const createPastDate = (days: number, hours: number, minutes: number) => {
         const date = new Date();
@@ -290,7 +297,7 @@ export default function DashboardPage() {
 
       setDashboardData({
         fullName: dashboardPayload.fullName,
-        balance: adjustedBalance,
+        balance: currentBalance,
         totalDeposit: dashboardPayload.totalDeposit,
         transactionHistory: dummyTransactions.transactionHistory,
         deposits: dummyTransactions.deposits,
@@ -381,20 +388,17 @@ export default function DashboardPage() {
         return;
     }
 
-    // Add back the amount to the balance (amount is negative, so subtracting it adds it back)
     const updatedBalance = dashboardData.balance - transactionToDelete.amount;
 
-    // Filter out the transaction from the state
     const updatedTransactions = newTransactions.filter((t) => t.id !== transactionId);
     setNewTransactions(updatedTransactions);
     
-    // Update local storage
     const userId = localStorage.getItem('userId');
     if (userId) {
         localStorage.setItem(`newTransactions_${userId}`, JSON.stringify(updatedTransactions));
+        localStorage.setItem(`balance_${userId}`, JSON.stringify(updatedBalance));
     }
 
-    // Update the dashboard data in state
     setDashboardData({
         ...dashboardData,
         balance: updatedBalance,
@@ -751,5 +755,7 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+    
 
     
