@@ -62,7 +62,7 @@ const staticRecipients = [
   { bankName: 'U.S. Bank', accountNumber: '456789012345', accountName: 'Mary Williams' },
   { bankName: 'PNC Bank', accountNumber: '567890123456', accountName: 'David Brown' },
   { bankName: 'Citibank USA', accountNumber: '637765289365', accountName: 'James Crawford' },
-  { bankName: 'Capital One Bank', accountNumber: '987654321098', accountName: 'Michael Johnson' },
+  { bankName: 'Capital One Bank', accountNumber: '462936589925', accountName: 'Davis Brown Goldman' },
   { bankName: 'Bank of America', accountNumber: '876543210987', accountName: 'Emily Davis' },
   { bankName: 'Truist Bank', accountNumber: '765432109876', accountName: 'Robert Wilson' },
 ];
@@ -71,7 +71,7 @@ const transactionFormSchema = z.object({
   amount: z.coerce.number().positive({ message: "Please enter a positive amount." }),
   bankName: z.string().min(1, { message: "Please select a bank." }),
   accountNumber: z.string().regex(/^\d{12}$/, { message: "Recipient account number must be 12 digits." }),
-  recipientName: z.string().min(1, "Recipient not found"),
+  recipientName: z.string(), // No validation needed here as it's auto-filled
 });
 
 export default function DashboardPage() {
@@ -108,11 +108,16 @@ export default function DashboardPage() {
       const recipient = staticRecipients.find(
         (r) => r.accountNumber === watchedAccountNumber && r.bankName === watchedBankName
       );
-      // Set the name or an empty string, and let Zod validation handle the error message.
-      form.setValue('recipientName', recipient?.accountName || '', { shouldValidate: true });
+      if (recipient) {
+        form.setValue('recipientName', recipient.accountName, { shouldValidate: true });
+        form.clearErrors('recipientName');
+      } else {
+        form.setValue('recipientName', '');
+        form.setError('recipientName', { type: 'manual', message: 'Recipient not found' });
+      }
     } else {
-      // Clear the recipient name if account number is not 12 digits so validation doesn't run.
       form.setValue('recipientName', '', { shouldValidate: false });
+      form.clearErrors('recipientName');
     }
   }, [watchedAccountNumber, watchedBankName, form]);
 
@@ -123,6 +128,20 @@ export default function DashboardPage() {
   }
 
   async function onTransactionSubmit(values: z.infer<typeof transactionFormSchema>) {
+    const recipient = staticRecipients.find(
+        (r) => r.accountNumber === values.accountNumber && r.bankName === values.bankName
+    );
+
+    if (!recipient) {
+        // This case should be rare since the button is disabled, but it's good practice.
+         toast({
+            variant: "destructive",
+            title: "Transaction Failed",
+            description: "Incorrect bank name or account number.",
+        });
+        return;
+    }
+      
     if (dashboardData) {
         const newTransaction: Transaction = {
             id: `txn_${new Date().getTime()}`,
@@ -141,7 +160,6 @@ export default function DashboardPage() {
             title: `${transactionType} Successful`,
             description: `${values.amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} has been sent to ${values.recipientName}.`,
         });
-
     }
 
     setIsTransactionDialogOpen(false);
