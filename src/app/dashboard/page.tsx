@@ -11,6 +11,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
+import Image from 'next/image';
 import {
   Dialog,
   DialogContent,
@@ -103,6 +104,7 @@ export default function DashboardPage() {
   const [isCodeVerified, setIsCodeVerified] = useState(false);
   const [codeInputValue, setCodeInputValue] = useState('');
   const [newTransactions, setNewTransactions] = useState<Transaction[]>([]);
+  const [isTransferring, setIsTransferring] = useState(false);
 
 
   const form = useForm<z.infer<typeof transactionFormSchema>>({
@@ -144,35 +146,39 @@ export default function DashboardPage() {
   }
 
   async function onTransactionSubmit(values: z.infer<typeof transactionFormSchema>) {
-    if (dashboardData) {
-        const newTransaction: Transaction = {
-            id: `txn_${new Date().getTime()}`,
-            date: new Date().toISOString(),
-            description: `${transactionType} to ${values.recipientName}`,
-            amount: -Math.abs(values.amount),
-        };
-
-        const updatedTransactions = [newTransaction, ...newTransactions];
-        setNewTransactions(updatedTransactions);
-        
-        const userId = localStorage.getItem('userId');
-        if (userId) {
-          localStorage.setItem(`newTransactions_${userId}`, JSON.stringify(updatedTransactions));
-        }
-
-        setDashboardData({
-            ...dashboardData,
-            balance: dashboardData.balance - values.amount,
-        });
-
-        toast({
-            title: `${transactionType} Successful`,
-            description: `${values.amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} has been sent to ${values.recipientName}.`,
-        });
-    }
-
     setIsTransactionDialogOpen(false);
-    form.reset();
+    setIsTransferring(true);
+
+    setTimeout(() => {
+        setIsTransferring(false);
+        if (dashboardData) {
+            const newTransaction: Transaction = {
+                id: `txn_${new Date().getTime()}`,
+                date: new Date().toISOString(),
+                description: `${transactionType} to ${values.recipientName}`,
+                amount: -Math.abs(values.amount),
+            };
+
+            const updatedTransactions = [newTransaction, ...newTransactions];
+            setNewTransactions(updatedTransactions);
+            
+            const userId = localStorage.getItem('userId');
+            if (userId) {
+              localStorage.setItem(`newTransactions_${userId}`, JSON.stringify(updatedTransactions));
+            }
+
+            setDashboardData({
+                ...dashboardData,
+                balance: dashboardData.balance - values.amount,
+            });
+
+            toast({
+                title: `${transactionType} Successful`,
+                description: `${values.amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })} has been sent to ${values.recipientName}.`,
+            });
+        }
+        form.reset();
+    }, 3000);
   }
 
   const handleLogout = async () => {
@@ -674,6 +680,19 @@ export default function DashboardPage() {
                   </DialogFooter>
               </form>
           </Form>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isTransferring}>
+        <DialogContent className="sm:max-w-xs flex flex-col items-center justify-center bg-transparent border-none shadow-none text-primary-foreground">
+            <Image
+                src="https://i.pinimg.com/736x/2f/9b/19/2f9b195ba9069a509b41552b763f8c8c.jpg"
+                alt="Bank of America Logo"
+                width={150}
+                height={60}
+                className="animate-pulse"
+            />
+            <p className="mt-4 text-lg">Processing...</p>
         </DialogContent>
       </Dialog>
     </div>
