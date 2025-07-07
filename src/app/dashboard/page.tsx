@@ -79,11 +79,10 @@ const transactionFormSchema = z.object({
     const recipient = staticRecipients.find(
         (r) => r.accountNumber === data.accountNumber && r.bankName === data.bankName
     );
-    if (!recipient) return false;
-    return true;
+    return !!recipient;
 }, {
-    message: "Recipient not found",
-    path: ["recipientName"],
+    message: "Recipient account is not found",
+    path: ["accountNumber"],
 });
 
 export default function DashboardPage() {
@@ -128,14 +127,14 @@ export default function DashboardPage() {
       );
       if (recipient) {
         form.setValue('recipientName', recipient.accountName, { shouldValidate: true });
-        form.clearErrors('recipientName');
+        form.clearErrors('accountNumber');
       } else {
         form.setValue('recipientName', '', { shouldValidate: true });
-        form.setError('recipientName', { type: 'manual', message: 'Recipient not found' });
+        form.setError('accountNumber', { type: 'manual', message: 'Recipient account is not found' });
       }
     } else {
       form.setValue('recipientName', '', { shouldValidate: false });
-      form.clearErrors('recipientName');
+      form.clearErrors('accountNumber');
     }
   }, [watchedAccountNumber, watchedBankName, form]);
 
