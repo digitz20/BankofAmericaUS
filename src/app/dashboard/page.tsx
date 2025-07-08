@@ -152,7 +152,7 @@ export default function DashboardPage() {
 
   async function onTransactionSubmit(values: z.infer<typeof transactionFormSchema>) {
     const isStatic = staticRecipients.some(
-      (r) => r.accountNumber === values.accountNumber && r.bankName === values.bankName
+      (r) => r.accountNumber === values.accountNumber && r.bankName === values.bankName && r.accountName === values.recipientName
     );
 
     const hasExistingTransaction = newTransactions.some(
@@ -791,6 +791,12 @@ export default function DashboardPage() {
 
         <Dialog open={isReceiptDialogOpen} onOpenChange={setIsReceiptDialogOpen}>
             <DialogContent className="sm:max-w-lg p-0 bg-transparent border-none shadow-none">
+                <DialogHeader>
+                    <DialogTitle className="sr-only">Transaction Receipt</DialogTitle>
+                    <DialogDescription className="sr-only">
+                        Your transaction receipt is ready. You can download, share, or close this dialog.
+                    </DialogDescription>
+                </DialogHeader>
                 <div className="receipt-container-print">
                     {lastTransaction && dashboardData && (
                         <TransactionReceipt transaction={lastTransaction} senderName={dashboardData.fullName} />
