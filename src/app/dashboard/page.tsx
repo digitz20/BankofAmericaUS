@@ -439,11 +439,17 @@ export default function DashboardPage() {
                 title: 'Bank of America Transaction Receipt',
                 text: `Receipt for your transfer of ${Math.abs(lastTransaction.amount).toLocaleString('en-US', { style: 'currency', currency: 'USD' })} to ${lastTransaction.recipientName}. Transaction ID: ${lastTransaction.id}`,
             });
-        } catch (error) {
+        } catch (error: any) {
+            // Don't show an error if the user cancels the share dialog
+            if (error.name === 'AbortError') {
+              console.log('Share was cancelled by user.');
+              return;
+            }
             console.error('Share failed:', error);
             toast({
                 variant: 'destructive',
                 title: 'Could not share receipt',
+                description: 'An error occurred while trying to share. This may be due to browser settings.'
             });
         }
     } else {
