@@ -4,7 +4,7 @@
 import { useAuth } from '@/hooks/use-auth';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Landmark, DollarSign, Loader2, AlertCircle, RefreshCw, Eye, EyeOff, LogOut, ArrowUpRight, ArrowDownLeft, Trash2, Download, Share2, ArrowLeft } from 'lucide-react';
+import { Landmark, DollarSign, Loader2, AlertCircle, RefreshCw, Eye, EyeOff, LogOut, ArrowUpRight, ArrowDownLeft, Trash2, ArrowLeft } from 'lucide-react';
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -428,39 +428,6 @@ export default function DashboardPage() {
     });
   };
 
-  const handleDownloadReceipt = () => {
-    window.print();
-  };
-
-  const handleShareReceipt = async () => {
-    if (lastTransaction && navigator.share) {
-        try {
-            await navigator.share({
-                title: 'Bank of America Transaction Receipt',
-                text: `Receipt for your transfer of ${Math.abs(lastTransaction.amount).toLocaleString('en-US', { style: 'currency', currency: 'USD' })} to ${lastTransaction.recipientName}. Transaction ID: ${lastTransaction.id}`,
-            });
-        } catch (error: any) {
-            // Don't show an error if the user cancels the share dialog
-            if (error.name === 'AbortError') {
-              console.log('Share was cancelled by user.');
-              return;
-            }
-            console.error('Share failed:', error);
-            toast({
-                variant: 'destructive',
-                title: 'Could not share receipt',
-                description: 'An error occurred while trying to share. This may be due to browser settings.'
-            });
-        }
-    } else {
-        toast({
-            variant: 'destructive',
-            title: 'Share not supported',
-            description: 'Your browser does not support this feature.',
-        });
-    }
-  };
-
   if (isAuthLoading || isDataLoading) {
     return (
       <div className="flex flex-grow items-center justify-center">
@@ -814,7 +781,7 @@ export default function DashboardPage() {
                 <DialogHeader>
                     <DialogTitle className="sr-only">Transaction Receipt</DialogTitle>
                     <DialogDescription className="sr-only">
-                        Your transaction receipt is ready. You can download, share, or close this dialog.
+                        Your transaction receipt is ready. You can close this dialog.
                     </DialogDescription>
                 </DialogHeader>
                 <div className="receipt-container-print">
@@ -824,12 +791,6 @@ export default function DashboardPage() {
                             senderName={dashboardData.fullName}
                             footer={
                                 <>
-                                    <Button onClick={handleDownloadReceipt} variant="outline">
-                                        <Download className="mr-2 h-4 w-4" /> Print / Save as PDF
-                                    </Button>
-                                    <Button onClick={handleShareReceipt}>
-                                        <Share2 className="mr-2 h-4 w-4" /> Share
-                                    </Button>
                                     <Button onClick={() => setIsReceiptDialogOpen(false)} variant="secondary">
                                         Close
                                     </Button>
