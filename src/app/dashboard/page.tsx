@@ -825,7 +825,7 @@ export default function DashboardPage() {
                             footer={
                                 <>
                                     <Button onClick={handleDownloadReceipt} variant="outline">
-                                        <Download className="mr-2 h-4 w-4" /> Download Receipt
+                                        <Download className="mr-2 h-4 w-4" /> Print / Save as PDF
                                     </Button>
                                     <Button onClick={handleShareReceipt}>
                                         <Share2 className="mr-2 h-4 w-4" /> Share
