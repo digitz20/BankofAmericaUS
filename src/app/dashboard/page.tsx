@@ -4,7 +4,7 @@
 import { useAuth } from '@/hooks/use-auth';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Landmark, DollarSign, Loader2, AlertCircle, RefreshCw, Eye, EyeOff, LogOut, ArrowUpRight, ArrowDownLeft, Trash2, Download, Share2 } from 'lucide-react';
+import { Landmark, DollarSign, Loader2, AlertCircle, RefreshCw, Eye, EyeOff, LogOut, ArrowUpRight, ArrowDownLeft, Trash2, Download, Share2, ArrowLeft } from 'lucide-react';
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -598,7 +598,7 @@ export default function DashboardPage() {
           </div>
         </div>
         
-        {!isCodeVerified && (
+        {!isCodeVerified ? (
           <Card className="mb-4">
               <CardHeader>
                 <CardTitle className="text-lg">View Transaction History</CardTitle>
@@ -617,6 +617,13 @@ export default function DashboardPage() {
                   </div>
               </CardContent>
           </Card>
+        ) : (
+          <div className="mb-4 flex justify-end">
+            <Button variant="outline" onClick={() => setIsCodeVerified(false)}>
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Hide History
+            </Button>
+          </div>
         )}
 
         <Card>
@@ -812,7 +819,7 @@ export default function DashboardPage() {
                             footer={
                                 <>
                                     <Button onClick={handleDownloadReceipt} variant="outline">
-                                        <Download className="mr-2 h-4 w-4" /> Download
+                                        <Download className="mr-2 h-4 w-4" /> Download Receipt
                                     </Button>
                                     <Button onClick={handleShareReceipt}>
                                         <Share2 className="mr-2 h-4 w-4" /> Share
