@@ -22,7 +22,7 @@ const footerLinks = [
 
 export function Footer() {
   return (
-    <footer className="bg-primary text-primary-foreground">
+    <footer className="bg-primary text-primary-foreground no-print">
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-wrap gap-x-6 gap-y-2 justify-center">
           {footerLinks.map((link) => (

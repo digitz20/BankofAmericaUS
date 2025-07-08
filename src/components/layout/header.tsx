@@ -110,7 +110,7 @@ export function Header() {
     const activeTopBar = getActiveTopBar();
 
     return (
-        <header className="bg-card border-b sticky top-0 z-50">
+        <header className="bg-card border-b sticky top-0 z-50 no-print">
              <div className="hidden md:block bg-muted/20 border-b">
                 <div className="container mx-auto px-4 flex justify-between items-center text-xs h-8">
                     <div className="flex items-center gap-x-6">

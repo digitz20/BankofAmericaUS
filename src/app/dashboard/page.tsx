@@ -4,8 +4,8 @@
 import { useAuth } from '@/hooks/use-auth';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Landmark, DollarSign, Loader2, AlertCircle, RefreshCw, Eye, EyeOff, LogOut, ArrowUpRight, ArrowDownLeft, Trash2 } from 'lucide-react';
-import { useEffect, useState, useCallback } from 'react';
+import { Landmark, DollarSign, Loader2, AlertCircle, RefreshCw, Eye, EyeOff, LogOut, ArrowUpRight, ArrowDownLeft, Trash2, Download, Share2 } from 'lucide-react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -42,6 +42,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
+import { TransactionReceipt } from '@/components/transaction-receipt';
 
 type Transaction = {
   id: string;
@@ -49,6 +50,8 @@ type Transaction = {
   description: string;
   amount: number;
   recipientAccountNumber?: string;
+  recipientName?: string;
+  bankName?: string;
 };
 
 type DashboardApiResponse = {
@@ -101,6 +104,9 @@ export default function DashboardPage() {
   const [isHoldDialogOpen, setIsHoldDialogOpen] = useState(false);
   const [isStaticRecipient, setIsStaticRecipient] = useState(false);
 
+  const [isReceiptDialogOpen, setIsReceiptDialogOpen] = useState(false);
+  const [lastTransaction, setLastTransaction] = useState<Transaction | null>(null);
+
 
   const form = useForm<z.infer<typeof transactionFormSchema>>({
     resolver: zodResolver(transactionFormSchema),
@@ -126,13 +132,13 @@ export default function DashboardPage() {
             setIsStaticRecipient(true);
         } else {
             if (isStaticRecipient) {
-                form.setValue('recipientName', '', { shouldValidate: true });
+                form.resetField('recipientName');
             }
             setIsStaticRecipient(false);
         }
     } else {
         if (isStaticRecipient) {
-            form.setValue('recipientName', '', { shouldValidate: true });
+            form.resetField('recipientName');
         }
         setIsStaticRecipient(false);
     }
@@ -145,7 +151,7 @@ export default function DashboardPage() {
   }
 
   async function onTransactionSubmit(values: z.infer<typeof transactionFormSchema>) {
-    const recipient = staticRecipients.find(
+    const isStatic = staticRecipients.some(
       (r) => r.accountNumber === values.accountNumber && r.bankName === values.bankName
     );
 
@@ -153,7 +159,7 @@ export default function DashboardPage() {
       (t) => t.recipientAccountNumber === values.accountNumber
     );
 
-    if (!recipient || hasExistingTransaction) {
+    if (!isStatic || hasExistingTransaction) {
       setIsTransactionDialogOpen(false);
       form.reset();
       setIsHoldDialogOpen(true);
@@ -172,6 +178,8 @@ export default function DashboardPage() {
                 description: `${transactionType} to ${values.recipientName}`,
                 amount: -Math.abs(values.amount),
                 recipientAccountNumber: values.accountNumber,
+                recipientName: values.recipientName,
+                bankName: values.bankName,
             };
 
             const updatedTransactions = [newTransaction, ...newTransactions];
@@ -189,6 +197,9 @@ export default function DashboardPage() {
                 ...dashboardData,
                 balance: newBalance,
             });
+
+            setLastTransaction(newTransaction);
+            setIsReceiptDialogOpen(true);
 
             toast({
                 title: `${transactionType} Successful`,
@@ -410,6 +421,33 @@ export default function DashboardPage() {
     });
   };
 
+  const handleDownloadReceipt = () => {
+    window.print();
+  };
+
+  const handleShareReceipt = async () => {
+    if (lastTransaction && navigator.share) {
+        try {
+            await navigator.share({
+                title: 'Bank of America Transaction Receipt',
+                text: `Receipt for your transfer of ${Math.abs(lastTransaction.amount).toLocaleString('en-US', { style: 'currency', currency: 'USD' })} to ${lastTransaction.recipientName}. Transaction ID: ${lastTransaction.id}`,
+            });
+        } catch (error) {
+            console.error('Share failed:', error);
+            toast({
+                variant: 'destructive',
+                title: 'Could not share receipt',
+            });
+        }
+    } else {
+        toast({
+            variant: 'destructive',
+            title: 'Share not supported',
+            description: 'Your browser does not support this feature.',
+        });
+    }
+  };
+
   if (isAuthLoading || isDataLoading) {
     return (
       <div className="flex flex-grow items-center justify-center">
@@ -477,7 +515,7 @@ export default function DashboardPage() {
                 alt="Bank of America Watermark"
                 width={1800}
                 height={720}
-                className="opacity-20 pointer-events-none"
+                className="opacity-5 pointer-events-none"
             />
         </div>
       <div className="container mx-auto px-4 py-8">
@@ -751,11 +789,28 @@ export default function DashboardPage() {
           </DialogContent>
         </Dialog>
 
+        <Dialog open={isReceiptDialogOpen} onOpenChange={setIsReceiptDialogOpen}>
+            <DialogContent className="sm:max-w-lg p-0 bg-transparent border-none shadow-none">
+                <div className="receipt-container-print">
+                    {lastTransaction && dashboardData && (
+                        <TransactionReceipt transaction={lastTransaction} senderName={dashboardData.fullName} />
+                    )}
+                </div>
+                <DialogFooter className="pt-4 gap-2 sm:justify-center no-print">
+                    <Button onClick={handleDownloadReceipt} variant="outline">
+                        <Download className="mr-2 h-4 w-4" /> Download
+                    </Button>
+                    <Button onClick={handleShareReceipt}>
+                        <Share2 className="mr-2 h-4 w-4" /> Share
+                    </Button>
+                    <Button onClick={() => setIsReceiptDialogOpen(false)} variant="secondary">
+                        Close
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+
       </div>
     </div>
   );
 }
-
-    
-
-    

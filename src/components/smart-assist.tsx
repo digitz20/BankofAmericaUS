@@ -66,13 +66,13 @@ export function SmartAssist() {
         <>
             <Button
                 onClick={() => setIsOpen(true)}
-                className="fixed bottom-6 right-6 h-16 w-16 rounded-full shadow-lg bg-accent hover:bg-accent/90"
+                className="fixed bottom-6 right-6 h-16 w-16 rounded-full shadow-lg bg-accent hover:bg-accent/90 no-print"
                 aria-label="Open SmartAssist Chat"
             >
                 <MessageSquare size={32} />
             </Button>
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
-                <SheetContent className="flex flex-col">
+                <SheetContent className="flex flex-col no-print">
                     <SheetHeader>
                         <SheetTitle className="font-headline text-2xl">SmartAssist</SheetTitle>
                         <SheetDescription>
