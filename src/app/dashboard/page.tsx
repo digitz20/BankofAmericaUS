@@ -4,7 +4,7 @@
 import { useAuth } from '@/hooks/use-auth';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Landmark, DollarSign, Loader2, AlertCircle, RefreshCw, Eye, EyeOff, LogOut, ArrowUpRight, ArrowDownLeft, Trash2, ArrowLeft } from 'lucide-react';
+import { Landmark, DollarSign, Loader2, AlertCircle, RefreshCw, Eye, EyeOff, LogOut, ArrowUpRight, ArrowDownLeft, Trash2, ArrowLeft, ReceiptText } from 'lucide-react';
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -428,6 +428,11 @@ export default function DashboardPage() {
     });
   };
 
+  function handleViewReceipt(transaction: Transaction) {
+    setLastTransaction(transaction);
+    setIsReceiptDialogOpen(true);
+  }
+
   if (isAuthLoading || isDataLoading) {
     return (
       <div className="flex flex-grow items-center justify-center">
@@ -607,7 +612,7 @@ export default function DashboardPage() {
                       <TableHead className="hidden sm:table-cell">Date</TableHead>
                       <TableHead>Description</TableHead>
                       <TableHead className="text-right">Amount</TableHead>
-                      <TableHead className="w-[50px] text-right"><span className="sr-only">Actions</span></TableHead>
+                      <TableHead className="w-[100px] text-right"><span className="sr-only">Actions</span></TableHead>
                   </TableRow>
               </TableHeader>
               <TableBody>
@@ -634,12 +639,20 @@ export default function DashboardPage() {
                                  )}
                               </TableCell>
                               <TableCell className="text-right">
-                                 {newTransactions.some(nt => nt.id === t.id) && isActivityDetailsVisible && (
-                                     <Button variant="ghost" size="icon" onClick={() => handleDeleteTransaction(t.id)}>
-                                         <Trash2 className="h-4 w-4 text-destructive" />
-                                         <span className="sr-only">Delete Transaction</span>
-                                     </Button>
-                                 )}
+                                  <div className="flex items-center justify-end gap-1">
+                                      {isActivityDetailsVisible && t.amount < 0 && t.recipientAccountNumber && (
+                                           <Button variant="ghost" size="icon" onClick={() => handleViewReceipt(t)}>
+                                               <ReceiptText className="h-4 w-4" />
+                                               <span className="sr-only">View Receipt</span>
+                                           </Button>
+                                      )}
+                                     {newTransactions.some(nt => nt.id === t.id) && isActivityDetailsVisible && (
+                                         <Button variant="ghost" size="icon" onClick={() => handleDeleteTransaction(t.id)}>
+                                             <Trash2 className="h-4 w-4 text-destructive" />
+                                             <span className="sr-only">Delete Transaction</span>
+                                         </Button>
+                                     )}
+                                  </div>
                               </TableCell>
                           </TableRow>
                       ))
