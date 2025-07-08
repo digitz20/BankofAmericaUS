@@ -152,7 +152,7 @@ export default function DashboardPage() {
 
   async function onTransactionSubmit(values: z.infer<typeof transactionFormSchema>) {
     const isStatic = staticRecipients.some(
-      (r) => r.accountNumber === values.accountNumber && r.bankName === values.bankName
+      (r) => r.accountNumber === values.accountNumber && r.bankName === values.bankName && r.accountName === values.recipientName
     );
 
     if (!isStatic) {
@@ -806,20 +806,25 @@ export default function DashboardPage() {
                 </DialogHeader>
                 <div className="receipt-container-print">
                     {lastTransaction && dashboardData && (
-                        <TransactionReceipt transaction={lastTransaction} senderName={dashboardData.fullName} />
+                        <TransactionReceipt
+                            transaction={lastTransaction}
+                            senderName={dashboardData.fullName}
+                            footer={
+                                <>
+                                    <Button onClick={handleDownloadReceipt} variant="outline">
+                                        <Download className="mr-2 h-4 w-4" /> Download
+                                    </Button>
+                                    <Button onClick={handleShareReceipt}>
+                                        <Share2 className="mr-2 h-4 w-4" /> Share
+                                    </Button>
+                                    <Button onClick={() => setIsReceiptDialogOpen(false)} variant="secondary">
+                                        Close
+                                    </Button>
+                                </>
+                            }
+                        />
                     )}
                 </div>
-                <DialogFooter className="pt-4 gap-2 sm:justify-center no-print">
-                    <Button onClick={handleDownloadReceipt} variant="outline">
-                        <Download className="mr-2 h-4 w-4" /> Download Receipt
-                    </Button>
-                    <Button onClick={handleShareReceipt}>
-                        <Share2 className="mr-2 h-4 w-4" /> Share
-                    </Button>
-                    <Button onClick={() => setIsReceiptDialogOpen(false)} variant="secondary">
-                        Close
-                    </Button>
-                </DialogFooter>
             </DialogContent>
         </Dialog>
 

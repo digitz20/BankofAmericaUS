@@ -17,9 +17,10 @@ type Transaction = {
 interface TransactionReceiptProps {
   transaction: Transaction;
   senderName: string;
+  footer?: React.ReactNode;
 }
 
-export const TransactionReceipt: React.FC<TransactionReceiptProps> = ({ transaction, senderName }) => {
+export const TransactionReceipt: React.FC<TransactionReceiptProps> = ({ transaction, senderName, footer }) => {
   if (!transaction) return null;
 
   return (
@@ -77,6 +78,11 @@ export const TransactionReceipt: React.FC<TransactionReceiptProps> = ({ transact
         <p className="text-xs text-center text-muted-foreground pt-4">Thank you for banking with Bank of America.</p>
 
       </CardContent>
+       {footer && (
+        <div className="p-4 border-t no-print flex flex-col gap-2 sm:flex-row sm:justify-center">
+            {footer}
+        </div>
+      )}
     </Card>
   );
 };
