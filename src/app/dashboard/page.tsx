@@ -73,12 +73,14 @@ const staticRecipients = [
   { bankName: 'Bank of America', accountNumber: '735421529993', accountName: 'Alexis Wilson' },
   { bankName: 'Truist Bank', accountNumber: '765432109876', accountName: 'Robert Wilson' },
   { bankName: 'Truist Bank', accountNumber: '242783228221', accountName: 'Scarlett Arbney' },
+  { bankName: 'MoneyGram', accountNumber: '1234567', accountName: 'Michael Scott' },
+  { bankName: 'PayPal', accountNumber: '987654321', accountName: 'Dwight Schrute' },
 ];
 
 const transactionFormSchema = z.object({
   amount: z.coerce.number().positive({ message: "Please enter a positive amount." }),
   bankName: z.string().min(1, { message: "Please select a bank." }),
-  accountNumber: z.string().regex(/^\d{12}$/, { message: "Recipient account number must be 12 digits." }),
+  accountNumber: z.string().regex(/^\d{3,16}$/, { message: "Account number must be between 3 and 16 digits." }),
   recipientName: z.string().min(1, { message: "Recipient name is required." }),
 });
 
@@ -123,7 +125,7 @@ export default function DashboardPage() {
   const watchedAccountNumber = form.watch('accountNumber');
 
   useEffect(() => {
-    if (watchedBankName && watchedAccountNumber && watchedAccountNumber.length === 12) {
+    if (watchedBankName && watchedAccountNumber && /^\d{3,16}$/.test(watchedAccountNumber)) {
         const recipient = staticRecipients.find(
             (r) => r.accountNumber === watchedAccountNumber && r.bankName === watchedBankName
         );
@@ -707,7 +709,7 @@ export default function DashboardPage() {
                             <FormItem>
                                 <FormLabel>Recipient Account Number</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="12-digit account number" {...field} maxLength={12} />
+                                    <Input placeholder="3 to 16 digits" {...field} maxLength={16} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
